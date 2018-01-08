@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link type="text/css" rel="stylesheet" href="http://unpkg.com/bootstrap@next/dist/css/bootstrap.min.css"/>
+		<link type="text/css" rel="stylesheet" href="http://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"/>
+		<link type="text/css" rel="stylesheet" href="css/app.css"/>
+		<script src="js/vue.js"></script>
+		<!-- Add this after vue.js -->
+		<script src="http://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+		<script src="http://unpkg.com/tether@latest/dist/js/tether.min.js"></script>
+		<script src="http://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+    	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    	<script src="https://use.fontawesome.com/4e36e929eb.js"></script>
+    	<script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
+		<script src="js/app.js"></script>
+
+	</head>
+	<body>
+		<div id="content" class="centre">
+			<div id="thc">
+				<table class="table b-table table-striped table-hover main-table">
+					<thead>
+						<tr>
+							<td class="col-md-1 icon-column"></td>
+							<td class="col-md-1 criteria-column"></td>
+							<td class="col-md-1" v-for="team in teams">
+								<div class="vertical-centre centre-text">
+									{{ team.name }}
+								</div>
+							</td>
+							<td class="col-md-1">
+								<span v-on:click="showAddTeamModal()" class="fa fa-plus hover-plus"></span>
+								<span v-on:click="showRemoveTeamModal()" class="fa fa-minus hover-plus"></span>
+								<div>
+								    <!-- Modal Components -->
+								    <b-modal id="add-team-modal" @ok="addTeamFromModal" ref="addTeamModal" title="Add Team">
+								     	<input v-model="newTeamName" placeholder="Enter team name">
+								    </b-modal>
+								    <b-modal id="remove-team-modal" @ok="removeTeamFromModal" ref="removeTeamModal" title="Remove Team">
+								     	<b-form-select v-model="selectedTeam" :options="teamList" class="mb-3">
+    									</b-form-select>
+								    </b-modal>
+								</div>
+							</td>
+						</tr>			
+					</thead>
+					<tbody class="centre-text">
+						<tr v-for="criterion in criteria">
+							<td class="col-md-1 icon-column">									
+								<span class="fa" v-bind:class="criterion.icon"></span>
+							</td>
+							<td class="col-md-1 criteria-column">
+								{{ criterion.label }}
+							</td>
+							<td class="traffic-light-cell" v-for="team in teams">
+								<!-- Traffic lights -->
+								<span class="fa fa-circle-thin empty-icon" v-if="getCriterionValue(team, criterion) === ''" v-on:click="setInitialValue(team, criterion)"></span>
+								<span class="fa fa-circle red-icon" v-if="getCriterionValue(team, criterion) === 'R'" v-on:click="setInitialValue(team, criterion)"></span>
+								<span class="fa fa-circle amber-icon" v-if="getCriterionValue(team, criterion) === 'A'" v-on:click="setInitialValue(team, criterion)"></span>
+								<span class="fa fa-circle green-icon" v-if="getCriterionValue(team, criterion) === 'G'" v-on:click="setInitialValue(team, criterion)"></span>
+								<span class="fa fa-arrow-circle-up amber-icon" v-if="getCriterionValue(team, criterion) === 'Aup'" v-on:click="setInitialValue(team, criterion)"></span>
+								<span class="fa fa-arrow-circle-up green-icon" v-if="getCriterionValue(team, criterion) === 'Gup'" v-on:click="setInitialValue(team, criterion)"></span>
+								<span class="fa fa-arrow-circle-down red-icon" v-if="getCriterionValue(team, criterion) === 'Rdown'" v-on:click="setInitialValue(team, criterion)"></span>
+								<span class="fa fa-arrow-circle-down amber-icon" v-if="getCriterionValue(team, criterion) === 'Adown'" v-on:click="setInitialValue(team, criterion)"></span>
+
+								<!-- Up / Down buttons -->
+								<div class="hover-arrow-section">
+									<span class="fa fa-arrow-up hover-arrow" v-on:click="changeCriterionValue(team, criterion, 'up')"></span>
+									<span class="fa fa-arrow-down hover-arrow" v-on:click="changeCriterionValue(team, criterion, 'down')"></span>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<b-button v-on:click="save()">Save</b-button>
+				<b-button v-on:click="reset()">Reset</b-button>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,74 @@
+.centre {
+    margin: auto;
+    width: 50%;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.centre-text {
+	text-align: center;
+}
+
+.vertical-centre {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.red-icon {
+	color: red;
+	font-size: 25px !important;
+}
+
+.amber-icon {
+	color: orange;
+	font-size: 25px !important;
+}
+
+.green-icon {
+	color: green;
+	font-size: 25px !important;
+}
+
+.empty-icon {
+	color: lightgrey;
+	font-size: 25px !important;
+}
+
+.main-table {
+	table-layout: fixed;
+}
+
+.criteria-column {
+	width: 300px;
+	text-align: left;
+}
+
+.icon-column {
+	width: 50px;
+	text-align: center;
+}
+
+.hover-arrow {
+	display:none !important;
+	font-size: 13px !important;
+}
+
+.hover-arrow:hover {
+	display:block !important;
+	font-size: 13px !important;
+	color: lightgrey;
+}
+
+.hover-plus:hover {
+	color: lightgrey;
+}
+
+.hover-arrow-section {
+	float: right;
+}
+
+.traffic-light-cell:hover .hover-arrow-section .hover-arrow {
+	display:block !important;
+}
