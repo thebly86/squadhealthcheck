@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link type="text/css" rel="stylesheet" href="http://unpkg.com/bootstrap@next/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="http://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+    <link type="text/css" rel="stylesheet" href="css/app.css" />
+    <script src="js/vue.js"></script>
+    <!-- Add this after vue.js -->
+    <script src="http://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+    <script src="http://unpkg.com/tether@latest/dist/js/tether.min.js"></script>
+    <script src="http://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://use.fontawesome.com/4e36e929eb.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
+    <script src="js/app.js"></script>
+
+</head>
+
+<body>
+    <div id="thc">
+
+        <div>
+            <b-navbar toggleable="md" type="dark" variant="info">
+
+                <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
+
+                <b-navbar-brand href="#">Squad Health Check</b-navbar-brand>
+
+                <b-collapse is-nav id="nav_collapse">
+
+                    <b-navbar-nav>
+                        <b-nav-item-dropdown text="Projects" right>
+                            <b-dropdown-item href="#">Project1</b-dropdown-item>
+                            <b-dropdown-item href="#">Project2</b-dropdown-item>
+                            <b-dropdown-divider></b-dropdown-divider>
+                            <b-dropdown-item v-b-modal.modal1>Create Project</b-dropdown-item>
+                        </b-nav-item-dropdown>
+                        <b-nav-item-dropdown text="Teams" right>
+                            <b-dropdown-item href="#">Team1</b-dropdown-item>
+                            <b-dropdown-item href="#">Team2</b-dropdown-item>
+                            <b-dropdown-item href="#">Team3</b-dropdown-item>
+                            <b-dropdown-divider></b-dropdown-divider>
+                            <b-dropdown-item v-on:click="showAddTeamModal()">Create Team</b-dropdown-item>
+                        </b-nav-item-dropdown>
+
+                        <b-nav-form>
+                            <b-nav-item> </b-nav-item>
+                            <b-button variant="secondary" size="sm" type="create">Create</b-button>
+                        </b-nav-form>
+                    </b-navbar-nav>
+
+                    <div>
+                        <!-- Modal Component -->
+                        <b-modal id="modal1" title="Bootstrap-Vue">
+                            <p class="my-4">seperate way to do modal!</p>
+                        </b-modal>
+                    </div>
+
+                    <div>
+                        <!-- Modal Components -->
+                        <b-modal id="add-team-modal" @ok="addTeamFromModal" ref="addTeamModal" title="Add Team">
+                            <input v-model="newTeamName" placeholder="Enter team name">
+                        </b-modal>
+                        <b-modal id="remove-team-modal" @ok="removeTeamFromModal" ref="removeTeamModal" title="Remove Team">
+                            <b-form-select v-model="selectedTeam" :options="teamList" class="mb-3">
+                            </b-form-select>
+                        </b-modal>
+                    </div>
+
+                    <!-- Right aligned nav items -->
+                    <b-navbar-nav class="ml-auto">
+
+                        <b-nav-item-dropdown right>
+                            <!-- Using button-content slot -->
+                            <template slot="button-content">
+                                <em>User</em>
+                            </template>
+                            <b-dropdown-item href="#">Profile</b-dropdown-item>
+                            <b-dropdown-item href="#">Signout</b-dropdown-item>
+                        </b-nav-item-dropdown>
+                    </b-navbar-nav>
+
+                </b-collapse>
+            </b-navbar>
+        </div>
+
+        <div id="content" class="centre">
+            <div>
+                <template>
+                    <b-table striped hover :items="items" :fields="fields"></b-table>
+                </template>
+
+                <script>
+                    export default {
+                        data() {
+                            return {
+                                // Note 'isActive' is left out and will not appear in the rendered table
+                                fields: ['first_name', 'last_name', 'age'],
+                                items: [{
+                                        isActive: true,
+                                        age: 40,
+                                        first_name: 'Dickerson',
+                                        last_name: 'Macdonald'
+                                    },
+                                    {
+                                        isActive: false,
+                                        age: 21,
+                                        first_name: 'Larsen',
+                                        last_name: 'Shaw'
+                                    },
+                                    {
+                                        isActive: false,
+                                        age: 89,
+                                        first_name: 'Geneva',
+                                        last_name: 'Wilson'
+                                    },
+                                    {
+                                        isActive: true,
+                                        age: 38,
+                                        first_name: 'Jami',
+                                        last_name: 'Carney'
+                                    }
+                                ]
+                            }
+                        }
+                    }
+
+                </script>
+
+
+                <b-button v-on:click="save()">Save</b-button>
+                <b-button v-on:click="reset()">Reset</b-button>
+            </div>
+
+
+
+        </div>
+</body>
+
+</html>
