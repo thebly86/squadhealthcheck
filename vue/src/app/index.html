@@ -30,16 +30,14 @@
                 <b-collapse is-nav id="nav_collapse">
 
                     <b-navbar-nav>
-                        <b-nav-item-dropdown text="Projects" right>
+                        <b-nav-item-dropdown text="Projects" left>
                             <b-dropdown-item href="#">Project1</b-dropdown-item>
                             <b-dropdown-item href="#">Project2</b-dropdown-item>
                             <b-dropdown-divider></b-dropdown-divider>
                             <b-dropdown-item v-b-modal.modal1>Create Project</b-dropdown-item>
                         </b-nav-item-dropdown>
-                        <b-nav-item-dropdown text="Teams" right>
-                            <b-dropdown-item href="#">Team1</b-dropdown-item>
-                            <b-dropdown-item href="#">Team2</b-dropdown-item>
-                            <b-dropdown-item href="#">Team3</b-dropdown-item>
+                        <b-nav-item-dropdown text="Teams" left>
+                            <b-dropdown-item v-for="team in teams" href="#">{{ team.name }}</b-dropdown-item>
                             <b-dropdown-divider></b-dropdown-divider>
                             <b-dropdown-item v-on:click="showAddTeamModal()">Create Team</b-dropdown-item>
                         </b-nav-item-dropdown>
