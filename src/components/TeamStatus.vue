@@ -16,6 +16,7 @@
 
         computed: {
             status: function() {
+                console.log(this.team[this.criteria]);
                 return this.team[this.criteria];
             }
         },

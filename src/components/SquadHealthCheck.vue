@@ -24,7 +24,6 @@
             </div>
         </header>
         <section 
-            v-if="project.activeSprint.teams"
             class="data-table container mt-4 mb-3">
             <div class="data-table__header row p-2">
                 <div class="col-3">CRITERIA</div>
@@ -101,8 +100,8 @@
         },
 
         created: function() {
-            console.log('test');
-        },
+            console.log('selected project', this.project);
+        }
 
         methods: {
             getProjectName() {
@@ -110,7 +109,6 @@
             },
 
             getTeamName(team) {
-                console.log(team);
                 return team.charAt(0).toUpperCase() + team.slice(1).replace(/([A-Z])/g, ' $1').trim();
             },
 

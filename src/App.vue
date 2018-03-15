@@ -11,11 +11,12 @@
         <tab name="My Projects">
           <project-list 
             :projects="projects"
-            @projectSelected="updateSelectedProject"></project-list>
+            @projectSelected="setSelectedProject">
+          </project-list>
         </tab>
         <tab 
           v-if="getSelectedProject()"
-          :name="selectedProject.name"
+          :name="getSelectedProject().name"
           ref="projectTab">
           <squad-health-check
             :project="selectedProject"
@@ -33,6 +34,7 @@ import Tab from './components/Tab';
 import ProjectList from './components/ProjectList';
 import SquadHealthCheck from './components/SquadHealthCheck';
 import * as firebase from "firebase";
+import { slugify } from './utils';
 
 export default {
   name: 'App',
@@ -50,7 +52,7 @@ export default {
     selectedProject: {}
   }),
 
-   created() {
+  created() {
     if (!firebase.apps.length) {
       this.initialiseDatabase();
       this.loadData();
@@ -94,8 +96,7 @@ export default {
     loadProjectData() {
       // Load project sprints and sort them
       let ref = firebase.database().ref('sprints/' + this.selectedProject.id);
-      ref.orderByKey().once('value').then(function(snapshot) {
-
+      return ref.orderByKey().once('value').then(function(snapshot) {
         let sprints = _.filter(snapshot.val(), (sprint) => !_.isEmpty(sprint));
         sprints = _.sortBy(sprints, (sprint) => sprint.id);
         this.selectedProject.sprints = sprints;
@@ -110,6 +111,8 @@ export default {
           this.selectedProject.previousSprint = sprints[_.size(sprints) - 2]
         }
       }.bind(this));
+      // console.log('loadProjectData', this.selectedProject);
+      // console.log('loadProjectData', this.selectedProject.activeSprint);
     },
 
     /** 
@@ -123,19 +126,38 @@ export default {
      * Updates the project displayed in the project tab
      * @param project 
      */
-    updateSelectedProject(project) {
+    setSelectedProject(project) {
       let selectedProject = this.getSelectedProject();
 
       if (!_.isNil(selectedProject) && !_.isEmpty(selectedProject)) {
         selectedProject.isSelected = false;
       }
+
       project.isSelected = true;
       this.selectedProject = project;
-      this.loadProjectData();
-      this.$forceUpdate();
+
+      /*
+       * TODO: Find a nicer way handling async stuff, other than chain 'then'.
+       * This bit loads the project data then updates the view, before selecting
+       * the project tab.
+       */
+      this.loadProjectData().then(() => {
+        this.$forceUpdate();
+      })
+      .then(() => {
+        this.$refs.tabGroup.tabs = _.map(this.$refs.tabGroup.tabs, (tab) => {
+          tab.isSelected = false;
+          return tab;
+        });
+        
+        const projectTab = _.find(this.$refs.tabGroup.tabs, { hash: '#' + slugify(project.name) });
+        projectTab.isSelected = true;
+      });
     }
   }
 }
+
+
 </script>
 
 

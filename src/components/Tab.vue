@@ -9,6 +9,8 @@
 
 
 <script>
+import { slugify } from '../utils';
+
 export default {
   name: 'Tab',
   props: {
@@ -23,7 +25,7 @@ export default {
     hash() {
       return this.id ? 
         '#' + this.id :
-        '#' + this.name.toLowerCase().replace(/ /g, '-');
+        '#' + slugify(this.name);
     }
   }
 }
