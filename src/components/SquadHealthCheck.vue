@@ -3,18 +3,17 @@
         <header class="project__header">
             <h2 class="project__title">{{ getProjectName() }}</h2>
             <div class="project__action-bar pull-right">
-                <div 
-                    @click="openSprintModal()"
-                    class="action mr-3">
-                    <i class="fa fa-plus icon m-0"></i>
-                    <span>NEW SPRINT</span>
+                <div
+                    class="btn-action mr-3">
+                    <i class="fa fa-recycle icon m-0"></i>
+                    <span>MANAGE SPRINTS</span>
                 </div>
-                <b-btn 
-                    v-b-modal="'addTeam'"
-                    class="action">
-                    <i class="fa fa-user-plus icon m-0 mr-1"></i>
-                    <span>ADD TEAM</span>
-                </b-btn>
+                <div
+                    @click="manageTeams"
+                    class="btn-action">
+                    <i class="fa fa-users icon m-0 mr-1"></i>
+                    <span>MANAGE TEAMS</span>
+                </div>
             </div>
             <div>
                 <select class="project__sprints">
@@ -52,8 +51,7 @@
                     :key="k"
                     class="col">
                     <team-status 
-                        :criteria="key"
-                        :team="team"
+                        :status="getTeamStatus(team, key)"
                         @click.native="changeStatus(team, key)"
                         class="mt-2 mx-auto">
                     </team-status>
@@ -62,17 +60,27 @@
         </section>
         <footer class="project__footer">
             <div class="pull-right">
-                <button class="button btn-primary">SAVE</button>
-                <button class="button btn-secondary">RESET</button>
+                <button 
+                    @click="save()"
+                    class="button btn-primary">SAVE</button>
+                <button 
+                    @click="reset()"
+                    class="button btn-secondary">RESET</button>
             </div>
         </footer>
         <b-modal 
             centered
+            @ok="addTeam()"
             title="Add Team"
             id="addTeam">
-            <h2>
-                Add Team.
-            </h2>
+            <form>
+                <label>Team</label>
+                <input 
+                    id="addTeamInput"
+                    v-model="newTeam"
+                    type="text" 
+                    required/>
+            </form>
         </b-modal>
     </section>
 </template>
@@ -80,13 +88,19 @@
 
 <script>
     import TeamStatus from './TeamStatus';
+    import * as firebase from "firebase";
+    import { slugify } from '../utils/utils';
 
     export default {
-        name: 'SquadHealthCheck',
+        name: 'HealthCheck',
 
         components: {
             TeamStatus
         },
+
+        data: () => ({
+            newTeam: ""
+        }),
         
         props: {
             criteria: {
@@ -99,41 +113,82 @@
             }
         },
 
-        created: function() {
-            console.log('selected project', this.project);
-        }
-
         methods: {
             getProjectName() {
                 return this.project.name.toUpperCase();
-            },
+            }, 
 
             getTeamName(team) {
                 return team.charAt(0).toUpperCase() + team.slice(1).replace(/([A-Z])/g, ' $1').trim();
             },
 
+            getTeamStatus(team, criteria) {
+                return team[criteria].value;
+            },
+
             changeStatus(team, criteria) {
                 if (team[criteria].value === 3) {
-                    team[criteria].value = 0;
+                    team[criteria].value = 1;
                 }
                 else {
                     team[criteria].value++;
                 }
+                this.$forceUpdate()
             },
 
-            openTeamModal() {
-                console.log('ADD TEAM');
+            save() { 
+                let ref = firebase.database().ref('sprints/' + this.project.id + "/" + this.project.activeSprint.id + "/teams");
+                ref.set(this.project.activeSprint.teams);
             },
 
-            openSprintModal() {
-                console.log('ADD SPRINT');
+            reset() {
+                firebase.database().ref('sprints/' + this.project.id + "/" + this.project.activeSprint.id).once('value').then((snapshot) => {
+                    this.project.activeSprint = snapshot.val();
+                })
+                .then(() => {
+                    this.$forceUpdate();
+                });
+            },
+
+            // TODO: Do this nicer
+            addTeam() {
+                let teamSprint = {};
+                _.forEach(this.criteria, (criterion) => {
+                    teamSprint[this.camelize(criterion.label)] = { value: 0 };
+                })
+
+                this.project.teams[slugify(this.camelize(this.newTeam))] = true;
+                // Add team to current sprint:
+                _.forEach(this.project.sprints, (sprint) => {
+                    sprint.teams[slugify(this.camelize(this.newTeam))] = teamSprint;
+                });
+                this.newTeam = "";
+                this.$forceUpdate();
+
+                console.log(this.project);
+            },
+
+            manageTeams() {
+                console.log('tests');
+                console.log(this);
+            },
+
+            // TODO: Move to utils
+            camelize(str) {
+                return str
+                    .replace(/\s(.)/g, function($1) { return $1.toUpperCase(); })
+                    .replace(/\s/g, '')
+                    .replace(/^(.)/, function($1) { return $1.toLowerCase(); });
             }
+
         }
     }
 </script>
 
 
 <style>
+    /* Tidy in CSS refactor */
+
     .project {
         
     }
@@ -156,12 +211,6 @@
         width: 200px;
         color: #999999;
         outline: none;
-    }
-
-    .action {
-        display: inline-block;
-        font-size: 14px;
-        color: #999999;
     }
 
     .action:hover {
@@ -210,6 +259,8 @@
 
     .btn-primary {
         background-color: #4CC797;
+        border: none;
+        border-radius: 0;
     }
 
     .btn-primary:hover {
@@ -219,9 +270,32 @@
     .btn-secondary {
         background-color: #E4E4E4;
         color: #868686;
+        border: none;
+        border-radius:0;
     }
 
     .btn-secondary:hover {
-        background-color: #999999;
+        background-color: #D5D5D5;
+        color: #868686;
+    }
+
+    .btn-action {
+        display: inline-block;
+        font-size: 14px;
+        color: #999999;
+        background: #FFF;
+        border:none;
+    }
+
+    .btn-action:hover {
+        background: none;
+        color: #868686;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    .btn-action:focus {
+        background: none;
+        border: none;
     }
 </style>

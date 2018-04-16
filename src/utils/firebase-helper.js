@@ -1,0 +1,1 @@
+// Move all firebase stuff here

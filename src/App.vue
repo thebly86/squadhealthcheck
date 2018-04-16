@@ -34,7 +34,7 @@ import Tab from './components/Tab';
 import ProjectList from './components/ProjectList';
 import SquadHealthCheck from './components/SquadHealthCheck';
 import * as firebase from "firebase";
-import { slugify } from './utils';
+import { slugify } from './utils/utils';
 
 export default {
   name: 'App',
@@ -111,8 +111,6 @@ export default {
           this.selectedProject.previousSprint = sprints[_.size(sprints) - 2]
         }
       }.bind(this));
-      // console.log('loadProjectData', this.selectedProject);
-      // console.log('loadProjectData', this.selectedProject.activeSprint);
     },
 
     /** 
@@ -149,7 +147,7 @@ export default {
           tab.isSelected = false;
           return tab;
         });
-        
+
         const projectTab = _.find(this.$refs.tabGroup.tabs, { hash: '#' + slugify(project.name) });
         projectTab.isSelected = true;
       });
@@ -172,6 +170,10 @@ export default {
   background-color: #E9E9E9;
 }
 
+.app-view {
+  background-color: #FFF;
+}
+
 .header {
   font-size: 30px;
 }
@@ -191,5 +193,13 @@ export default {
 h2 {
   color: #4cc797;
   font-size: 1.5em;
+}
+
+label {
+  display: block;
+}
+
+input[type=text] {
+  width: 100%;
 }
 </style>

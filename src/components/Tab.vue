@@ -9,7 +9,7 @@
 
 
 <script>
-import { slugify } from '../utils';
+import { slugify } from '../utils/utils';
 
 export default {
   name: 'Tab',

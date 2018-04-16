@@ -1,7 +1,12 @@
 <template>
     <div 
-        :class="{red: status === 1, amber: status === 2, green: status === 3}"
-        class="status"></div>
+        :class="{
+            red: status === 1,
+            amber: status === 2,
+            green: status === 3
+        }"
+        class="status">
+        </div>
 </template>
 
 
@@ -10,25 +15,7 @@
         name: 'TeamStatus',
 
         props: {
-            team: Object,
-            criteria: String
-        },
-
-        computed: {
-            status: function() {
-                console.log(this.team[this.criteria]);
-                return this.team[this.criteria];
-            }
-        },
-
-        methods: {
-
-        },
-
-        created: function() {
-            if (_.isEmpty(this.team[this.criteria])) {
-                this.team[this.criteria] = { value: 0 };
-            }
+            status: Number
         }
     }
 </script>
