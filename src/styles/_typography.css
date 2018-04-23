@@ -1,0 +1,62 @@
+/* Headers */
+h1 {
+  font-size: 30px;
+  font-weight: lighter;
+  color: var(--dark-grey);
+  display: inline-block;
+}
+
+h2 {
+  font-size: 24px;
+  color: var(--health-green);
+  margin: 0;
+}
+
+h3 {
+  display: inline-block;
+  font-size: 18px;
+}
+
+
+/* Text */
+p {
+  font-size: 14px;
+}
+
+span {
+   font-size: 14px;
+}
+
+
+/* Text - alignment */
+.text-left { 
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-center {
+  text-align: center; 
+}
+
+
+/* Icons */
+.icon {
+  display: inline-block;
+  color: var(--light-grey);
+  font-size: 1.5rem;
+}
+
+.app-logo {
+  font-size: 30px;
+  color: var(--health-green);
+  display: inline-block;
+  margin-right: 0.25rem;
+}
+
+
+a:visited {
+  color: var(--grey);
+}

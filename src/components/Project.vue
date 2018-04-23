@@ -1,12 +1,20 @@
 <template>
-    <div class="py-2">
-        <div class="col-">
+    <tr>
+        <td>
             <img class="project__logo" :src="getIconUrl(project.icon)"/>
-        </div>
-        <div class="col ml-4 mt-3 align-items-bottom">
+        </td>
+        <td>
             <span>{{project.name}}</span>
-        </div>
-    </div>
+        </td>
+        <td>
+          <a class="btn-action">
+            <i class="icon icon--edit fa fa-edit"></i>
+          </a>
+          <a class="btn-action">
+            <i class="icon icon--delete fa fa-trash"></i>
+          </a>
+        </td>
+    </tr>
 </template>
 
 
@@ -32,17 +40,22 @@
 
 
 <style>
-
     .project__logo {
         max-width: 45px;
+        margin-left: 20px;
     }
 
-    .row {
-        border-bottom: solid 1px #ccc;
+    .icon--edit {
+      color: var(--health-green);
+      margin-right: 5px;
     }
 
-    .row:hover {
-        cursor: pointer;
-        background: #f9f9f9;
+    .icon--delete {
+      color: var(--grey);
+      
+    }
+
+    .btn-action {
+      margin-right: 10px;
     }
 </style>

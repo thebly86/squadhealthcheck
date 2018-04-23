@@ -1,0 +1,39 @@
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input {
+  padding: 5px;
+  width: 95%;
+  outline: none;
+}
+
+
+button {
+  border: none;
+  padding: 10px 20px;
+  min-width: 100px;
+  font-size: 12px;
+  font-weight: bolder;
+  cursor: pointer;
+  outline: none;
+}
+
+.btn-primary {
+  background-color: var(--btn-primary-color);
+  color: var(--light);
+}
+
+.btn-primary:hover {
+  background-color: var(--darker-health-green);
+}
+
+.btn-secondary {
+  background-color: var(--btn-secondary-color);
+  color: var(--dark-grey);
+}
+
+.btn-secondary:hover {
+  background-color: #ccc;
+}

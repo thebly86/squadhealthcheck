@@ -1,0 +1,173 @@
+:root {
+  --breakpoint-xs: 0;
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
+}
+
+main {
+  background-color: var(--light);
+}
+
+
+.container {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+@media (min-width: 576px) {
+  .container {
+    max-width: 540px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 720px;
+  }
+}
+
+@media (min-width: 992px) {
+  .container {
+    max-width: 960px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1140px;
+  }
+}
+
+
+/* */
+.header {
+  padding: 20px;
+}
+
+.footer {
+  padding: 20px;
+}
+
+.action-bar {
+  padding: 20px;
+}
+
+.footer__action-bar {
+  float: right;
+}
+
+
+/**
+ * Tables
+ */
+table {
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+thead {
+  color: var(--grey);
+  font-weight: 300;
+  border-bottom: red;
+}
+
+tbody {
+
+}
+
+th {
+  padding-bottom: 5px;
+}
+
+tr {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+tr:hover {
+  background-color: var(--lightest-grey);
+  cursor: pointer;
+}
+
+td {
+  padding: 5px 0px 0px 0px;
+}
+
+
+
+/**
+ * Custom Grid Layout 
+ */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-auto-rows: max-content;
+  grid-gap: 10px;
+  width: 100%;
+}
+
+/**
+ * Remove the gutters from the grid
+ */
+ .grid--flush {
+  grid-gap: 0;
+}
+
+/**
+ * By default, all grid items will be 100% width
+ */
+ .grid__item {
+  grid-column-end: span 12;
+}
+
+.u-1\/12 {
+  grid-column-end: span 1;
+}
+
+.u-2\/12 {
+  grid-column-end: span 2;
+}
+
+.u-3\/12 {
+  grid-column-end: span 3;
+}
+
+.u-4\/12 {
+  grid-column-end: span 4;
+}
+
+.u-5\/12 {
+  grid-column-end: span 5;
+}
+
+.u-6\/12 {
+  grid-column-end: span 6;
+}
+
+.u-7\/12 {
+  grid-column-end: span 7;
+}
+
+.u-8\/12 {
+  grid-column-end: span 8;
+}
+
+.u-9\/12 {
+  grid-column-end: span 9;
+}
+
+.u-10\/12 {
+  grid-column-end: span 10;
+}
+
+.u-11\/12 {
+  grid-column-end: span 11;
+}
+
+.u-12\/12 {
+  grid-column-end: span 12;
+}
