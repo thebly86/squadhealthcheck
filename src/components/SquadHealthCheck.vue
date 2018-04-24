@@ -99,87 +99,135 @@
         },
 
         data: () => ({
+            id: "",
+            criteria: {},
+            project: {},
+            sprint: {},
             newTeam: ""
         }),
-        
-        props: {
-            criteria: {
-                type: Object,
-                required: true
-            },
-            project: {
-                type: Object,
-                required: true
-            }
+
+        // TODO: Watch for route params change and update component
+
+        created: function() {
+          console.log('SquadHealthCheck created');
+          console.log(window.location.href);
+          let url = window.location.href;
+          this.id = url.substring(url.lastIndexOf('/') + 1);
+          this.loadProjectData();
+
+          // Load project data
+          // Load criteria data
+          // Load sprint data
+
+          // Check if data loaded in current session
+            // IF LOADED: Use data already loaded
+            // IF NOT LOADED: Use id in url params to query firebase
         },
 
         methods: {
-            getProjectName() {
-                return this.project.name.toUpperCase();
-            }, 
+          /**
+           * Loads the sprint data of the selected project from firebase 
+           */
+          loadProjectData() {
+            console.log('Loading project data...');
 
-            getTeamName(team) {
-                return team.charAt(0).toUpperCase() + team.slice(1).replace(/([A-Z])/g, ' $1').trim();
-            },
+            let ref = firebase.database().ref('projects/' + this.id);
+            retur
 
-            getTeamStatus(team, criteria) {
-                return team[criteria].value;
-            },
+            /*
+            // Load project sprints and sort them
+            let ref = firebase.database().ref('sprints/' + this.id);
+            return ref.orderByKey().once('value').then(function(snapshot) {
+              let sprints = _.filter(snapshot.val(), (sprint) => !_.isEmpty(sprint));
+              sprints = _.sortBy(sprints, (sprint) => sprint.id);
+              this.project.sprints = sprints;
 
-            changeStatus(team, criteria) {
-                if (team[criteria].value === 3) {
-                    team[criteria].value = 1;
-                }
-                else {
-                    team[criteria].value++;
-                }
-                this.$forceUpdate()
-            },
+              // If project has at least one sprint, most recent is made active
+              if (_.size(sprints) >= 1) {
+                this.selectedProject.activeSprint = sprints[_.size(sprints) - 1];
+              }
 
-            save() { 
-                let ref = firebase.database().ref('sprints/' + this.project.id + "/" + this.project.activeSprint.id + "/teams");
-                ref.set(this.project.activeSprint.teams);
-            },
+              // Set previous sprint to the active sprint, if present
+              if (_.size(sprints) >= 2) {
+                this.selectedProject.previousSprint = sprints[_.size(sprints) - 2]
+              }
+            }.bind(this));
+            console.log('Project data loaded!');
+            */
+          },
 
-            reset() {
-                firebase.database().ref('sprints/' + this.project.id + "/" + this.project.activeSprint.id).once('value').then((snapshot) => {
-                    this.project.activeSprint = snapshot.val();
-                })
-                .then(() => {
-                    this.$forceUpdate();
-                });
-            },
+          loadCriteriaData() {
+            database.ref('criteria').once('value').then(function(snapshot) {
+              this.criteria = snapshot.val();
+            }.bind(this));
+          },
 
-            // TODO: Do this nicer
-            addTeam() {
-                let teamSprint = {};
-                _.forEach(this.criteria, (criterion) => {
-                    teamSprint[this.camelize(criterion.label)] = { value: 0 };
-                })
+          getProjectName() {
+              return this.project.name.toUpperCase();
+          }, 
 
-                this.project.teams[slugify(this.camelize(this.newTeam))] = true;
-                // Add team to current sprint:
-                _.forEach(this.project.sprints, (sprint) => {
-                    sprint.teams[slugify(this.camelize(this.newTeam))] = teamSprint;
-                });
-                this.newTeam = "";
-                this.$forceUpdate();
+          getTeamName(team) {
+              return team.charAt(0).toUpperCase() + team.slice(1).replace(/([A-Z])/g, ' $1').trim();
+          },
 
-                console.log(this.project);
-            },
+          getTeamStatus(team, criteria) {
+              return team[criteria].value;
+          },
 
-            manageTeams() {
-                console.log('tests');
-                console.log(this);
-            },
+          changeStatus(team, criteria) {
+              if (team[criteria].value === 3) {
+                  team[criteria].value = 1;
+              }
+              else {
+                  team[criteria].value++;
+              }
+              this.$forceUpdate()
+          },
 
-            // TODO: Move to utils
-            camelize(str) {
-                return str
-                    .replace(/\s(.)/g, function($1) { return $1.toUpperCase(); })
-                    .replace(/\s/g, '')
-                    .replace(/^(.)/, function($1) { return $1.toLowerCase(); });
-            }
+          save() { 
+              let ref = firebase.database().ref('sprints/' + this.project.id + "/" + this.project.activeSprint.id + "/teams");
+              ref.set(this.project.activeSprint.teams);
+          },
+
+          reset() {
+              firebase.database().ref('sprints/' + this.project.id + "/" + this.project.activeSprint.id).once('value').then((snapshot) => {
+                  this.project.activeSprint = snapshot.val();
+              })
+              .then(() => {
+                  this.$forceUpdate();
+              });
+          },
+
+          // TODO: Do this nicer
+          addTeam() {
+              let teamSprint = {};
+              _.forEach(this.criteria, (criterion) => {
+                  teamSprint[this.camelize(criterion.label)] = { value: 0 };
+              })
+
+              this.project.teams[slugify(this.camelize(this.newTeam))] = true;
+              // Add team to current sprint:
+              _.forEach(this.project.sprints, (sprint) => {
+                  sprint.teams[slugify(this.camelize(this.newTeam))] = teamSprint;
+              });
+              this.newTeam = "";
+              this.$forceUpdate();
+
+              console.log(this.project);
+          },
+
+          manageTeams() {
+              console.log('tests');
+              console.log(this);
+          },
+
+          // TODO: Move to utils
+          camelize(str) {
+              return str
+                  .replace(/\s(.)/g, function($1) { return $1.toUpperCase(); })
+                  .replace(/\s/g, '')
+                  .replace(/^(.)/, function($1) { return $1.toLowerCase(); });
+          }
 
         }
     }

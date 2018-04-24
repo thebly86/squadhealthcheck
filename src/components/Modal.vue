@@ -1,5 +1,5 @@
 <template>
-  <div 
+  <div
     id=":id"
     :class="{'visible': show}"
     class="modal">
@@ -40,8 +40,14 @@
       showModal: false
     },
 
-    data: () => {
+    data: () => ({
       show: this.showModal
+    }),
+
+    methods: {
+      closeModal() {
+        this.show = false;
+      }
     }
 
     

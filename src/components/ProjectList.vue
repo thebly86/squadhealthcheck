@@ -38,7 +38,7 @@
         ref="addProjectModal"
         id="addProject"
         name="Add Project"
-        :show="showModal">
+        :showModal="showModal">
         <form>
           <label for="projectTitle">Project title</label>
           <input id="projectTitle" name="projectTitle" type="text"></input>
@@ -52,6 +52,7 @@
 import Project from './Project';
 import Modal from './Modal';
 import * as firebase from "firebase";
+import ProjectsService from '../utils/firebase-helper';
 import { slugify } from '../utils/utils';
 
 export default {
@@ -64,93 +65,49 @@ export default {
 
 
   data: () => ({
-    columns: [
-      { heading: 'Icon', isVisible: false },
-      { heading: 'Name', isVisible: true }
-    ],
-    rows: [],
     projects: {},
-    selectedProject: {},
     newProject: "",
-    showModal: false
+    showModal: true
   }),
 
 
   created() {
-    this.loadData();
+    this.loadProjects();
+    console.log('ProjectList created', this.$refs);
   },
 
 
   methods: {
     /**
-     * Loads the initial data from firebase
+     * Loads list of projects
      */
-    loadData() {
+    loadProjects() {
       let database = firebase.database();
       database.ref('projects').once('value').then(function(snapshot) {
         this.projects = snapshot.val();
       }.bind(this));
 
-      database.ref('criteria').once('value').then(function(snapshot) {
-        this.criteria = snapshot.val();
-      }.bind(this));
-    },
-
-    /**
-     * Loads the sprint data of the selected project from firebase 
-     */
-    loadProjectData() {
-      // Load project sprints and sort them
-      let ref = firebase.database().ref('sprints/' + this.selectedProject.id);
-      return ref.orderByKey().once('value').then(function(snapshot) {
-        let sprints = _.filter(snapshot.val(), (sprint) => !_.isEmpty(sprint));
-        sprints = _.sortBy(sprints, (sprint) => sprint.id);
-        this.selectedProject.sprints = sprints;
-
-        // If project has at least one sprint, most recent is made active
-        if (_.size(sprints) >= 1) {
-          this.selectedProject.activeSprint = sprints[_.size(sprints) - 1];
-        }
-
-        // Set previous sprint to the active sprint, if present
-        if (_.size(sprints) >= 2) {
-          this.selectedProject.previousSprint = sprints[_.size(sprints) - 2]
-        }
-      }.bind(this));
-    },
-
-    /** 
-     * Returns the project that was recently selected
-     */
-    getSelectedProject() {
-      return _.find(this.projects, (project) => project.isSelected);
+      console.log(ProjectsService.getProject('lloydsRegister'))
     },
 
     /**
      * Updates the project displayed in the project tab
      * @param project 
      */
-    openProject(project) {
-      let selectedProject = this.getSelectedProject();
-      console.log(selectedProject);
-
-      if (!_.isNil(selectedProject) && !_.isEmpty(selectedProject)) {
-        selectedProject.isSelected = false;
-      }
-
-      project.isSelected = true;
-      this.selectedProject = project;
+    selectProject(project) {
       this.$emit('openTab', project);
     },
 
     openModal() {
       console.log('open');
       this.showModal = true;
+      console.log(this.showModal);
+
     },
 
     closeModal() {
       console.log('close');
-      this.showModal = false;
+      // this.showModal = false;
     },
 
     save() {

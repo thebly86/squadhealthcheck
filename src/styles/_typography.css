@@ -57,6 +57,11 @@ span {
 }
 
 
+/* Links */
+a {
+  text-decoration: none;
+}
+
 a:visited {
   color: var(--grey);
 }

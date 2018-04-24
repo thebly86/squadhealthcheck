@@ -6,6 +6,8 @@ import SquadHealthCheck from '@/components/SquadHealthCheck'
 Vue.use(Router)
 
 export default new Router({
+  linkActiveClass: '',
+  linkExactActiveClass: 'tab__link--active',
   routes: [
     {
       path: '/',

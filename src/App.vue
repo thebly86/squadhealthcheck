@@ -6,7 +6,10 @@
           <i class="fa fa-heartbeat"/>
         </div>
         <h1>Squad Health Check</h1>
-        <project-nav :tabs="projects"></project-nav>
+        <project-nav 
+          ref="tabs" 
+          :tabs="projects">
+        </project-nav>
       </header>
       <router-view @openTab="openTab"></router-view>
       <!--
@@ -71,15 +74,11 @@ export default {
       firebase.initializeApp(config);
     },
 
-    onClick(event) {
-      console.log('CLICK');
-    },
-
     openTab(project) {
-      console.log(project.name);
-      
-      this.projects.push(project); 
-      console.log(this.projects);
+      if (!_.find(this.projects, { id: project.id })) {
+        this.projects.push(project); 
+        this.$router.push({ name: 'SquadHealthCheck', params: { id: project.id}});
+      }
     }
   }
 }

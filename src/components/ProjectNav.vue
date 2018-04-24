@@ -1,14 +1,27 @@
 <template>
   <nav class="nav">
     <ul class="tabs">
-      <li class="tab tab--active">
-          <router-link to="/"><a class="tab__link">MY PROJECTS</a></router-link>
+      <li class="tab">
+          <router-link 
+            to="/"
+            class="tab__link">
+            MY PROJECTS
+          </router-link>
       </li>
       <li 
         v-for="(tab, i) in tabs"
         :key="i"
         class="tab">
-        <router-link to="/project/tab.id"><a class="tab__link">{{tab.name}}</a></router-link>
+        <router-link 
+          :to="{ name: 'SquadHealthCheck', params: { id: tab.id }}"
+          class="tab__link">
+          {{ tab.name | uppercase }}
+        </router-link>
+        <div 
+          @click="closeTab(tab)"
+          class="tab__icon hidden">
+          <i class="fa fa-times"/>
+        </div>
       </li>
     </ul>
   </nav>
@@ -27,8 +40,23 @@
     },
 
     methods: {
+      /**  
+       * Removes the tabs and redirect to project list
+       * TODO: Prompt to save data if not done so
+       */
       closeTab(tab) {
-        let tabToClose = _.find(this.tabs, tab.id);
+        let index = this.tabs.indexOf(tab);
+        if (index > -1) {
+          this.tabs.splice(index, 1);
+        }
+
+        this.$router.push({ name: 'ProjectList'});
+      }
+    },
+    
+    filters: {
+      uppercase: function (val) {
+        return val.toUpperCase();
       }
     }
   }
@@ -47,26 +75,53 @@
   }
 
   .tab {
+    position: relative;
     list-style: none;
     display: inline-block;
     background-color: var(--lightest-grey);
     margin: 0;
     width: 180px;
-    padding: 10px 0px;
     text-align: center;
     cursor: pointer;
+    margin-right: 2px;
+  }
+
+  .tab:first-of-type, .tab:last-of-type {
+    margin-right: 0;
+  }
+
+  .tab:hover .hidden {
+    display: inline-block;
   }
 
   .tab__link {
-    padding: 10px 20px;
+    display: inline-block;
+    width: inherit;
+    padding: 10px 0;
   }
 
   .tab__link:hover {
     text-decoration: underline;
   }
 
-  .tab--active {
+  .tab__link--active {
     background-color: var(--light);
     color: var(--grey);
+  }
+
+  .tab__icon {
+    position: absolute;
+    right: 0;
+    top: -3px;
+    margin: 3px;
+    color: var(--light-grey);
+  }
+
+  .tab__icon:hover {
+    color: var(--grey);
+  }
+
+  .hidden {
+    display: none; 
   }
 </style>
