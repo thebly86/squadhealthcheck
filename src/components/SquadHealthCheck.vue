@@ -1,7 +1,37 @@
 <template>
+    <main class="grid">
+      <header class="grid__item u-6/12 header">
+        <h2>{{ project.name }}</h2>
+      </header>
+      <div class="grid__item u-6/12 action-bar">
+        <ul>
+          
+        </ul>
+      </div>
+      <table class="grid__item healthcheck-table">
+        <colgroup>
+          <col class="healthcheck-table__criteria">
+          <col class="healthcheck-table__team">
+        </colgroup>
+        <thead>
+          <tr>
+            <th></th>
+            <th
+              v-for="(team, i) in sprints"
+              :key="i">
+              {{ team }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+      </table>
+    </main>
+    <!--
     <section class="project">
         <header class="project__header">
-            <h2 class="project__title">{{ getProjectName() }}</h2>
+            <h2 class="project__title">{{ project.name }}</h2>
             <div class="project__action-bar pull-right">
                 <div
                     class="btn-action mr-3">
@@ -83,160 +113,152 @@
             </form>
         </b-modal>
     </section>
+    -->
 </template>
 
 
 <script>
-    import TeamStatus from './TeamStatus';
-    import * as firebase from "firebase";
-    import { slugify } from '../utils/utils';
+import FirebaseService from '../utils/firebase/firebase-service.js';
 
-    export default {
-        name: 'HealthCheck',
+export default {
+    name: 'SquadHealthCheck',
 
-        components: {
-            TeamStatus
-        },
+    components: {
+        
+    },
 
-        data: () => ({
-            id: "",
-            criteria: {},
-            project: {},
-            sprint: {},
-            newTeam: ""
-        }),
+    data: () => ({
+        criteria: {},
+        project: {},
+        sprints: {}
+    }),
 
-        // TODO: Watch for route params change and update component
+    // TODO: Watch for route params change and update component
 
-        created: function() {
-          console.log('SquadHealthCheck created');
-          console.log(window.location.href);
-          let url = window.location.href;
-          this.id = url.substring(url.lastIndexOf('/') + 1);
-          this.loadProjectData();
+    created: function() {
+      // Get the project id from the url
+      let id = this.$route.params.id;
 
-          // Load project data
-          // Load criteria data
-          // Load sprint data
+      if (sessionStorage.getItem(id)) {
+        console.log('SquadHealthCheck using session storage');
+        this.project = JSON.parse(sessionStorage.getItem(id));
+      }
+      else {
+        FirebaseService.getProject(id).then((data) => {
+        this.project = data;
+        sessionStorage.setItem(id, JSON.stringify(data));
+      }); 
+      }
 
-          // Check if data loaded in current session
-            // IF LOADED: Use data already loaded
-            // IF NOT LOADED: Use id in url params to query firebase
-        },
+      // Load project, criteria and sprint data
+      FirebaseService.getCriteria().then((data) => this.criteria = data);
+      FirebaseService.getSprints().then((data) => this.sprints = data);
+    },
 
-        methods: {
-          /**
-           * Loads the sprint data of the selected project from firebase 
-           */
-          loadProjectData() {
-            console.log('Loading project data...');
+    methods: {
+      manageTeams() {
+        console.log('test');
+        this.$router.push({ name: 'ManageTeams' });
+      },
+      
+      /*
+      loadCriteriaData() {
+        database.ref('criteria').once('value').then(function(snapshot) {
+          this.criteria = snapshot.val();
+        }.bind(this));
+      },
+      */
 
-            let ref = firebase.database().ref('projects/' + this.id);
-            retur
+      /*
+      getProjectName() {
+          return this.project.name.toUpperCase();
+      }, 
 
-            /*
-            // Load project sprints and sort them
-            let ref = firebase.database().ref('sprints/' + this.id);
-            return ref.orderByKey().once('value').then(function(snapshot) {
-              let sprints = _.filter(snapshot.val(), (sprint) => !_.isEmpty(sprint));
-              sprints = _.sortBy(sprints, (sprint) => sprint.id);
-              this.project.sprints = sprints;
+      getTeamName(team) {
+          return team.charAt(0).toUpperCase() + team.slice(1).replace(/([A-Z])/g, ' $1').trim();
+      },
 
-              // If project has at least one sprint, most recent is made active
-              if (_.size(sprints) >= 1) {
-                this.selectedProject.activeSprint = sprints[_.size(sprints) - 1];
-              }
+      getTeamStatus(team, criteria) {
+          return team[criteria].value;
+      },
+      
 
-              // Set previous sprint to the active sprint, if present
-              if (_.size(sprints) >= 2) {
-                this.selectedProject.previousSprint = sprints[_.size(sprints) - 2]
-              }
-            }.bind(this));
-            console.log('Project data loaded!');
-            */
-          },
-
-          loadCriteriaData() {
-            database.ref('criteria').once('value').then(function(snapshot) {
-              this.criteria = snapshot.val();
-            }.bind(this));
-          },
-
-          getProjectName() {
-              return this.project.name.toUpperCase();
-          }, 
-
-          getTeamName(team) {
-              return team.charAt(0).toUpperCase() + team.slice(1).replace(/([A-Z])/g, ' $1').trim();
-          },
-
-          getTeamStatus(team, criteria) {
-              return team[criteria].value;
-          },
-
-          changeStatus(team, criteria) {
-              if (team[criteria].value === 3) {
-                  team[criteria].value = 1;
-              }
-              else {
-                  team[criteria].value++;
-              }
-              this.$forceUpdate()
-          },
-
-          save() { 
-              let ref = firebase.database().ref('sprints/' + this.project.id + "/" + this.project.activeSprint.id + "/teams");
-              ref.set(this.project.activeSprint.teams);
-          },
-
-          reset() {
-              firebase.database().ref('sprints/' + this.project.id + "/" + this.project.activeSprint.id).once('value').then((snapshot) => {
-                  this.project.activeSprint = snapshot.val();
-              })
-              .then(() => {
-                  this.$forceUpdate();
-              });
-          },
-
-          // TODO: Do this nicer
-          addTeam() {
-              let teamSprint = {};
-              _.forEach(this.criteria, (criterion) => {
-                  teamSprint[this.camelize(criterion.label)] = { value: 0 };
-              })
-
-              this.project.teams[slugify(this.camelize(this.newTeam))] = true;
-              // Add team to current sprint:
-              _.forEach(this.project.sprints, (sprint) => {
-                  sprint.teams[slugify(this.camelize(this.newTeam))] = teamSprint;
-              });
-              this.newTeam = "";
-              this.$forceUpdate();
-
-              console.log(this.project);
-          },
-
-          manageTeams() {
-              console.log('tests');
-              console.log(this);
-          },
-
-          // TODO: Move to utils
-          camelize(str) {
-              return str
-                  .replace(/\s(.)/g, function($1) { return $1.toUpperCase(); })
-                  .replace(/\s/g, '')
-                  .replace(/^(.)/, function($1) { return $1.toLowerCase(); });
+      changeStatus(team, criteria) {
+          if (team[criteria].value === 3) {
+              team[criteria].value = 1;
           }
+          else {
+              team[criteria].value++;
+          }
+          this.$forceUpdate()
+      },
 
+      save() { 
+          let ref = firebase.database().ref('sprints/' + this.project.id + "/" + this.project.activeSprint.id + "/teams");
+          ref.set(this.project.activeSprint.teams);
+      },
+
+      reset() {
+          firebase.database().ref('sprints/' + this.project.id + "/" + this.project.activeSprint.id).once('value').then((snapshot) => {
+              this.project.activeSprint = snapshot.val();
+          })
+          .then(() => {
+              this.$forceUpdate();
+          });
+      },
+
+      // TODO: Do this nicer
+      addTeam() {
+        /*
+          let teamSprint = {};
+          _.forEach(this.criteria, (criterion) => {
+              teamSprint[this.camelize(criterion.label)] = { value: 0 };
+          })
+
+          this.project.teams[slugify(this.camelize(this.newTeam))] = true;
+          // Add team to current sprint:
+          _.forEach(this.project.sprints, (sprint) => {
+              sprint.teams[slugify(this.camelize(this.newTeam))] = teamSprint;
+          });
+          this.newTeam = "";
+          this.$forceUpdate();
+
+          console.log(this.project);
+          
+      },
+
+      // TODO: Move to utils
+      /*
+      camelize(str) {
+          return str
+              .replace(/\s(.)/g, function($1) { return $1.toUpperCase(); })
+              .replace(/\s/g, '')
+              .replace(/^(.)/, function($1) { return $1.toLowerCase(); });
+      }
+      */
+    },
+
+    watch: {
+      '$route': function (to, from) {
+        if (sessionStorage.getItem(this.$route.params.id)) {
+          this.project = JSON.parse(sessionStorage.getItem(this.$route.params.id));
         }
+      }
     }
+}
 </script>
 
 
 <style>
+
+
+
+
+
+
     /* Tidy in CSS refactor */
 
+    /*
     .project {
         
     }
@@ -346,4 +368,5 @@
         background: none;
         border: none;
     }
+    */
 </style>

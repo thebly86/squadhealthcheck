@@ -51,8 +51,8 @@
 <script>
 import Project from './Project';
 import Modal from './Modal';
-import * as firebase from "firebase";
-import ProjectsService from '../utils/firebase-helper';
+import FirebaseService from '../utils/firebase/firebase-service';
+import ProjectService from '../utils/firebase/project-service';
 import { slugify } from '../utils/utils';
 
 export default {
@@ -72,52 +72,20 @@ export default {
 
 
   created() {
-    this.loadProjects();
-    console.log('ProjectList created', this.$refs);
+    FirebaseService.getProjects().then((data) => this.projects = data);
   },
 
 
   methods: {
-    /**
-     * Loads list of projects
-     */
-    loadProjects() {
-      let database = firebase.database();
-      database.ref('projects').once('value').then(function(snapshot) {
-        this.projects = snapshot.val();
-      }.bind(this));
-
-      console.log(ProjectsService.getProject('lloydsRegister'))
-    },
-
-    /**
-     * Updates the project displayed in the project tab
-     * @param project 
-     */
-    selectProject(project) {
-      this.$emit('openTab', project);
-    },
-
     openModal() {
-      console.log('open');
-      this.showModal = true;
-      console.log(this.showModal);
-
+      
     },
 
     closeModal() {
-      console.log('close');
-      // this.showModal = false;
+      
     },
 
     save() {
-      let project = {
-        icon: 'lr-logo',
-        name: ''
-      }
-
-      console.log('ProjectList [save]', newProject);
-
 
 
       // let ref = firebase.database().ref('sprints/' + this.project.id + "/" + // this.project.activeSprint.id + "/teams");
