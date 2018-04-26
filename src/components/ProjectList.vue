@@ -1,12 +1,12 @@
 <template>
     <main class="grid">
-      <header class="grid__item u-10/12 header">
+      <header class="grid__item u-9/12 header">
         <h2>MANAGE PROJECTS</h2>
       </header>
-      <div class="grid__item u-2/12 action-bar align-right">
+      <div class="grid__item u-3/12 action-bar">
         <button 
           @click="openModal"
-          class="btn-primary">
+          class="btn-primary action-bar__button">
           ADD PROJECT
         </button>
       </div>
@@ -52,8 +52,6 @@
 import Project from './Project';
 import Modal from './Modal';
 import FirebaseService from '../utils/firebase/firebase-service';
-import ProjectService from '../utils/firebase/project-service';
-import { slugify } from '../utils/utils';
 
 export default {
   name: 'ProjectList',
@@ -87,27 +85,6 @@ export default {
 
     save() {
 
-
-      // let ref = firebase.database().ref('sprints/' + this.project.id + "/" + // this.project.activeSprint.id + "/teams");
-      // ref.set(this.project.activeSprint.teams);
-      
-      
-      /*
-      let teamSprint = {};
-      _.forEach(this.criteria, (criterion) => {
-          teamSprint[this.camelize(criterion.label)] = { value: 0 };
-      })
-
-      this.project.teams[slugify(this.camelize(this.newTeam))] = true;
-      // Add team to current sprint:
-      _.forEach(this.project.sprints, (sprint) => {
-          sprint.teams[slugify(this.camelize(this.newTeam))] = teamSprint;
-      });
-      this.newTeam = "";
-      this.$forceUpdate();
-
-      console.log(this.project);
-      */
     }
   }
 }
@@ -115,8 +92,8 @@ export default {
 
 
 <style>
-  .projects-table {
-    
+  .projects-table tr:hover {
+    cursor: pointer;
   }
 
   .projects-table__icon {
@@ -131,5 +108,9 @@ export default {
   .projects-table__edit {
     width: 10%;
     color: var(--health-green);
+  }
+
+  .action-bar__button {
+    float: right;
   }
 </style>

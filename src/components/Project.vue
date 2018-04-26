@@ -52,7 +52,6 @@
 
     .icon--delete {
       color: var(--grey);
-      
     }
 
     .btn-action {

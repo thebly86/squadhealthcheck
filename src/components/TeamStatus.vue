@@ -27,6 +27,7 @@
         height: 20px;
         border-radius: 10px;
         border: solid 1px #ccc;
+        margin: auto;
     }
 
     .status:hover {

@@ -1,212 +1,189 @@
 <template>
     <main class="grid">
       <header class="grid__item u-6/12 header">
-        <h2>{{ project.name }}</h2>
+        <h2>{{ project.name | toUpper }}</h2>
       </header>
       <div class="grid__item u-6/12 action-bar">
-        <ul>
-          
+        <ul class="actions">
+          <li
+            @click="manageTeams" 
+            class="actions__item">
+            <i class="fa fa-user icon--action"/>
+            <span>MANAGE TEAMS</span>
+          </li>
+          <li
+            @click="manageSprints"
+            class="actions__item">
+            <i class="fa fa-bolt icon--action"/>
+            <span>MANAGE SPRINTS</span>
+          </li>
         </ul>
       </div>
-      <table class="grid__item healthcheck-table">
+      <table 
+        v-if="hasSprints"
+        class="grid__item healthcheck-table">
         <colgroup>
-          <col class="healthcheck-table__criteria">
-          <col class="healthcheck-table__team">
+          <col class="healthcheck-table__criteria" span="1">
+          <col class="healthcheck-table__team" span="10">
         </colgroup>
-        <thead>
+        <thead class="text-center">
           <tr>
             <th></th>
             <th
-              v-for="(team, i) in sprints"
+              v-for="(team, i) in project.teams"
               :key="i">
               {{ team }}
             </th>
           </tr>
         </thead>
         <tbody>
-
+          <tr
+            v-for="(criteria, k) in criteria"
+            :key="k"
+            :class="{ 'row--even': k % 2 === 0}"
+            class="row">
+            <td>
+              <i class="fa icon icon--criteria" :class="criteria.icon"/>
+              <span>{{ criteria.label }}</span>
+            </td>
+            <td
+              v-for="(team, t) in currentSprint.teams"
+              :key="t">
+              <TeamStatus 
+                @click.native="changeStatus(team, k)"
+                :status="team[k].value">
+              </TeamStatus>
+            </td>
+          </tr>
         </tbody>
       </table>
-    </main>
-    <!--
-    <section class="project">
-        <header class="project__header">
-            <h2 class="project__title">{{ project.name }}</h2>
-            <div class="project__action-bar pull-right">
-                <div
-                    class="btn-action mr-3">
-                    <i class="fa fa-recycle icon m-0"></i>
-                    <span>MANAGE SPRINTS</span>
-                </div>
-                <div
-                    @click="manageTeams"
-                    class="btn-action">
-                    <i class="fa fa-users icon m-0 mr-1"></i>
-                    <span>MANAGE TEAMS</span>
-                </div>
-            </div>
-            <div>
-                <select class="project__sprints">
-                  <option>Sprint 1</option>
-                  <option>Sprint 2</option>
-                </select>
-            </div>
-        </header>
-        <section 
-            class="data-table container mt-4 mb-3">
-            <div class="data-table__header row p-2">
-                <div class="col-3">CRITERIA</div>
-                <div
-                    v-for="(team, i) in project.activeSprint.teams"
-                    :key="i"
-                    v-html="getTeamName(i)"
-                    class="col text-center">
-                </div>
-            </div>
-            <div
-                v-for="(criterion, key, i) in criteria"
-                :key="i"
-                :class="{'row--even': i % 2 == 0}"
-                class="data-table__content row px-2 py-2">
-                <div class="col-3">
-                    <div class="icon">
-                        <i 
-                        :class="criterion.icon"
-                        class="fa"></i>
-                    </div>
-                    <span>{{criterion.label}}</span>
-                </div>
-                <div
-                    v-for="(team, k) in project.activeSprint.teams"
-                    :key="k"
-                    class="col">
-                    <team-status 
-                        :status="getTeamStatus(team, key)"
-                        @click.native="changeStatus(team, key)"
-                        class="mt-2 mx-auto">
-                    </team-status>
-                </div>
-            </div>
+      <footer
+        v-if="hasSprints"
+        class="grid__item footer">
+        <section class="footer__action-bar">
+          <button
+            :disabled="!hasChanged"
+            @click="save"
+            class="btn-primary">
+            Save
+          </button>
+          <button
+            :disabled="!hasChanged"
+            @click="reset"
+            class="btn-secondary">
+            Reset
+          </button>
         </section>
-        <footer class="project__footer">
-            <div class="pull-right">
-                <button 
-                    @click="save()"
-                    class="button btn-primary">SAVE</button>
-                <button 
-                    @click="reset()"
-                    class="button btn-secondary">RESET</button>
-            </div>
-        </footer>
-        <b-modal 
-            centered
-            @ok="addTeam()"
-            title="Add Team"
-            id="addTeam">
-            <form>
-                <label>Team</label>
-                <input 
-                    id="addTeamInput"
-                    v-model="newTeam"
-                    type="text" 
-                    required/>
-            </form>
-        </b-modal>
-    </section>
-    -->
+      </footer>
+    </main>
 </template>
 
 
 <script>
 import FirebaseService from '../utils/firebase/firebase-service.js';
+import TeamStatus from './TeamStatus';
 
 export default {
     name: 'SquadHealthCheck',
 
     components: {
-        
+      TeamStatus
     },
+
 
     data: () => ({
         criteria: {},
         project: {},
-        sprints: {}
+        sprints: [],
+        hasChanged: false,
     }),
 
-    // TODO: Watch for route params change and update component
 
-    created: function() {
-      // Get the project id from the url
-      let id = this.$route.params.id;
+    computed: {
+      currentSprint: function() {
+        return this.sprints[this.sprints.length -1];
+      },
 
-      if (sessionStorage.getItem(id)) {
-        console.log('SquadHealthCheck using session storage');
-        this.project = JSON.parse(sessionStorage.getItem(id));
+      hasSprints: function() {
+        return this.sprints.length > 0;
       }
-      else {
-        FirebaseService.getProject(id).then((data) => {
-        this.project = data;
-        sessionStorage.setItem(id, JSON.stringify(data));
-      }); 
-      }
-
-      // Load project, criteria and sprint data
-      FirebaseService.getCriteria().then((data) => this.criteria = data);
-      FirebaseService.getSprints().then((data) => this.sprints = data);
     },
 
+
+    created: function() {
+      this.getCriteria();
+      this.getProject();
+      this.getSprints();
+    },
+
+
     methods: {
-      manageTeams() {
-        console.log('test');
-        this.$router.push({ name: 'ManageTeams' });
-      },
-      
-      /*
-      loadCriteriaData() {
-        database.ref('criteria').once('value').then(function(snapshot) {
-          this.criteria = snapshot.val();
-        }.bind(this));
-      },
-      */
-
-      /*
-      getProjectName() {
-          return this.project.name.toUpperCase();
-      }, 
-
-      getTeamName(team) {
-          return team.charAt(0).toUpperCase() + team.slice(1).replace(/([A-Z])/g, ' $1').trim();
+      getCriteria() {
+        FirebaseService.getCriteria().then((data) => this.criteria = data);
       },
 
-      getTeamStatus(team, criteria) {
-          return team[criteria].value;
-      },
-      
+      getProject() {
+        let id = this.$route.params.id;
 
-      changeStatus(team, criteria) {
-          if (team[criteria].value === 3) {
-              team[criteria].value = 1;
-          }
-          else {
-              team[criteria].value++;
-          }
-          this.$forceUpdate()
+        // Load project data from session storage or firebase
+        if (sessionStorage.getItem(id)) {
+          this.project = JSON.parse(sessionStorage.getItem(id));
+        }
+        else {
+          FirebaseService.getProject(id).then((data) => {
+            this.project = data;
+            sessionStorage.setItem(id, JSON.stringify(this.project));
+          }); 
+        }
       },
 
-      save() { 
-          let ref = firebase.database().ref('sprints/' + this.project.id + "/" + this.project.activeSprint.id + "/teams");
-          ref.set(this.project.activeSprint.teams);
+      getSprints() {
+        let id = this.$route.params.id;
+
+        // Loads sprint data from session storage or firebase
+        if (sessionStorage.getItem(`sprints.${id}`)) {
+          this.sprints = JSON.parse(sessionStorage.getItem(`sprints.${id}`));
+        }
+        else {
+          FirebaseService.getSprints(id).then((data) => {
+            this.sprints = !_.isNil(data) ? data : [];
+            sessionStorage.setItem(`sprints.${id}`, JSON.stringify(this.sprints));
+          });
+        }
+      },
+
+    
+      save(data) { 
+        FirebaseService.saveSprint(this.project.id, this.currentSprint);
+        sessionStorage.removeItem(`sprints.${this.project.id}`);
+        this.hasChanged = false;
       },
 
       reset() {
-          firebase.database().ref('sprints/' + this.project.id + "/" + this.project.activeSprint.id).once('value').then((snapshot) => {
-              this.project.activeSprint = snapshot.val();
-          })
-          .then(() => {
-              this.$forceUpdate();
-          });
+        this.getSprints();
+        this.hasChanged = false;
       },
 
+      manageTeams() {
+        
+      },
+
+      manageSprints() {
+
+      },
+
+      changeStatus(team, criteria) {
+        if (team[criteria].value === 3) {
+            team[criteria].value = 1;
+        }
+        else {
+            team[criteria].value++;
+        }
+        this.hasChanged = true;
+      },
+
+
+      /*
       // TODO: Do this nicer
       addTeam() {
         /*
@@ -226,23 +203,21 @@ export default {
           console.log(this.project);
           
       },
-
-      // TODO: Move to utils
-      /*
-      camelize(str) {
-          return str
-              .replace(/\s(.)/g, function($1) { return $1.toUpperCase(); })
-              .replace(/\s/g, '')
-              .replace(/^(.)/, function($1) { return $1.toLowerCase(); });
-      }
       */
     },
 
+
+    filters: {
+      toUpper: (val) => {
+        return val.toUpperCase();
+      }
+    },
+
+
     watch: {
       '$route': function (to, from) {
-        if (sessionStorage.getItem(this.$route.params.id)) {
-          this.project = JSON.parse(sessionStorage.getItem(this.$route.params.id));
-        }
+        this.getProject();
+        this.getSprints();
       }
     }
 }
@@ -250,123 +225,50 @@ export default {
 
 
 <style>
+  .healthcheck-table {
+    color: var(--darker-grey);
+    font-size: 13px;
+    font-weight: 500;
+  }
 
+  .healthcheck-table td {
+    padding: 8px;
+  }
 
+  .healthcheck-table__headings {
+    text-align: center;
+  }
 
+  .healthcheck-table__criteria {
+    width: 20%;
+    padding-left: 20px;
+  }
 
+  .healthcheck-table__team {
+    padding: 10px;
+  }
 
+  .icon--criteria {
+    width: 40px;   
+    padding-left: 10px;
+  }
 
-    /* Tidy in CSS refactor */
+  .actions {
+    display: inline-block;
+    list-style: none;
+    float: right;
+    color: var(--darker-grey);
+    font-weight: 500;
+  }
 
-    /*
-    .project {
-        
-    }
+  .actions__item {
+    cursor: pointer;
+  }
 
-    .project__header {
+  .actions__item:hover {
+    text-decoration: underline;
+  }
 
-    }
-
-    .project__title {
-        display: inline-block;
-        font-size: 2em;
-    }
-
-    .project__action-bar {
-        display: inline-block;
-        font-size: 13px;
-    }
-
-    .project__sprints {
-        width: 200px;
-        color: #999999;
-        outline: none;
-    }
-
-    .action:hover {
-        color: black;
-        cursor: pointer;
-    }
-
-    .project__footer {
-        font-size: 13px;
-        height: 30px;
-    }
-
-    .data-table {
-        font-size: 13px;
-    }
-
-    .data-table__header {
-        border-bottom: solid 1px #CCCCCC;
-    }
-
-    .data-table__content {
-
-    }
-
-    .row--even {
-        background: #f2f2f2;
-    }
-
-    .icon {
-        display: inline-block;
-        width: 20px;
-        color: #999999;
-        margin-right: 0.8em;
-        font-size: 1.5em;
-    }
-    
-    .button {
-        width: 100px;
-        padding: 0.4em;
-        border: none;
-    }
-
-    .button:hover {
-        cursor: pointer;
-    }
-
-    .btn-primary {
-        background-color: #4CC797;
-        border: none;
-        border-radius: 0;
-    }
-
-    .btn-primary:hover {
-        background-color: #46BA8D;
-    }
-
-    .btn-secondary {
-        background-color: #E4E4E4;
-        color: #868686;
-        border: none;
-        border-radius:0;
-    }
-
-    .btn-secondary:hover {
-        background-color: #D5D5D5;
-        color: #868686;
-    }
-
-    .btn-action {
-        display: inline-block;
-        font-size: 14px;
-        color: #999999;
-        background: #FFF;
-        border:none;
-    }
-
-    .btn-action:hover {
-        background: none;
-        color: #868686;
-        text-decoration: underline;
-        cursor: pointer;
-    }
-
-    .btn-action:focus {
-        background: none;
-        border: none;
-    }
-    */
+  .actions__item span {
+  }
 </style>

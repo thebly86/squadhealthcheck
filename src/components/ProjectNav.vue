@@ -54,6 +54,7 @@
         // Clear any associated session data
         if (sessionStorage.getItem(tab.id)) {
           sessionStorage.removeItem(tab.id);
+          sessionStorage.removeItem(`sprints.${tab.id}`)
         }
         
         this.$router.push({ name: 'ProjectList'});

@@ -20,6 +20,9 @@ export default class FirebaseService {
   }
 
 
+  /*
+   * Getting Data
+   */ 
   static getProjects() {
     let database = firebase.database();
     return database.ref('projects').once('value')
@@ -42,5 +45,19 @@ export default class FirebaseService {
     let database = firebase.database();
     return database.ref(`sprints/${project}`).once('value')
       .then((snapshot) => snapshot.val());
+  }
+
+
+  /*
+   * Saving Data
+   */
+  static saveProject(project) {
+    let ref = firebase.database().ref(`projects/${project.id}`);
+    ref.set(project);
+  }
+
+  static saveSprint(projectId, sprint) {
+    let ref = firebase.database().ref(`sprints/${projectId}/${sprint.id}/teams`);
+    ref.set(sprint.teams);
   }
 }

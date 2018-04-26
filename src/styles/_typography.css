@@ -45,7 +45,16 @@ span {
 /* Icons */
 .icon {
   display: inline-block;
-  color: var(--light-grey);
+  color: var(--darker-grey);
+  font-size: 1.5rem;
+}
+
+.icon--action {
+  font-size: 1rem;
+  color: var(--darker-grey);
+}
+
+.icon--table {
   font-size: 1.5rem;
 }
 
@@ -64,4 +73,22 @@ a {
 
 a:visited {
   color: var(--grey);
+}
+
+
+/* Lists */
+ul {
+  list-style: none;
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+li:last-of-type {
+  margin-right: 0;
 }

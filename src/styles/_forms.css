@@ -20,6 +20,12 @@ button {
   outline: none;
 }
 
+button:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
 .btn-primary {
   background-color: var(--btn-primary-color);
   color: var(--light);
@@ -31,9 +37,10 @@ button {
 
 .btn-secondary {
   background-color: var(--btn-secondary-color);
-  color: var(--dark-grey);
+  color: var(--darker-grey);
 }
 
 .btn-secondary:hover {
   background-color: #ccc;
+  color: var(--dark-grey);
 }
