@@ -1,26 +1,28 @@
 <template>
     <main class="grid">
-      <header class="grid__item u-9/12 header">
-        <h2>MANAGE PROJECTS</h2>
+      <header class="grid__item header">
+        <div class="grid">
+          <div class="grid__item u-9/12">
+            <h2>MANAGE PROJECTS</h2>
+          </div>
+          <div class="grid__item u-3/12 action-bar--project-list">
+            <button 
+              @click="showModal = true"
+              class="btn-primary action-bar__button">
+              ADD PROJECT
+            </button>
+          </div>
+        </div>
       </header>
-      <div class="grid__item u-3/12 action-bar">
-        <button 
-          @click="openModal"
-          class="btn-primary action-bar__button">
-          ADD PROJECT
-        </button>
-      </div>
       <table class="grid__item projects-table">
         <colgroup>
           <col class="projects-table__icon">
           <col class="projects-table__name">
-          <col class="projects-table__edit">
         </colgroup>
         <thead>
           <tr>
             <th></th>
             <th>PROJECT</th>
-            <th></th><th></th>
           </tr>
         </thead>
         <tbody>
@@ -32,17 +34,19 @@
           </project>
         </tbody>
       </table>
-
-      <!-- Add project modal --> 
+      
+      <!-- Add Project modal -->
       <Modal
-        ref="addProjectModal"
-        id="addProject"
-        name="Add Project"
-        :showModal="showModal">
-        <form>
-          <label for="projectTitle">Project title</label>
-          <input id="projectTitle" name="projectTitle" type="text"></input>
-        </form>
+        v-if="showModal"
+        title="Add Project"
+        v-bind:actions="actions"
+        @close="showModal = false">
+        <div slot="body">
+          <form>
+            <label>Project name</label>
+            <input type="text" name="text"/>
+          </form>
+        </div>
       </Modal>
     </main>
 </template>
@@ -61,30 +65,36 @@ export default {
     Modal
   },
 
-
   data: () => ({
     projects: {},
     newProject: "",
-    showModal: true
+    showModal: false
   }),
-
 
   created() {
     FirebaseService.getProjects().then((data) => this.projects = data);
   },
 
+  computed: {
+    actions: function() {
+      return [
+        {
+          name: 'Save',
+          class: 'btn-primary',
+          action: this.save
+        }, 
+        {
+          name: 'Cancel',
+          class: 'btn-secondary',
+          action: () => this.showModal = false
+        }
+      ]
+    }
+  },
 
   methods: {
-    openModal() {
-      
-    },
-
-    closeModal() {
-      
-    },
-
     save() {
-
+      console.log('you saved');
     }
   }
 }
@@ -102,12 +112,7 @@ export default {
   }
 
   .projects-table__name {
-    width: 80%;
-  }
-
-  .projects-table__edit {
-    width: 10%;
-    color: var(--health-green);
+    width: 90%;
   }
 
   .action-bar__button {

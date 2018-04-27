@@ -4,7 +4,7 @@ import ManageSprints from '@/components/ManageSprints'
 import ManageTeams from '@/components/ManageTeams'
 import ManageTeamHealth from '@/components/ManageTeamHealth'
 import ProjectList from '@/components/ProjectList'
-import SquadHealthCheck from '@/components/SquadHealthCheck'
+import ProjectView from '@/components/ProjectView'
 
 Vue.use(Router)
 
@@ -19,15 +19,24 @@ export default new Router({
     },
     {
       path: '/project/:id',
-      name: 'SquadHealthCheck',
-      component: SquadHealthCheck,
+      name: 'ProjectView',
+      component: ProjectView,
       children: [
         {
-          path: '/teams',
+          path: 'health',
+          name: 'ManageTeamHealth',
+          linkExactActiveClass: 'project__link--active',
+          component: ManageTeamHealth
+        },
+        {
+          path: 'teams',
           name: 'ManageTeams',
-          components: {
-            default: ManageTeams
-          }
+          component: ManageTeams
+        },
+        {
+          path: 'sprints',
+          name: 'ManageSprints',
+          component: ManageSprints
         }
       ]
     }

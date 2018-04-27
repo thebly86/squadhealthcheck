@@ -60,4 +60,11 @@ export default class FirebaseService {
     let ref = firebase.database().ref(`sprints/${projectId}/${sprint.id}/teams`);
     ref.set(sprint.teams);
   }
+
+  static addTeam(project, team) {
+    console.log('add team');
+    let teamKey = _.camelCase(team);
+    let ref = firebase.database().ref(`projects/${project.id}/teams/${teamKey}`);
+    ref.set(team)
+  }
 }

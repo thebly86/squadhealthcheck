@@ -46,10 +46,11 @@ main {
 /* */
 .header {
   padding: 20px;
+  border-bottom: 5px solid #f2f2f2;
 }
 
 .footer {
-  padding: 10px;
+  padding: 0px 20px 10px 10px ;
 }
 
 .action-bar {
@@ -68,22 +69,19 @@ main {
 table {
   border-spacing: 0;
   border-collapse: collapse;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--darker-grey);
 }
 
 thead tr:hover {
   background-color: var(--light);
 }
 
-tbody {
-
-}
-
 th {
   padding-bottom: 5px;
   font-weight: 600;
-  color: var(--darker-grey);
 }
-
 
 tr {
   border-bottom: 1px solid #e5e5e5;

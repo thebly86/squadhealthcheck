@@ -5,7 +5,7 @@ label {
 
 input {
   padding: 5px;
-  width: 95%;
+  width: 97%;
   outline: none;
 }
 
@@ -26,9 +26,14 @@ button:disabled {
   opacity: 0.5;
 }
 
+button:last-of-type {
+  margin-right: 0;  
+}
+
 .btn-primary {
   background-color: var(--btn-primary-color);
   color: var(--light);
+  margin-right: 5px;
 }
 
 .btn-primary:hover {
@@ -37,10 +42,22 @@ button:disabled {
 
 .btn-secondary {
   background-color: var(--btn-secondary-color);
-  color: var(--darker-grey);
+  color: var(--dark-grey);
+  opacity: 0.7;
 }
 
 .btn-secondary:hover {
   background-color: #ccc;
   color: var(--dark-grey);
+  opacity: 0.8;
+}
+
+.btn--danger {
+  background-color: var(--danger);
+  color: var(--light);
+  opacity: 0.7;
+}
+
+.btn--danger:hover {
+  opacity: 0.8;
 }

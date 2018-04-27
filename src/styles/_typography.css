@@ -46,7 +46,7 @@ span {
 .icon {
   display: inline-block;
   color: var(--darker-grey);
-  font-size: 1.5rem;
+  font-size: 1.3rem;
 }
 
 .icon--action {
@@ -56,6 +56,27 @@ span {
 
 .icon--table {
   font-size: 1.5rem;
+}
+
+.icon--edit {
+  color: var(--dark-grey);
+  opacity: 0.7;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.icon--delete {
+  color: var(--danger);
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+.icon--edit, .icon--delete {
+  font-size: 1.1rem;
+}
+
+.icon--edit:hover, .icon--delete:hover {
+  opacity: 0.8;
 }
 
 .app-logo {

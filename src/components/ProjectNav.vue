@@ -13,7 +13,7 @@
         :key="i"
         class="tab">
         <router-link 
-          :to="{ name: 'SquadHealthCheck', params: { id: tab.id }}"
+          :to="{ name: 'ManageTeamHealth', params: { id: tab.id }}"
           class="tab__link">
           {{ tab.name | uppercase }}
         </router-link>
@@ -54,7 +54,7 @@
         // Clear any associated session data
         if (sessionStorage.getItem(tab.id)) {
           sessionStorage.removeItem(tab.id);
-          sessionStorage.removeItem(`sprints.${tab.id}`)
+          sessionStorage.removeItem(`${tab.id}.sprints`);
         }
         
         this.$router.push({ name: 'ProjectList'});

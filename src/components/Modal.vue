@@ -1,28 +1,27 @@
 <template>
-  <div
-    id=":id"
-    :class="{'visible': show}"
-    class="modal">
+  <div class="modal">
     <div class="modal-content">
       <header class="modal__header">
-        <h3 class="modal__title">{{name}}</h3>
+        <h3 class="modal__title">Add Project</h3>
         <span 
-          @click="closeModal"
+          @click="close"
           class="btn-close">
           &times;
         </span>
+        <slot name="header"></slot>
       </header>
-      <main class="modal__main">
-        <slot/>
+      <main class="modal__body">
+        <slot name="body"></slot>
       </main>
       <footer class="modal__footer">
         <div class="modal__buttons">
-          <button 
-            @click.native="$emit('save')"
-            class="btn-primary">SAVE</button>
-          <button 
-            @click="$emit('closeModal')"
-            class="btn-secondary">CANCEL</button>
+          <button
+            v-for="(action, i) in actions"
+            :key="i"
+            :class="action.class"
+            @click="action.action">
+            {{ action.name }}
+          </button>
         </div>
       </footer>
     </div>
@@ -35,29 +34,23 @@
     name: 'Modal',
 
     props: {
-      id: String,
-      name: String,
-      showModal: false
+      showModal: true,
+      title: String,
+      actions: Array
     },
 
-    data: () => ({
-      show: this.showModal
-    }),
-
     methods: {
-      closeModal() {
-        this.show = false;
+      close() {
+        this.$emit('close');
       }
     }
-
-    
   }
 </script>
 
 
 <style>
-  .modal {
-  display: none;
+.modal {
+  display: block;
   position: fixed;
   z-index: 1;
   padding-top: 100px;
@@ -76,9 +69,9 @@
 }
 
 .btn-close {
-  color: var(--light);
+  color: var(--darker-grey);
   float: right;
-  font-size: 28px;
+  font-size: 24px;
   font-weight: bold;
   margin: 3px 10px;
 }
@@ -95,11 +88,10 @@
 }
 
 .modal__header {
-  color: var(--light);
-  background-color: var(--health-green);
+  color: var(--health-green);
 }
 
-.modal__main {
+.modal__body {
   padding: 20px 10px;
 }
 

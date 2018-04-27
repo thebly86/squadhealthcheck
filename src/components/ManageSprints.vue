@@ -1,15 +1,23 @@
 <template>
   <main class="grid">
-    <header class="grid__item u-6/12 header">
-        <h2>MANAGE SPRINTS</h2>
-      </header>
   </main>
 </template>
 
 
 <script>
   export default {
-    name: 'ManageSprints'
+    name: 'ManageSprints',
+
+    data: () => ({
+      title: "Manage Sprints"
+    }),
+
+    props: {
+      project: {
+        type: Object,
+        required: true
+      }
+    }
   }
 </script>
 

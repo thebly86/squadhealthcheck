@@ -12,25 +12,6 @@
         </project-nav>
       </header>
       <router-view @openTab="openTab"></router-view>
-      <!--
-      <tab-group ref="tabGroup">
-        <tab name="My Projects">
-          <project-list 
-            :projects="projects"
-            @projectSelected="setSelectedProject">
-          </project-list>
-        </tab>
-        <tab 
-          v-if="getSelectedProject()"
-          :name="getSelectedProject().name"
-          ref="projectTab">
-          <squad-health-check
-            :project="selectedProject"
-            :criteria="criteria">
-          </squad-health-check>
-        </tab>
-      </tab-group>
-      -->
     </div>
   </div>
 </template>
@@ -60,7 +41,7 @@ export default {
     openTab(project) {
       if (!_.find(this.projects, { id: project.id })) {
         this.projects.push(project); 
-        this.$router.push({ name: 'SquadHealthCheck', params: { id: project.id}});
+        this.$router.push({ name: 'ProjectView', params: { id: project.id}});
       }
     }
   }
