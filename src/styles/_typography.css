@@ -113,3 +113,25 @@ li {
 li:last-of-type {
   margin-right: 0;
 }
+
+
+/* Data */
+.no-data {
+  text-align: center;
+  background: var(--lightest-grey);
+}
+
+.no-data:last-of-type {
+}
+
+.no-data__link {
+  color: var(--health-green);
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.no-data__link:visited {
+  color: var(--health-green);
+  background-color: var(--lightest-grey);
+}

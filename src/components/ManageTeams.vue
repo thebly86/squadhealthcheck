@@ -41,9 +41,7 @@
       :actions="actions"
       @close="showModal = false">
       <div slot="body">
-        <form 
-          ref="addTeamForm"
-          @submit.prevent="save">
+        <form @submit.prevent="save">
           <label for="teamName">Team name</label>
           <input type="text" name="teamName" v-model.trim="newTeam"/>
         </form>
@@ -55,7 +53,7 @@
 
 <script>
   import FirebaseService from '../utils/firebase/firebase-service.js';
-  import Modal from "./Modal";
+  import Modal from './Modal';
   import Team from "./Team";
 
   export default {
@@ -102,7 +100,7 @@
 
     methods: {
       save() {
-        FirebaseService.addTeam(this.project, this.newTeam)
+        FirebaseService.saveTeam(this.project, this.newTeam)
         this.$emit('teamAdded', this.newTeam);
         this.showModal = false;
         this.newTeam = "";

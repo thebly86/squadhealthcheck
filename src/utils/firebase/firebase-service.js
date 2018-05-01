@@ -23,48 +23,81 @@ export default class FirebaseService {
   /*
    * Getting Data
    */ 
+  static _get(url) {
+    const ref = firebase.database().ref(url);
+    return new Promise(function(resolve, reject) {
+      const data = ref.once('value');
+      !_.isNil(data) ? resolve(data) : reject(Error('Unable to load data.'));
+    });
+  }
+
   static getProjects() {
-    let database = firebase.database();
-    return database.ref('projects').once('value')
-      .then((snapshot) => snapshot.val());
+    return this._get('projects').then((snapshot) => snapshot.val());
   }
 
   static getProject(id) {
-    let database = firebase.database();
-    return database.ref(`projects/${id}`).once('value')
-      .then((snapshot) => snapshot.val());
+    if (sessionStorage.getItem(id)) {
+      return JSON.parse(sessionStorage.getItem(id));
+    } 
+    return this._get(`projects/${id}`).then((snapshot) => snapshot.val());
   }
 
   static getCriteria() {
-    let database = firebase.database();
-    return database.ref('criteria').once('value')
-      .then((snapshot) => snapshot.val());
+    return this._get('criteria').then((snapshot) => snapshot.val());
   }
 
   static getSprints(project) {
-    let database = firebase.database();
-    return database.ref(`sprints/${project}`).once('value')
-      .then((snapshot) => snapshot.val());
+    if (sessionStorage.getItem(`${project}.sprints`)) {
+      return JSON.parse(sessionStorage.getItem(`${project}.sprints`));
+    }
+    return this._get(`sprints/${project}`).then((snapshot) => snapshot.val());
   }
 
 
   /*
    * Saving Data
    */
-  static saveProject(project) {
-    let ref = firebase.database().ref(`projects/${project.id}`);
-    ref.set(project);
+  static _save(url, data) {
+    const ref = firebase.database().ref(url);
+    ref.set(data);
   }
 
+
   static saveSprint(projectId, sprint) {
-    let ref = firebase.database().ref(`sprints/${projectId}/${sprint.id}/teams`);
+    const ref = firebase.database().ref(`sprints/${projectId}/${sprint.id}/teams`);
     ref.set(sprint.teams);
   }
 
-  static addTeam(project, team) {
-    console.log('add team');
-    let teamKey = _.camelCase(team);
-    let ref = firebase.database().ref(`projects/${project.id}/teams/${teamKey}`);
-    ref.set(team)
+  static createTeam(project, team) {
+    /*
+    const teamKey = _.camelCase(team);
+    const ref = firebase.database().ref(`projects/${project.id}/teams/${teamKey}`);
+    ref.set(team);
+    console.log('saved team');
+    */
   }
+
+  static createProject(project) {
+    if (_.isObject(project)) {
+      this._save(`projects/${project.id}`, project);
+    }
+  }
+
+
+  /**
+   * Deleting Data
+   */
+  static _delete(url) {
+    const ref = firebase.database().ref(url);
+    ref.remove();
+  }
+
+  static deleteProject(project) {
+    this._delete(`projects/${project.id}`);
+  }
+
+
+  /**
+   * Session 
+   */
 }

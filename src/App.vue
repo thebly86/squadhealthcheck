@@ -7,11 +7,14 @@
         </div>
         <h1>Squad Health Check</h1>
         <project-nav 
-          ref="tabs" 
-          :tabs="projects">
+          @closeTab="closeTab"
+          :tabs="tabs">
         </project-nav>
       </header>
-      <router-view @openTab="openTab"></router-view>
+      <router-view 
+        @closeTab="closeTab"
+        @openTab="openTab">
+      </router-view>
     </div>
   </div>
 </template>
@@ -26,11 +29,16 @@ export default {
   name: 'App',
 
   data: () => ({
-    projects: []
+    tabs: []
   }),
 
   created() {
     FirebaseService.initialiseDatabase();
+
+    // Open previously opened tabs:
+    if (sessionStorage.getItem('tabs')) {
+      this.tabs = JSON.parse(sessionStorage.getItem('tabs'));
+    }
   },
 
   components: {
@@ -38,11 +46,28 @@ export default {
   },
 
   methods: {
-    openTab(project) {
-      if (!_.find(this.projects, { id: project.id })) {
-        this.projects.push(project); 
-        this.$router.push({ name: 'ProjectView', params: { id: project.id}});
+    closeTab(tab) {
+      // Remove tab from list of open tabs
+      const index = _.findIndex(this.tabs, { id: tab.id });
+      if (index > -1) {
+        this.tabs.splice(index, 1);
       }
+
+      // Clear any associated session data
+      if (sessionStorage.getItem(tab.id)) {
+        sessionStorage.removeItem(tab.id);
+        sessionStorage.removeItem(`${tab.id}.sprints`);
+      }
+      sessionStorage.setItem('tabs', JSON.stringify(this.tabs));
+      this.$router.push({ name: 'ProjectList'});
+    },
+
+    openTab(tab) {
+      if (!_.find(this.tabs, { id: tab.id })) {
+        this.tabs.push(tab); 
+        sessionStorage.setItem('tabs', JSON.stringify(this.tabs));
+      }
+      this.$router.push({ name: 'ProjectView', params: { id: tab.id}});
     }
   }
 }

@@ -14,7 +14,21 @@
           </div>
         </div>
       </header>
-      <table class="grid__item projects-table">
+      <section 
+        v-if="!hasProjects"
+        class="grid__item no-data no-data--projects">
+        <p>
+          <a
+            @click="showModal = true"
+            class="no-data__link">
+            Add a project
+          </a>
+          to get started.
+        </p>
+      </section>
+      <table 
+        v-if="hasProjects"
+        class="grid__item projects-table">
         <colgroup>
           <col class="projects-table__icon">
           <col class="projects-table__name">
@@ -42,9 +56,9 @@
         v-bind:actions="actions"
         @close="showModal = false">
         <div slot="body">
-          <form>
+          <form submit.prevent="save">
             <label>Project name</label>
-            <input type="text" name="text"/>
+            <input type="text" name="text" v-model.trim="newProject"/>
           </form>
         </div>
       </Modal>
@@ -72,7 +86,9 @@ export default {
   }),
 
   created() {
-    FirebaseService.getProjects().then((data) => this.projects = data);
+    FirebaseService.getProjects().then((data) => {
+      this.projects = !_.isNil(data) ? data : {};
+    });
   },
 
   computed: {
@@ -89,12 +105,30 @@ export default {
           action: () => this.showModal = false
         }
       ]
+    },
+
+    hasProjects: function() {
+      return !_.isEmpty(this.projects);
     }
   },
 
   methods: {
     save() {
-      console.log('you saved');
+      const project = {
+        id: _.camelCase(this.newProject),
+        name: this.newProject
+      };
+      FirebaseService.createProject(project);
+
+      // If this is first project to be added, reload:
+      if (_.isEmpty(this.projects)) {
+        location.reload();
+      }
+      else {
+        this.projects[project.id] = project;
+        this.showModal = false;
+        this.newProject = "";
+      }
     }
   }
 }
@@ -108,7 +142,6 @@ export default {
 
   .projects-table__icon {
     width: 10%;
-    padding-left: 10px;
   }
 
   .projects-table__name {

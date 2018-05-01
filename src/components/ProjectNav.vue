@@ -18,7 +18,7 @@
           {{ tab.name | uppercase }}
         </router-link>
         <div 
-          @click="closeTab(tab)"
+          @click="$emit('closeTab', tab);"
           class="tab__icon hidden">
           <i class="fa fa-times"/>
         </div>
@@ -36,28 +36,6 @@
       tabs: {
         type: Array,
         required: true
-      }
-    },
-
-    methods: {
-      /**  
-       * Removes the tabs and redirect to project list
-       * TODO: Prompt to save data if not done so
-       */
-      closeTab(tab) {
-        // Remove tab from list of open tabs
-        let index = this.tabs.indexOf(tab);
-        if (index > -1) {
-          this.tabs.splice(index, 1);
-        }
-
-        // Clear any associated session data
-        if (sessionStorage.getItem(tab.id)) {
-          sessionStorage.removeItem(tab.id);
-          sessionStorage.removeItem(`${tab.id}.sprints`);
-        }
-        
-        this.$router.push({ name: 'ProjectList'});
       }
     },
     

@@ -59,5 +59,6 @@ button:last-of-type {
 }
 
 .btn--danger:hover {
+  background-color: var(--danger);
   opacity: 0.8;
 }

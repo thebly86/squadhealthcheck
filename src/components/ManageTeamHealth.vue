@@ -87,7 +87,6 @@ export default {
 
   data: () => ({
     criteria: {},
-    sprints: [],
     hasChanged: false,
     showModal: false
   }),
@@ -97,6 +96,10 @@ export default {
     project: {
       type: Object,
       required: true
+    },
+    sprints: {
+      type: Array,
+      requires: true
     }
   },
 
@@ -114,32 +117,11 @@ export default {
 
   created: function() {
     this.getCriteria();
-    this.getSprints();
-    console.log('create');
-  },
-
-  beforeMount: function() {
-    this.$emit('updateSubtitle');
   },
 
   methods: {
     getCriteria() {
       FirebaseService.getCriteria().then((data) => this.criteria = data);
-    },
-
-    getSprints() {
-      let id = this.$route.params.id;
-
-      // Loads sprint data from session storage or firebase
-      if (sessionStorage.getItem(`${id}.sprints`)) {
-        this.sprints = JSON.parse(sessionStorage.getItem(`${id}.sprints`));
-      }
-      else {
-        FirebaseService.getSprints(id).then((data) => {
-          this.sprints = !_.isNil(data) ? data : [];
-          sessionStorage.setItem(`${id}.sprints`, JSON.stringify(this.sprints));
-        });
-      }
     },
 
     save(data) { 
@@ -149,7 +131,7 @@ export default {
     },
 
     reset() {
-      this.getSprints();
+      this.$emit('reset');
       this.hasChanged = false;
     },
 
@@ -162,15 +144,7 @@ export default {
       }
       this.hasChanged = true;
     },
-  },
-
-
-  watch: {
-    '$route': function (to, from) {
-      console.log('ManageTeamHealth');
-      this.getSprints();
-    }
-  },
+  }
 }
 </script>
 
@@ -204,7 +178,4 @@ export default {
     padding-left: 10px;
   }
 
-  .no-data--sprints {
-    margin-bottom: 10px;
-  }
 </style>

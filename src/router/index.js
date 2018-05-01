@@ -20,12 +20,14 @@ export default new Router({
     {
       path: '/project/:id',
       name: 'ProjectView',
-      component: ProjectView,
+      components: {
+        default: ProjectView,
+        manageTeams: ManageTeams
+      },
       children: [
         {
           path: 'health',
           name: 'ManageTeamHealth',
-          linkExactActiveClass: 'project__link--active',
           component: ManageTeamHealth
         },
         {

@@ -2,7 +2,7 @@
   <div class="modal">
     <div class="modal-content">
       <header class="modal__header">
-        <h3 class="modal__title">Add Project</h3>
+        <h3 class="modal__title">{{ title }}</h3>
         <span 
           @click="close"
           class="btn-close">
@@ -89,6 +89,7 @@
 
 .modal__header {
   color: var(--health-green);
+  border-bottom: 1px solid var(--light-grey);
 }
 
 .modal__body {

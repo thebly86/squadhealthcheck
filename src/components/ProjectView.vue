@@ -33,7 +33,9 @@
             <button class="btn-secondary">
               Edit
             </button>
-            <button class="btn--danger">
+            <button
+              @click="showDeleteModal = true" 
+              class="btn--danger">
               Delete
             </button>
           </div>
@@ -54,29 +56,69 @@
       </p>
     </section>
 
+    <Modal
+      v-if="showDeleteModal"
+      title="Delete Project"
+      v-bind:actions="deleteActions"
+      @close="showDeleteModal = false">
+      <div slot="body">
+        <p>
+          Are you sure you want to delete this project? <br/><br/>
+          <b>All team and sprint data will be lost permanently.</b>
+        </p>
+      </div>
+    </Modal>
+
     <router-view 
+      @reset="reset"
       @teamAdded="updateTeams"
       :project="project" 
+      :sprints="sprints"
       class="grid__item"></router-view>
+    <router-view class="BINGO" name="manageTeams"></router-view>
+    <router-view name="manageSprints"></router-view>
   </main>
 </template>
 
 
 <script>
 import FirebaseService from '../utils/firebase/firebase-service.js';
+import Modal from './Modal';
 
 export default {
   name: 'ProjectView',
 
+  components: {
+    Modal
+  },
+
   data: () => ({
     project: {},
-    subtitle: "Squad Health"
+    sprints: [],
+    showDeleteModal: false,
+    showEditModal: false
   }),
+
+  computed: {
+    deleteActions: function() {
+      return [
+        {
+          name: 'Delete',
+          class: 'btn-primary btn--danger',
+          action: this.deleteProject
+        }, 
+        {
+          name: 'Cancel',
+          class: 'btn-secondary',
+          action: () => this.showDeleteModal = false
+        }
+      ]
+    }
+  },
 
 
   created() {
-    this.getProject();
-    console.log(sessionStorage);
+    this.loadData();
   },
 
   beforeMount() {
@@ -85,19 +127,31 @@ export default {
 
 
   methods: {
-    getProject() {
-      let id = this.$route.params.id;
+    deleteProject() {
+      FirebaseService.deleteProject(this.project);
+      this.$emit('closeTab', this.project);
+    },
 
-      // Load project data from session storage or firebase
-      if (sessionStorage.getItem(id)) {
-        this.project = JSON.parse(sessionStorage.getItem(id));
-      }
-      else {
-        FirebaseService.getProject(id).then((data) => {
-          this.project = data;
+    loadData() {
+      Promise.all([this.getProject(), this.getSprints()])
+        .then((results) => {
+          const [project, sprints] = results;
+          this.project = project;
+          this.sprints = !_.isNil(sprints) ? sprints : [];
           this.updateSession();
-        }); 
-      }
+      });
+    },
+
+    getProject() {
+      return FirebaseService.getProject(this.$route.params.id);
+    },
+
+    getSprints() {
+      return FirebaseService.getSprints(this.$route.params.id);
+    },
+
+    reset() {
+      this.sprints = sessionStorage.getItem(`${this.project.id}.sprints`);
     },
 
     updateTeams(team) {
@@ -111,16 +165,15 @@ export default {
     },
 
     updateSession() {
-      console.log('set project');
       sessionStorage.setItem(`${this.project.id}`, JSON.stringify(this.project));
-      console.log('updateSession', sessionStorage);
+      sessionStorage.setItem(`${this.project.id}.sprints`, JSON.stringify(this.sprints));
     }
   },
 
 
   watch: {
     '$route': function (to, from) {
-      this.getProject();
+      this.loadData();
     }
   }
 }
@@ -161,23 +214,6 @@ export default {
 
   .action-bar--project {
     float: right;
-  }
-
-  .no-data {
-    text-align: center;
-    background: var(--lightest-grey);
-  }
-
-  .no-data__link {
-    color: var(--health-green);
-    font-weight: 600;
-    text-decoration: underline;
-    cursor: pointer;
-  }
-
-  .no-data__link:visited {
-    color: var(--health-green);
-    background-color: var(--lightest-grey);
   }
 
   .tab__link--active span {
