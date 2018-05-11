@@ -23,7 +23,6 @@
     </table>
 
     <footer 
-      v-if="project.teams"
       class="grid__item footer">
       <section class="footer__action-bar">
         <button 
@@ -73,6 +72,14 @@
       project: {
         type: Object,
         required: true
+      },
+      sprints: {
+        type: Array,
+        required: true
+      },
+      criteria: {
+        type: Object,
+        required: true
       }
     },
 
@@ -100,8 +107,12 @@
 
     methods: {
       save() {
-        FirebaseService.saveTeam(this.project, this.newTeam)
-        this.$emit('teamAdded', this.newTeam);
+        FirebaseService.createTeam(this.project, this.newTeam).then((data) => {
+          this.$emit('teamAdded', this.newTeam);
+          if (this.sprints.length <= 0) {
+            this.$emit('createSprint');
+          }
+        });
         this.showModal = false;
         this.newTeam = "";
       }
@@ -111,10 +122,8 @@
 
 
 <style>
-
-
   .teams-table th {
-    padding: 0px 20px;
+    padding: 0px 20px 5px 20px;
   }
 
   .teams-table td {

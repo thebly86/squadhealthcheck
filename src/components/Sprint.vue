@@ -4,18 +4,20 @@
       <span>Sprint {{ sprint.id }}</span>
     </td>
     <td>
-      <span>{{ sprint.startDate }}</span>
+      <span>21-01-2018</span>
     </td>
     <td>
-      <span>{{ sprint.endDate }}</span>
+      <span>09-02-2018</span>
     </td>
-    <td class="sprint-actions">
-      <a class="btn-action">
-        <i class="icon icon--edit fa fa-edit"></i>
-      </a>
-      <a class="btn-action">
-        <i class="icon icon--delete fa fa-trash"></i>
-      </a>
+    <td>
+      <div class="sprint-actions">
+        <a class="btn-action">
+          <i class="icon icon--edit fa fa-edit"></i>
+        </a>
+        <a class="btn-action">
+          <i class="icon icon--delete fa fa-trash"></i>
+        </a>
+      </div>
     </td>
   </tr>
 </template>
@@ -30,6 +32,10 @@
         type: Object,
         required: true
       }
+    },
+
+    created() {
+
     }
   }
 </script>
@@ -37,6 +43,6 @@
 
 <style>
 .sprint-actions {
-  padding: 3px;
+  float: right;
 }
 </style>

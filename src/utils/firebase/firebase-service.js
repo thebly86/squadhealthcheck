@@ -59,7 +59,7 @@ export default class FirebaseService {
    */
   static _save(url, data) {
     const ref = firebase.database().ref(url);
-    ref.set(data);
+    return ref.set(data);
   }
 
 
@@ -68,13 +68,13 @@ export default class FirebaseService {
     ref.set(sprint.teams);
   }
 
+  static createSprint(project, ) {
+    return this._save();
+  }
+
   static createTeam(project, team) {
-    /*
     const teamKey = _.camelCase(team);
-    const ref = firebase.database().ref(`projects/${project.id}/teams/${teamKey}`);
-    ref.set(team);
-    console.log('saved team');
-    */
+    return this._save(`projects/${project.id}/teams/${teamKey}`, team);
   }
 
   static createProject(project) {

@@ -1,11 +1,12 @@
 <template>
   <main class="grid">
     <table
-      v-if="sprints"
+      v-if="project.teams"
       class="grid__item sprints-table">
       <colgroup>
         <col class="sprints-table__sprint">
         <col class="sprints-table__dates" span="2">
+        <col class="sprint-table__actions">
       </colgroup>
       <thead>
         <tr>
@@ -26,7 +27,7 @@
     </table>
 
     <footer
-      v-if="sprints"
+      v-if="project.teams"
       class="grid__item footer">
       <section class="footer__action-bar">
         <button
@@ -46,7 +47,10 @@
         <form
           ref="addSprintForm"
           @submit="save">
-
+          <label for="startDate">Start date</label>
+          <input type="date" name="startDate" id="startDate"/>
+          <label for="startDate">End date</label>
+          <input type="date" name="startDate" id="endDate"/>
         </form>
       </div>
     </Modal>
@@ -69,7 +73,11 @@
 
     data: () => ({
       title: "Manage Sprints",
-      newSprint: {},
+      newSprint: {
+        id: -1,
+        startDate: "",
+        endDate: ""
+      },
       showModal: false
     }),
 
@@ -109,7 +117,9 @@
 
     methods: {
       save() {
-        console.log('Save sprint');
+        this.newSprint.id = this.sprints.length;
+        this.newSprint.startDate = document.getElementById('startDate').val;
+        console.log('Save sprint', this.newSprint);
       }
     }
   }
@@ -117,5 +127,23 @@
 
 
 <style>
+  .sprints-table th {
+    padding: 0px 20px 5px 20px;
+  }
 
+  .sprints-table td {
+    padding: 10px 20px;
+  }
+
+  .sprints-table__sprint {
+    width: 25%;
+  }
+
+  .sprints-table__dates {
+    width: 25%;
+  }
+
+  .sprints-table__actions {
+    width: 50%;
+  }
 </style>

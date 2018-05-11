@@ -1,17 +1,5 @@
 <template>
 <main class="grid">
-  <section 
-    v-if="!hasSprints"
-    class="grid__item no-data no-data--sprints">
-    <p>
-      <router-link 
-        :to="{ name: 'ManageSprints', params: { showModal: true }}"
-        class="no-data__link">
-        Add a sprint
-      </router-link>
-      to get started.
-    </p>
-  </section>
   <table 
     v-if="hasSprints"
     class="grid__item healthcheck-table">
@@ -86,7 +74,6 @@ export default {
 
 
   data: () => ({
-    criteria: {},
     hasChanged: false,
     showModal: false
   }),
@@ -99,7 +86,11 @@ export default {
     },
     sprints: {
       type: Array,
-      requires: true
+      required: true
+    },
+    criteria: {
+      type: Object,
+      required: true
     }
   },
 
@@ -114,16 +105,7 @@ export default {
     }
   },
 
-
-  created: function() {
-    this.getCriteria();
-  },
-
   methods: {
-    getCriteria() {
-      FirebaseService.getCriteria().then((data) => this.criteria = data);
-    },
-
     save(data) { 
       FirebaseService.saveSprint(this.project.id, this.currentSprint);
       sessionStorage.removeItem(`${this.project.id}.sprints`);

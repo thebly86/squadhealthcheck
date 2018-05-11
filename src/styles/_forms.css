@@ -1,6 +1,6 @@
 label {
   display: block;
-  margin-bottom: 5px;
+  margin: 5px 0px;
 }
 
 input {
@@ -60,5 +60,14 @@ button:last-of-type {
 
 .btn--danger:hover {
   background-color: var(--danger);
+  opacity: 0.8;
+}
+
+.selectable {
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.selectable:hover {
   opacity: 0.8;
 }

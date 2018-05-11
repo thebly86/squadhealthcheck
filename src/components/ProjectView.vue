@@ -1,47 +1,8 @@
 <template>
   <main class="grid">
-    <header class="grid__item header">
-      <div class="grid">
-        <div class="grid__item u-8/12">
-          <h2 class="project-title">{{ project.name }}</h2>
-          <ul class="actions">
-            <router-link 
-              to="health" 
-              tag="li" 
-              class="actions__item">
-              <i class="fa fa-heartbeat icon--action"/>
-              <span>TEAM HEALTH</span>
-            </router-link>
-            <router-link 
-              to="teams" 
-              tag="li" 
-              class="actions__item">
-              <i class="fa fa-user icon--action"/>
-              <span>TEAMS</span>
-            </router-link>
-            <router-link 
-              to="sprints" 
-              tag="li" 
-              class="actions__item">
-              <i class="fa fa-bolt icon--action"/>
-              <span>SPRINTS</span>
-            </router-link>
-          </ul>
-        </div>
-        <div class="grid__item u-4/12">
-          <div class="action-bar--project">
-            <button class="btn-secondary">
-              Edit
-            </button>
-            <button
-              @click="showDeleteModal = true" 
-              class="btn--danger">
-              Delete
-            </button>
-          </div>
-        </div>
-      </div>
-    </header>
+    <ProjectHeader
+      :project="project">
+    </ProjectHeader>
 
     <section 
       v-if="!project.teams"
@@ -61,17 +22,34 @@
       title="Delete Project"
       v-bind:actions="deleteActions"
       @close="showDeleteModal = false">
+      <div slot="header" class="text--danger">
+
+      </div>
       <div slot="body">
-        <p>
+        <p class="text-center">
           Are you sure you want to delete this project? <br/><br/>
           <b>All team and sprint data will be lost permanently.</b>
         </p>
       </div>
     </Modal>
 
+    <Modal
+      v-if="showEditModal"
+      title="Edit Project"
+      v-bind:actions="editActions"
+      @close="showEditModal = false">
+      <div slot="body">
+        <form>
+
+        </form>
+      </div>
+    </Modal>
+
     <router-view 
       @reset="reset"
       @teamAdded="updateTeams"
+      @createSprint="addSprint"
+      :criteria="criteria"
       :project="project" 
       :sprints="sprints"
       class="grid__item"></router-view>
@@ -84,15 +62,18 @@
 <script>
 import FirebaseService from '../utils/firebase/firebase-service.js';
 import Modal from './Modal';
+import ProjectHeader from './ProjectHeader';
 
 export default {
   name: 'ProjectView',
 
   components: {
-    Modal
+    Modal,
+    ProjectHeader
   },
 
   data: () => ({
+    criteria: {},
     project: {},
     sprints: [],
     showDeleteModal: false,
@@ -113,16 +94,37 @@ export default {
           action: () => this.showDeleteModal = false
         }
       ]
+    },
+
+    editActions: function() {
+      return [
+        {
+          name: 'Save', 
+          class: 'btn-primary',
+          action: this.editProject
+        },
+        {
+          name: 'Cancel',
+          class: 'btn-secondary',
+          action: this.showEditModal = false
+        }
+      ]
     }
   },
 
 
   created() {
     this.loadData();
+    this.getCriteria();
   },
 
   beforeMount() {
     this.$router.push({ name: 'ManageTeamHealth' });
+  },
+
+  mounted() {
+    this.$el.addEventListener("deleteProject", () => this.deleteProject());
+    this.$el.addEventListener("editProject", () => this.editProject());
   },
 
 
@@ -130,6 +132,29 @@ export default {
     deleteProject() {
       FirebaseService.deleteProject(this.project);
       this.$emit('closeTab', this.project);
+    },
+
+    editProject() {
+      console.log('edit project');
+    },
+
+    addSprint() {
+      const sprint = { teams: [] };
+      console.log('project', this.project);
+      _.forEach(this.project.teams, (team) => {
+        console.log('team', team);
+        _.forEach(this.criteria, (criterion) => {
+          sprint.teams[team][criterion] = {
+            value: 0
+          }
+        });
+      });
+
+      console.log('sprint', sprint);
+
+      //FirebaseService.createSprint();
+      
+      console.log('addSprint', this.project);
     },
 
     loadData() {
@@ -142,6 +167,10 @@ export default {
       });
     },
 
+    getCriteria() {
+      FirebaseService.getCriteria().then((data) => this.criteria = data);
+    },
+
     getProject() {
       return FirebaseService.getProject(this.$route.params.id);
     },
@@ -151,7 +180,7 @@ export default {
     },
 
     reset() {
-      this.sprints = sessionStorage.getItem(`${this.project.id}.sprints`);
+      this.sprints = JSON.parse(sessionStorage.getItem(`${this.project.id}.sprints`));
     },
 
     updateTeams(team) {
@@ -181,52 +210,5 @@ export default {
 
 
 <style>
-  .subtitle {
-    font-weight: 500;
-    font-style: italic;
-    margin: 0;
-    color: var(--darker-grey);
-  }
 
-  .actions {
-    display: inline-block;
-    list-style: none;
-    color: var(--darker-grey);
-    font-weight: 500;
-  }
-
-  .actions__item {
-    cursor: pointer;
-    text-decoration: underline;
-  }
-
-  .secondary__actions {
-
-  }
-
-  li.actions__item .tab__link--active {
-    color: var(--health-green);
-  } 
-
-  .actions__item span:hover {
-    text-decoration: underline;
-  }
-
-  .action-bar--project {
-    float: right;
-  }
-
-  .tab__link--active span {
-    color: var(--health-green);
-    text-decoration: underline;
-  }
-
-  .tab__link--active .icon--action {
-    color: var(--health-green);
-  }
-
-  .project-title {
-    display: inline-block;
-    margin-right: 40px;
-  }
 </style>
