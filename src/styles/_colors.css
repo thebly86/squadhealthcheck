@@ -1,0 +1,36 @@
+:root {
+  /* Base colours */
+  --dark-grey: #333333;
+  --darker-grey: #999999;
+  --grey: #cccccc;
+  --light-grey: #e5e5e5;
+  --lighter-grey: #f2f2f2;
+  --lightest-grey: #f9f9f9;
+  --light: #FFFFFF;
+  --lighter-health-green: #96e8d0;
+  --health-green: #2DC798;
+  --darker-health-green: #29bc90;
+  --danger: #cc0000;
+  --status-green: #00CC6D;
+  --status-amber: #FECA4D;
+  --status-red: #FF2821;
+
+  /* Backround */
+
+  /* Buttons */
+  --btn-primary-color: var(--health-green);
+  --btn-secondary-color: var(--light-grey);
+
+  /* Links */
+  --link-inactive-color: var(--grey);
+
+  /* Headers */
+  --heading-primary-color: var(--dark-grey);
+  --heading-secondary-color: var(--health-green);
+
+  /* Tables */
+  --table-heading-color: var(--grey);
+  --table-data-color: var(--dark-grey);
+
+  /* Text */
+}

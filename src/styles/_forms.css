@@ -1,0 +1,73 @@
+label {
+  display: block;
+  margin: 5px 0px;
+}
+
+input {
+  padding: 5px;
+  width: 97%;
+  outline: none;
+}
+
+
+button {
+  border: none;
+  padding: 10px 20px;
+  min-width: 100px;
+  font-size: 12px;
+  font-weight: bolder;
+  cursor: pointer;
+  outline: none;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+button:last-of-type {
+  margin-right: 0;  
+}
+
+.btn-primary {
+  background-color: var(--btn-primary-color);
+  color: var(--light);
+  margin-right: 5px;
+}
+
+.btn-primary:hover {
+  background-color: var(--darker-health-green);
+}
+
+.btn-secondary {
+  background-color: var(--btn-secondary-color);
+  color: var(--dark-grey);
+  opacity: 0.7;
+}
+
+.btn-secondary:hover {
+  background-color: #ccc;
+  color: var(--dark-grey);
+  opacity: 0.8;
+}
+
+.btn--danger {
+  background-color: var(--danger);
+  color: var(--light);
+  opacity: 0.7;
+}
+
+.btn--danger:hover {
+  background-color: var(--danger);
+  opacity: 0.8;
+}
+
+.selectable {
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.selectable:hover {
+  opacity: 0.8;
+}

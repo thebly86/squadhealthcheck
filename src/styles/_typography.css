@@ -1,0 +1,141 @@
+/* Headers */
+h1 {
+  font-size: 30px;
+  font-weight: lighter;
+  color: var(--dark-grey);
+  display: inline-block;
+}
+
+h2 {
+  font-size: 24px;
+  color: var(--health-green);
+  margin: 0;
+}
+
+h3 {
+  display: inline-block;
+  font-size: 18px;
+}
+
+
+/* Text */
+p {
+  font-size: 14px;
+}
+
+span {
+   font-size: 14px;
+}
+
+.text--danger {
+  color: var(--danger);
+}
+
+
+/* Text - alignment */
+.text-left { 
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-center {
+  text-align: center; 
+}
+
+
+/* Icons */
+.icon {
+  display: inline-block;
+  color: var(--darker-grey);
+  font-size: 1.3rem;
+}
+
+.icon--action {
+  font-size: 1rem;
+  color: var(--darker-grey);
+}
+
+.icon--table {
+  font-size: 1.5rem;
+}
+
+.icon--edit {
+  color: var(--dark-grey);
+  opacity: 0.7;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.icon--delete {
+  color: var(--danger);
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+.icon--edit, .icon--delete {
+  font-size: 1.1rem;
+}
+
+.icon--edit:hover, .icon--delete:hover {
+  opacity: 0.8;
+}
+
+.app-logo {
+  font-size: 30px;
+  color: var(--health-green);
+  display: inline-block;
+  margin-right: 0.25rem;
+}
+
+
+/* Links */
+a {
+  text-decoration: none;
+}
+
+a:visited {
+  color: var(--grey);
+}
+
+
+/* Lists */
+ul {
+  list-style: none;
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+li:last-of-type {
+  margin-right: 0;
+}
+
+
+/* Data */
+.no-data {
+  text-align: center;
+  background: var(--lightest-grey);
+}
+
+.no-data:last-of-type {
+}
+
+.no-data__link {
+  color: var(--health-green);
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.no-data__link:visited {
+  color: var(--health-green);
+  background-color: var(--lightest-grey);
+}
