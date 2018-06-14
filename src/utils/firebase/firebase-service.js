@@ -7,12 +7,12 @@ export default class FirebaseService {
    */
   static initialiseDatabase() {
     const config = {
-      apiKey: "AIzaSyCaB22KDhV98fl6xyFHe5QSE6SAcYX5MZQ",
-      authDomain: "squad-health-check-c6d92.firebaseapp.com",
-      databaseURL: "https://squad-health-check-c6d92.firebaseio.com",
-      projectId: "squad-health-check-c6d92",
-      storageBucket: "squad-health-check-c6d92.appspot.com",
-      messagingSenderId: "229194561034"
+      apiKey: "AIzaSyBQ9Eo9cpSCRld4vpzjmV1XrgcDiWCE3Hc",
+      authDomain: "team-health-check-9141c.firebaseapp.com",
+      databaseURL: "https://team-health-check-9141c.firebaseio.com/",
+      projectId: "team-health-check-9141c",
+      storageBucket: "team-health-check-9141c.appspot.com",
+      messagingSenderId: "60524480289"
     };
 
     if (!firebase.apps.length) 
