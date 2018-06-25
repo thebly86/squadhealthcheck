@@ -42,7 +42,7 @@
       <div slot="body">
         <form @submit.prevent="save">
           <label for="teamName">Team name</label>
-          <input type="text" name="teamName" v-model.trim="newTeam"/>
+          <input type="text" name="teamName" v-model.trim="newTeamName"/>
         </form>
       </div>
     </Modal>
@@ -54,6 +54,7 @@
   import FirebaseService from '../utils/firebase/firebase-service.js';
   import Modal from './Modal';
   import Team from "./Team";
+  import store from '../store/'
 
   export default {
     name: 'ManageTeams',
@@ -65,16 +66,12 @@
 
     data: () => ({
       showModal: false,
-      newTeam: ""
+      newTeamName: ""
     }),
 
     props: {
       project: {
         type: Object,
-        required: true
-      },
-      sprints: {
-        type: Array,
         required: true
       }
     },
@@ -103,14 +100,21 @@
 
     methods: {
       save() {
-        FirebaseService.createTeam(this.project, this.newTeam).then((data) => {
-          this.$emit('teamAdded', this.newTeam);
-          if (this.sprints.length <= 0) {
-            this.$emit('createSprint');
-          }
+        const newTeam = {
+          id: _.camelCase(this.newTeamName),
+          name: this.newTeamName
+        };
+        FirebaseService.createTeam(this.project, newTeam).then((data) => {
+          this.$emit('teamAdded', this.newTeamName);
         });
+
+        store.commit('addTeamToProject', {
+          project: this.project,
+          team: newTeam
+        });
+
         this.showModal = false;
-        this.newTeam = "";
+        this.newTeamName = "";
       }
     }
   }

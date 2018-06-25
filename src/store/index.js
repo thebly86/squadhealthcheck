@@ -10,56 +10,40 @@ export default new Vuex.Store({
     projects: []
   },
   mutations: {
-    addProject(state, project) {
-      state.available_projects[project.id] = project
-      state.projects[project.id] = project
-      state.projects[project.id].sprints = []
+    addProject(state, payload) {
+      // state.available_projects[payload.project.id] = payload.project
+      state.projects[payload.project.id] = payload.project
+      state.projects[payload.project.id].sprints = []
     },
     removeProject(state, project) {
       _.unset(state.available_projects, `${project.id}`);
       _.unset(state.projects, `${project.id}`);
     },
-    addTeamToProject(state, {project, team}) {
-      state.projects[project.id].teams[team.id] = team;
+    addTeamToProject(state, payload) {
+      state.projects[payload.project.id].teams[payload.team.id] = payload.team;
     },
-    addTeamToSprint(state, {project, sprintId, team}) {
-      state.projects[project.id].sprints.forEach(sprint => {
-        if(sprint.id === sprintId) {
-          sprint.teams.push(team)
+    addTeamToSprint(state, payload) {
+      state.projects[payload.project.id].sprints.forEach(sprint => {
+        if(sprint.id === payload.sprintId) {
+          sprint.teams.push(payload.team)
         }
       });
     },
-    removeTeamFromProject(state, { project, teamId }) {
-      state.projects[project.id].teams =
-        _.remove(state.projects[project.id].teams, team => team.id === teamId);
+    removeTeamFromProject(state, payload) {
+      state.projects[payload.project.id].teams =
+        _.remove(state.projects[payload.project.id].teams, team => team.id === payload.teamId);
     },
-    addSprint(state, {project, sprint}) {
-      state.projects[project.id].sprints.push(sprint)
+    addSprint(state, payload) {
+      state.projects[payload.project.id].sprints.push(payload.sprint)
     },
-    removeSprintFromProject(state, {project, sprintId}) {
-      state.projects[project.id].sprints =
-        _.remove(state.projects[project.id].sprints, sprint => sprint.id === sprintId);
+    removeSprintFromProject(state, payload) {
+      state.projects[payload.project.id].sprints =
+        _.remove(state.projects[payload.project.id].sprints, sprint => sprint.id === payload.sprintId);
     },
     initialiseProjects(state) {
       FirebaseService.getProjects()
         .then((result) => state.projects = result)
-    },
-    initialiseAvailableProjects(state) {
-      FirebaseService.getAvailableProjects()
-        .then((result) => state.availableProjects = result)
     }
-    // ,
-    // updateTeamCriteriaValue(state, { teamId, projectId, key, value } = {}) {
-    //   _.forEach(state.projects, (project) => {
-    //     if(project.id === projectId) {
-    //       _.forEach(project.sprints[project.sprints.length - 1].teams, (team) => {
-    //         if(team.id === teamId) {
-    //           team.criteria_values[key] = value
-    //         }
-    //       })
-    //     }
-    //   })
-    // }
   },
   getters: {
     getProject: (state) => (projectId) => {

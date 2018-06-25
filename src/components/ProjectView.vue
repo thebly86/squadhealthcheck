@@ -1,6 +1,9 @@
 <template>
-  <main class="grid">
+  <main
+    v-if="project"
+    class="grid">
     <ProjectHeader
+      v-if="project"
       :project="project">
     </ProjectHeader>
 
@@ -50,9 +53,10 @@
       @createSprint="addSprint"
       :criteria="criteria"
       :project="project"
-      :sprints="project.sprints"
       class="grid__item"></router-view>
-    <router-view class="BINGO" name="manageTeams"></router-view>
+    <router-view
+      :project="project"
+      class="BINGO" name="manageTeams"></router-view>
     <router-view name="manageSprints"></router-view>
   </main>
 </template>

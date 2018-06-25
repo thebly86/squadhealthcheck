@@ -36,7 +36,6 @@
     created() {
       FirebaseService.initialiseDatabase();
       this.$store.commit('initialiseProjects');
-      this.$store.commit('initialiseAvailableProjects');
 
       // Open previously opened tabs:
       if (sessionStorage.getItem('tabs')) {

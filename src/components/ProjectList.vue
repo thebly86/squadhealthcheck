@@ -118,9 +118,12 @@ export default {
     save() {
       const project = {
         id: _.camelCase(this.newProject),
-        name: this.newProject
+        name: this.newProject,
+        sprints: {},
+        teams: {}
       };
       FirebaseService.createProject(project);
+      store.commit('addProject', { project })
 
       // If this is first project to be added, reload:
       if (_.isEmpty(this.projects)) {

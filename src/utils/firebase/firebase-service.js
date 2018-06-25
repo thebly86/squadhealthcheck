@@ -80,8 +80,7 @@ export default class FirebaseService {
   }
 
   static createTeam(project, team) {
-    const teamKey = _.camelCase(team);
-    return this._save(`projects/${project.id}/teams/${teamKey}`, team);
+    return this._save(`projects/${project.id}/teams/${team.id}`, team);
   }
 
   static createProject(project) {

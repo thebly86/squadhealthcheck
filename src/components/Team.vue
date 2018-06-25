@@ -21,7 +21,7 @@
 
     props: {
       team: {
-        type: String,
+        type: Object,
         required: true
       }
     }
