@@ -15,8 +15,9 @@ export default class FirebaseService {
       messagingSenderId: "60524480289"
     };
 
-    if (!firebase.apps.length) 
+    if (!firebase.apps.length) {
       firebase.initializeApp(config);
+    }
   }
 
 
@@ -29,6 +30,10 @@ export default class FirebaseService {
       const data = ref.once('value');
       !_.isNil(data) ? resolve(data) : reject(Error('Unable to load data.'));
     });
+  }
+
+  static getAvailableProjects() {
+    return this._get('available_projects').then((snapshot) => snapshot.val());
   }
 
   static getProjects() {
@@ -63,8 +68,10 @@ export default class FirebaseService {
   }
 
 
-  static saveSprint(projectId, sprint) {
-    const ref = firebase.database().ref(`sprints/${projectId}/${sprint.id}/teams`);
+  static saveSprint(projectId, sprint, sprintNumber) {
+    const url = `projects/${projectId}/sprints/${sprintNumber}/teams`;
+    console.log('[URL]', url);
+    const ref = firebase.database().ref(`projects/${projectId}/sprints/${sprintNumber}/teams`);
     ref.set(sprint.teams);
   }
 

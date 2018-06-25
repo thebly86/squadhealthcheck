@@ -13,7 +13,7 @@
         <th
           v-for="(team, i) in project.teams"
           :key="i">
-          {{ team }}
+          {{ team.name }}
         </th>
       </tr>
     </thead>
@@ -21,7 +21,7 @@
       <tr
         v-for="(criteria, k) in criteria"
         :key="k"
-        :class="{ 'row--even': k % 2 === 0}"
+        :class="{ 'row--even': k % 2 === 0 }"
         class="row">
         <td>
           <i class="fa icon icon--criteria" :class="criteria.icon"/>
@@ -32,7 +32,7 @@
           :key="t">
           <TeamStatus 
             @click.native="changeStatus(team, k)"
-            :status="team[k].value">
+            :status="team.criteria_values[k]">
           </TeamStatus>
         </td>
       </tr>
@@ -64,6 +64,7 @@
 <script>
 import FirebaseService from '../utils/firebase/firebase-service.js';
 import TeamStatus from './TeamStatus';
+  import store from '../store/'
 
 export default {
   name: 'ManageTeamHealth',
@@ -89,7 +90,7 @@ export default {
       required: true
     },
     criteria: {
-      type: Object,
+      type: Array,
       required: true
     }
   },
@@ -97,17 +98,17 @@ export default {
 
   computed: {
     currentSprint: function() {
-      return this.sprints[this.sprints.length -1];
+      return this.project.sprints[this.sprints.length -1];
     },
 
     hasSprints: function() {
-      return this.sprints.length > 0;
+      return this.project.sprints.length > 0;
     }
   },
 
   methods: {
-    save(data) { 
-      FirebaseService.saveSprint(this.project.id, this.currentSprint);
+    save(data) {
+      FirebaseService.saveSprint(this.project.id, this.currentSprint, this.sprints.length -1);
       sessionStorage.removeItem(`${this.project.id}.sprints`);
       this.hasChanged = false;
     },
@@ -117,12 +118,22 @@ export default {
       this.hasChanged = false;
     },
 
-    changeStatus(team, criteria) {
-      if (team[criteria].value === 3) {
-          team[criteria].value = 1;
+    changeStatus(team, key) {
+      // const value = team.criteria_values[key] === 3 ? 
+      //   1 : team.criteria_values[key] + 1;
+      // store.commit('updateTeamCriteriaValue', {
+      //   projectId: this.project.id,
+      //   teamId: team.id,
+      //   key,
+      //   value
+      // });
+
+      this.hasChanged = false;
+      if (team.criteria_values[key] === 3) {
+          team.criteria_values[key] = 1;
       }
       else {
-          team[criteria].value++;
+          team.criteria_values[key]++;
       }
       this.hasChanged = true;
     },

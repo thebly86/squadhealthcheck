@@ -76,10 +76,6 @@
       sprints: {
         type: Array,
         required: true
-      },
-      criteria: {
-        type: Object,
-        required: true
       }
     },
 

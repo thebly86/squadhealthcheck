@@ -1,7 +1,7 @@
 <template>
   <tr>
     <td>
-      <span class="team-name">{{ team }}</span>
+      <span class="team-name">{{ team.name }}</span>
     </td>
     <td class="team-actions">
       <a class="btn-action">

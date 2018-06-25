@@ -9,17 +9,14 @@
         </div>
 </template>
 
-
 <script>
     export default {
         name: 'TeamStatus',
-
         props: {
             status: Number
         }
     }
 </script>
-
 
 <style>
     .status {
