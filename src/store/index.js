@@ -6,18 +6,15 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    availableProjects: {},
     projects: []
   },
   mutations: {
     addProject(state, payload) {
-      // state.available_projects[payload.project.id] = payload.project
       state.projects[payload.project.id] = payload.project
       state.projects[payload.project.id].sprints = []
     },
-    removeProject(state, project) {
-      _.unset(state.available_projects, `${project.id}`);
-      _.unset(state.projects, `${project.id}`);
+    removeProject(state, payload) {
+      _.unset(state.projects, `${payload.project.id}`);
     },
     addTeamToProject(state, payload) {
       state.projects[payload.project.id].teams[payload.team.id] = payload.team;
