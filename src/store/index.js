@@ -17,7 +17,7 @@ export default new Vuex.Store({
       _.unset(state.projects, `${payload.project.id}`);
     },
     addTeamToProject(state, payload) {
-      state.projects[payload.project.id].teams[payload.team.id] = payload.team;
+      Vue.set(state.projects[payload.project.id].teams, [payload.team.id], payload.team)
     },
     addTeamToSprint(state, payload) {
       state.projects[payload.project.id].sprints.forEach(sprint => {
@@ -26,9 +26,8 @@ export default new Vuex.Store({
         }
       });
     },
-    removeTeamFromProject(state, payload) {
-      state.projects[payload.project.id].teams =
-        _.remove(state.projects[payload.project.id].teams, team => team.id === payload.teamId);
+    removeTeamFromProject({ projects }, { teamId, projectId }) {
+      Vue.delete(projects[projectId].teams, teamId)
     },
     addSprint(state, payload) {
       state.projects[payload.project.id].sprints.push(payload.sprint)

@@ -104,9 +104,7 @@
           id: _.camelCase(this.newTeamName),
           name: this.newTeamName
         };
-        FirebaseService.createTeam(this.project, newTeam).then((data) => {
-          this.$emit('teamAdded', this.newTeamName);
-        });
+        FirebaseService.createTeam(this.project, newTeam);
 
         store.commit('addTeamToProject', {
           project: this.project,

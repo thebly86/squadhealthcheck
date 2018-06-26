@@ -7,7 +7,9 @@
       <a class="btn-action">
         <i class="icon icon--edit fa fa-edit"></i>
       </a>
-      <a class="btn-action">
+      <a
+        @click="deleteTeam"
+        class="btn-action">
         <i class="icon icon--delete fa fa-trash"></i>
       </a>
     </td>
@@ -16,6 +18,9 @@
 
 
 <script>
+  import store from '../store/index.js'
+  import FirebaseService from '../utils/firebase/firebase-service.js';
+
   export default {
     name: 'Team',
 
@@ -23,6 +28,17 @@
       team: {
         type: Object,
         required: true
+      }
+    },
+    methods: {
+      deleteTeam() {
+        const projectId = this.$route.params.id;
+        
+        FirebaseService.removeTeam(projectId, this.team.id);
+        store.commit('removeTeamFromProject', {
+          projectId: projectId,
+          teamId: this.team.id
+        });
       }
     }
   }
