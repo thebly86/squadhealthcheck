@@ -15,8 +15,9 @@ export default class FirebaseService {
       messagingSenderId: "60524480289"
     };
 
-    if (!firebase.apps.length) 
+    if (!firebase.apps.length) {
       firebase.initializeApp(config);
+    }
   }
 
 
@@ -29,6 +30,10 @@ export default class FirebaseService {
       const data = ref.once('value');
       !_.isNil(data) ? resolve(data) : reject(Error('Unable to load data.'));
     });
+  }
+
+  static getAvailableProjects() {
+    return this._get('available_projects').then((snapshot) => snapshot.val());
   }
 
   static getProjects() {
@@ -62,9 +67,20 @@ export default class FirebaseService {
     return ref.set(data);
   }
 
+  static _remove(url) {
+    const ref = firebase.database().ref(url);
+    return ref.remove();
+  }
 
-  static saveSprint(projectId, sprint) {
-    const ref = firebase.database().ref(`sprints/${projectId}/${sprint.id}/teams`);
+  static removeTeam(projectId, teamId) {
+    const url = `projects/${projectId}/teams/${teamId}`;
+    return this._remove(url);
+  }
+
+  static saveSprint(projectId, sprint, sprintNumber) {
+    const url = `projects/${projectId}/sprints/${sprintNumber}/teams`;
+    console.log('[URL]', url);
+    const ref = firebase.database().ref(`projects/${projectId}/sprints/${sprintNumber}/teams`);
     ref.set(sprint.teams);
   }
 
@@ -73,8 +89,7 @@ export default class FirebaseService {
   }
 
   static createTeam(project, team) {
-    const teamKey = _.camelCase(team);
-    return this._save(`projects/${project.id}/teams/${teamKey}`, team);
+    return this._save(`projects/${project.id}/teams/${team.id}`, team);
   }
 
   static createProject(project) {

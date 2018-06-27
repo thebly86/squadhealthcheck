@@ -70,29 +70,28 @@
 import Project from './Project';
 import Modal from './Modal';
 import FirebaseService from '../utils/firebase/firebase-service';
+import store from '../store/'
+import { SSL_OP_NETSCAPE_CHALLENGE_BUG } from 'constants';
 
 export default {
   name: 'ProjectList',
-
+  
   components: {
     Project,
     Modal
   },
 
   data: () => ({
-    projects: {},
     newProject: "",
     showModal: false
   }),
 
   created() {
-    FirebaseService.getProjects().then((data) => {
-      this.projects = !_.isNil(data) ? data : {};
-    });
+    
   },
 
   computed: {
-    actions: function() {
+    actions() {
       return [
         {
           name: 'Save',
@@ -107,8 +106,11 @@ export default {
       ]
     },
 
-    hasProjects: function() {
+    hasProjects() {
       return !_.isEmpty(this.projects);
+    },
+    projects() {
+      return store.state.projects
     }
   },
 
@@ -116,9 +118,12 @@ export default {
     save() {
       const project = {
         id: _.camelCase(this.newProject),
-        name: this.newProject
+        name: this.newProject,
+        sprints: {},
+        teams: {}
       };
       FirebaseService.createProject(project);
+      store.commit('addProject', { project })
 
       // If this is first project to be added, reload:
       if (_.isEmpty(this.projects)) {
