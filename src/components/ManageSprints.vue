@@ -25,7 +25,7 @@
         </Sprint>
         <tr>
           <td>
-            <span><input type="text" name="sprintName" id="sprintName" placeholder="Enter Sprint Name" v-model.trim="newSprint.name"/></span>
+            <span><input type="number" name="sprintName" id="sprintName" placeholder="Sprint number" v-model.trim="newSprint.name"/></span>
           </td>
           <td>
             <span><input type="date" name="startDate" id="startDate" v-model.trim="newSprint.startDate"/></span>

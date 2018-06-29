@@ -93,7 +93,8 @@
       <div slot="body">
         <p class="text-center">
           Are you sure you want to delete this team? <br/><br/>
-          <b>The team will be deleted permanently.</b>
+          <b v-if="!sprint">The team will be deleted permanently.</b>
+          <b v-if="sprint">The team will be deleted from this sprint permanently..</b>
         </p>
       </div>
     </Modal>
