@@ -107,7 +107,7 @@
         FirebaseService.createTeam(this.project, newTeam);
 
         store.commit('addTeamToProject', {
-          project: this.project,
+          projectId: this.project.id,
           team: newTeam
         });
 

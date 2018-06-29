@@ -77,15 +77,22 @@ export default class FirebaseService {
     return this._remove(url);
   }
 
+  static removeTeamFromSprint(projectId, sprintId, teamId) {
+    const url = `projects/${projectId}/sprints/${sprintId}/teams/${teamId}`;
+    return this._remove(url);
+  }
+
   static saveSprint(projectId, sprint, sprintNumber) {
-    const url = `projects/${projectId}/sprints/${sprintNumber}/teams`;
-    console.log('[URL]', url);
     const ref = firebase.database().ref(`projects/${projectId}/sprints/${sprintNumber}/teams`);
     ref.set(sprint.teams);
   }
 
-  static createSprint(project, ) {
-    return this._save();
+  static createSprint(projectId, sprint) {
+    return this._save(`projects/${projectId}/sprints/${sprint.id}`, sprint);
+  }
+
+  static addTeamToSprint(projectId, sprintId, team) {
+    return this._save(`projects/${projectId}/sprints/${sprintId}/teams/${team.id}`, team);
   }
 
   static createTeam(project, team) {

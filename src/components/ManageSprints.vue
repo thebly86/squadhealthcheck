@@ -1,7 +1,7 @@
 <template>
   <main class="grid">
     <table
-      v-if="project.teams"
+      v-if="project"
       class="grid__item sprints-table">
       <colgroup>
         <col class="sprints-table__sprint">
@@ -18,48 +18,47 @@
       </thead>
       <tbody>
         <Sprint
-          v-for="(sprint, s) in sprints"
+          v-for="(sprint, s) in project.sprints"
           :key="s"
-          :sprint="sprint">
-          
+          :sprint="sprint"
+          :project="project">
         </Sprint>
+        <tr>
+          <td>
+            <span><input type="text" name="sprintName" id="sprintName" placeholder="Enter Sprint Name" v-model.trim="newSprint.name"/></span>
+          </td>
+          <td>
+            <span><input type="date" name="startDate" id="startDate" v-model.trim="newSprint.startDate"/></span>
+          </td>
+          <td>
+            <span><input type="date" name="startDate" id="endDate" v-model.trim="newSprint.endDate"/></span>
+          </td>
+          <td>
+            <div class="sprint-actions">
+              <a
+                @click="this.save"
+                class="btn-action">
+                <i class="icon icon--plus fa fa-plus"></i>
+              </a>
+            </div>
+          </td>
+        </tr>
       </tbody>
     </table>
 
     <footer
-      v-if="project.teams"
+      v-if="project"
       class="grid__item footer">
       <section class="footer__action-bar">
-        <button
-          @click="showModal = true"
-          class="btn-primary action-bar__button">
-          ADD SPRINT
-        </button>
       </section>
     </footer>
-
-    <Modal
-      v-if="showModal"
-      title="Add Sprint"
-      :actions="actions"
-      @close="showModal = false">
-      <div slot="body">
-        <form
-          ref="addSprintForm"
-          @submit="save">
-          <label for="startDate">Start date</label>
-          <input type="date" name="startDate" id="startDate"/>
-          <label for="startDate">End date</label>
-          <input type="date" name="startDate" id="endDate"/>
-        </form>
-      </div>
-    </Modal>
   </main>
 </template>
 
 
 <script>
   import FirebaseService from '../utils/firebase/firebase-service.js';
+  import store from '../store/'
   import Modal from './Modal';
   import Sprint from './Sprint';
 
@@ -74,7 +73,7 @@
     data: () => ({
       title: "Manage Sprints",
       newSprint: {
-        id: -1,
+        name: "",
         startDate: "",
         endDate: ""
       },
@@ -84,10 +83,6 @@
     props: {
       project: {
         type: Object,
-        required: true
-      },
-      sprints: {
-        type: Array,
         required: true
       }
     },
@@ -117,9 +112,17 @@
 
     methods: {
       save() {
-        this.newSprint.id = this.sprints.length;
-        this.newSprint.startDate = document.getElementById('startDate').val;
-        console.log('Save sprint', this.newSprint);
+        this.newSprint.id = _.camelCase(this.newSprint.name);
+
+        FirebaseService.createSprint(this.project.id, this.newSprint);
+
+        store.commit('addSprint', {
+          projectId: this.project.id,
+          sprint: this.newSprint
+        });
+
+        this.showModal = false;
+        this.newSprint = {name: "", startDate: "", endDate: ""};
       }
     }
   }
@@ -145,5 +148,13 @@
 
   .sprints-table__actions {
     width: 50%;
+  }
+
+  .icon--plus {
+    color: var(--health-green)
+  }
+
+  .icon--plus:hover {
+    cursor: pointer;
   }
 </style>

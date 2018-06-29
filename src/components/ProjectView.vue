@@ -10,8 +10,8 @@
     <section 
       v-if="!project.teams"
       class="grid__item no-data">
-      <p>
-        <router-link 
+      <p v-if="!project.teams && !project.sprints">
+        <router-link
           :to="{ name: 'ManageTeams', params: { showModal: true }}"
           class="no-data__link">
           Add a team

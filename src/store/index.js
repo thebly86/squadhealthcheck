@@ -9,33 +9,45 @@ export default new Vuex.Store({
     projects: []
   },
   mutations: {
-    addProject(state, payload) {
-      state.projects[payload.project.id] = payload.project
-      state.projects[payload.project.id].sprints = []
+    addProject({ projects }, { project }) {
+      Vue.set(projects, project.id, project);
     },
-    removeProject(state, payload) {
-      _.unset(state.projects, `${payload.project.id}`);
+
+    removeProject({ projects }, { project }) {
+      Vue.delete(projects, project.id)
     },
-    addTeamToProject(state, payload) {
-      Vue.set(state.projects[payload.project.id].teams, [payload.team.id], payload.team)
+
+    addTeamToProject({ projects }, { projectId, team }) {
+      Vue.set(projects[projectId].teams, [team.id], team)
     },
-    addTeamToSprint(state, payload) {
-      state.projects[payload.project.id].sprints.forEach(sprint => {
-        if(sprint.id === payload.sprintId) {
-          sprint.teams.push(payload.team)
-        }
-      });
+
+    addTeamToSprint({ projects }, { projectId, sprintId, team }) {
+      if(!projects[projectId].sprints[sprintId].teams) {
+        Vue.set(projects[projectId].sprints[sprintId], 'teams', {})
+      }
+      Vue.set(projects[projectId].sprints[sprintId].teams, team.id, team)
     },
+
     removeTeamFromProject({ projects }, { teamId, projectId }) {
       Vue.delete(projects[projectId].teams, teamId)
     },
-    addSprint(state, payload) {
-      state.projects[payload.project.id].sprints.push(payload.sprint)
+    
+    removeTeamFromSprint({ projects }, { projectId, sprintId, teamId }) {
+      Vue.delete(projects[projectId].sprints[sprintId].teams, teamId)
     },
-    removeSprintFromProject(state, payload) {
-      state.projects[payload.project.id].sprints =
-        _.remove(state.projects[payload.project.id].sprints, sprint => sprint.id === payload.sprintId);
+
+    addSprint({ projects }, { projectId, sprint}) {
+      if(!projects[projectId].sprints) {
+        Vue.set(projects[projectId], sprints, {})
+      }
+      Vue.set(projects[projectId].sprints, sprint.id, sprint)
+      
     },
+
+    removeSprintFromProject({ projects }, { projectId, sprintId }) {
+      Vue.delete(projects[projectId].sprints, [sprintId])
+    },
+
     initialiseProjects(state) {
       FirebaseService.getProjects()
         .then((result) => state.projects = result)
