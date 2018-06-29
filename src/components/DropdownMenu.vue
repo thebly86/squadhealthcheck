@@ -1,52 +1,88 @@
-<template>
-  <div class="dropdown">
-    <slot 
-      @mouseovers="show = true"
-      @mouseleave="show = false"
-      name="dropdown-label"/>
-    <ul 
-      v-if="show"
-      class="dropdown-list">
-      <li 
-        v-for="(item, i) in items"
-        :key="i"
-        @click="item.action">
-        {{ item.name }}
-      </li>
-    </ul>
-  </div>
-</template>
-
-
 <script>
+  import DropdownMenuButton from './DropdownMenuButton';
+
+  import { mixin as clickaway } from 'vue-clickaway';
+
   export default {
     name: 'DropdownMenu',
 
-    data: () => ({
-      show: true
-    }),
+    // Composition
+    mixins: [ clickaway ],
 
+    // Interface
     props: {
-      items: {
-        type: Array
+      title: {
+        type: String,
+        required: true
       }
     },
 
-    created() {
-      console.log('test');
-    },
+    // Local state 
+    data: () => ({
+      showItems: false
+    }),
 
+    // None-reactive properties
     methods: {
-      test() {
-        console.log('test')
+      closeMenu() {
+        this.showItems = false;
       }
     }
   }
 </script>
 
+<template>
+  <div 
+    v-on-clickaway="closeMenu"
+    class="dropdown">
+    <div 
+      @click="showItems = !showItems"
+      :class="{ 'dropdown--active': showItems }"
+      class="dropdown__title">
+      <i class="icon icon--options fa fa-cog"/>
+      <span>{{ title }}</span>
+      <i class="icon icon--arrow_down fa fa-angle-down"/>
+    </div>
+    <div
+      v-show="showItems"
+      :class="['dropdown__items', { 'dropdown__items--active': showItems }]">
+      <slot/>
+    </div>
+  </div>
+</template>
 
 <style>
-.dropdown-list {
-  display: none;
-}
+  .dropdown {
+    min-width: 150px;
+    text-align: right;
+    cursor: pointer;
+    color: var(--dark-grey);
+  }
+
+  .dropdown:hover{
+    text-decoration: underline;
+  }
+
+  .dropdown--active {
+    text-decoration: underline;
+  }
+
+  .dropdown__title {
+    margin-right: 10px; 
+  }
+
+  .dropdown__items {
+    position: absolute;
+    margin-top: 5px;
+    border: solid 1px var(--darker-grey);
+  }
+
+  .icon--options {
+    font-size: 0.9em;
+    margin-top: 5px;
+  }
+
+  .icon--arrow_down {
+    font-size: 0.8em;
+  }
 </style>

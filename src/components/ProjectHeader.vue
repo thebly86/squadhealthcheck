@@ -30,16 +30,18 @@
 
       <div class="grid__item u-4/12">
         <div class="action-bar--project">
-          <!--
-          <DropdownMenu
-            :items="actions" 
-            class="">
-            <div slot="dropdown-label" class="dropdown">
-              <i class="icon icon--options fa fa-cog"/>
-              <span>OPTIONS</span>
-            </div>
+          <DropdownMenu title="OPTIONS">
+            <DropdownMenuButton
+              text="Edit project"
+              :class="['dropdown__button', 'dropdown__button--edit']">
+
+            </DropdownMenuButton>
+            <DropdownMenuButton
+              text="Delete project"
+              :class="['dropdown__button', 'dropdown__button--delete']">
+
+            </DropdownMenuButton>
           </DropdownMenu>
-          -->
         </div>
       </div>
     </div>
@@ -49,6 +51,7 @@
 
 <script>
 import DropdownMenu from './DropdownMenu';
+import DropdownMenuButton from './DropdownMenuButton';
 
 export default {
   name: 'ProjectHeader',
@@ -76,7 +79,8 @@ export default {
   },
 
   components: {
-    DropdownMenu
+    DropdownMenu,
+    DropdownMenuButton
   },
 
   methods: {
@@ -129,24 +133,5 @@ export default {
   .project-title {
     display: inline-block;
     margin-right: 40px;
-  }
-
-  .icon--options {
-    margin-top: 5px;
-  }
-    
-  .dropdown {
-    margin: 0;
-    padding: 0;
-    color: var(--darker-grey);
-    cursor: pointer;
-  }
-
-  .dropdown span {
-    position: relative;
-    top: -2px;
-    padding-bottom: 5px;
-    text-decoration: underline;
-    font-weight: 500;
   }
 </style>
