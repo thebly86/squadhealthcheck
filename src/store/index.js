@@ -14,6 +14,8 @@ export default new Vuex.Store({
       state.projects[payload.project.id].sprints = []
     },
     removeProject(state, payload) {
+      console.log(state);
+      console.log(payload);
       _.unset(state.projects, `${payload.project.id}`);
     },
     addTeamToProject(state, payload) {

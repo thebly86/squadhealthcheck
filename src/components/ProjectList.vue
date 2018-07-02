@@ -1,3 +1,71 @@
+<script>
+import Project from './Project';
+import Modal from './Modal';
+import FirebaseService from '../utils/firebase/firebase-service';
+import store from '../store/'
+import { SSL_OP_NETSCAPE_CHALLENGE_BUG } from 'constants';
+
+export default {
+  name: 'ProjectList',
+  
+  components: {
+    Project,
+    Modal
+  },
+
+  data: () => ({
+    newProject: "",
+    showModal: false
+  }),
+
+  created() {
+    
+  },
+
+  computed: {
+    actions() {
+      return [
+        {
+          name: 'Save',
+          class: 'btn-primary',
+          action: this.save
+        }
+      ]
+    },
+
+    hasProjects() {
+      return !_.isEmpty(this.projects);
+    },
+    projects() {
+      return store.state.projects
+    }
+  },
+
+  methods: {
+    save() {
+      const project = {
+        id: _.camelCase(this.newProject),
+        name: this.newProject,
+        sprints: {},
+        teams: {}
+      };
+      FirebaseService.createProject(project);
+      store.commit('addProject', { project })
+
+      // If this is first project to be added, reload:
+      if (_.isEmpty(this.projects)) {
+        location.reload();
+      }
+      else {
+        this.projects[project.id] = project;
+        this.showModal = false;
+        this.newProject = "";
+      }
+    }
+  }
+}
+</script>
+
 <template>
     <main class="grid">
       <header class="grid__item header">
@@ -64,81 +132,6 @@
       </Modal>
     </main>
 </template>
-
-
-<script>
-import Project from './Project';
-import Modal from './Modal';
-import FirebaseService from '../utils/firebase/firebase-service';
-import store from '../store/'
-import { SSL_OP_NETSCAPE_CHALLENGE_BUG } from 'constants';
-
-export default {
-  name: 'ProjectList',
-  
-  components: {
-    Project,
-    Modal
-  },
-
-  data: () => ({
-    newProject: "",
-    showModal: false
-  }),
-
-  created() {
-    
-  },
-
-  computed: {
-    actions() {
-      return [
-        {
-          name: 'Save',
-          class: 'btn-primary',
-          action: this.save
-        }, 
-        {
-          name: 'Cancel',
-          class: 'btn-secondary',
-          action: () => this.showModal = false
-        }
-      ]
-    },
-
-    hasProjects() {
-      return !_.isEmpty(this.projects);
-    },
-    projects() {
-      return store.state.projects
-    }
-  },
-
-  methods: {
-    save() {
-      const project = {
-        id: _.camelCase(this.newProject),
-        name: this.newProject,
-        sprints: {},
-        teams: {}
-      };
-      FirebaseService.createProject(project);
-      store.commit('addProject', { project })
-
-      // If this is first project to be added, reload:
-      if (_.isEmpty(this.projects)) {
-        location.reload();
-      }
-      else {
-        this.projects[project.id] = project;
-        this.showModal = false;
-        this.newProject = "";
-      }
-    }
-  }
-}
-</script>
-
 
 <style>
   .projects-table tr:hover {
