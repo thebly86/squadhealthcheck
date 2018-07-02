@@ -1,3 +1,70 @@
+<script>
+  import FirebaseService from '../utils/firebase/firebase-service.js';
+  import Modal from './Modal';
+  import Team from "./Team";
+
+  export default {
+    name: 'ManageTeams',
+
+    // Template dependencies
+    components: {
+      Modal,
+      Team
+    },
+
+    // Interface
+    props: {
+      project: {
+        type: Object,
+        required: true
+      }
+    },
+
+    // Local state
+    data: () => ({
+      showModal: false,
+      newTeamName: ""
+    }),
+
+    computed: {
+      actions: function() {
+        return [
+          {
+            name: 'Save',
+            class: 'btn-primary',
+            action: this.save
+          }
+        ]
+      }
+    },
+
+    // Events
+    created() {
+      if (this.$route.params.showModal === true) 
+        this.showModal = true;
+    },
+
+    // Non-Reactive properties
+    methods: {
+      save() {
+        const newTeam = {
+          id: _.camelCase(this.newTeamName),
+          name: this.newTeamName
+        };
+
+        FirebaseService.createTeam(this.project, newTeam);
+        this.$store.commit('addTeamToProject', {
+          projectId: this.project.id,
+          team: newTeam
+        });
+
+        this.showModal = false;
+        this.newTeamName = "";
+      }
+    }
+  }
+</script>
+
 <template>
   <main class="grid">
     <table 
@@ -48,71 +115,6 @@
     </Modal>
   </main>
 </template>
-
-
-<script>
-  import FirebaseService from '../utils/firebase/firebase-service.js';
-  import Modal from './Modal';
-  import Team from "./Team";
-  import store from '../store/'
-
-  export default {
-    name: 'ManageTeams',
-
-    components: {
-      Modal,
-      Team
-    },
-
-    data: () => ({
-      showModal: false,
-      newTeamName: ""
-    }),
-
-    props: {
-      project: {
-        type: Object,
-        required: true
-      }
-    },
-
-    computed: {
-      actions: function() {
-        return [
-          {
-            name: 'Save',
-            class: 'btn-primary',
-            action: this.save
-          }
-        ]
-      }
-    },
-
-    created() {
-      if (this.$route.params.showModal === true) 
-        this.showModal = true;
-    },
-
-    methods: {
-      save() {
-        const newTeam = {
-          id: _.camelCase(this.newTeamName),
-          name: this.newTeamName
-        };
-
-        FirebaseService.createTeam(this.project, newTeam);
-        store.commit('addTeamToProject', {
-          projectId: this.project.id,
-          team: newTeam
-        });
-
-        this.showModal = false;
-        this.newTeamName = "";
-      }
-    }
-  }
-</script>
-
 
 <style>
   .teams-table th {

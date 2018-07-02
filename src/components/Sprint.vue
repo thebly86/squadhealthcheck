@@ -2,12 +2,18 @@
   import Modal from './Modal';
   import Team from "./Team";
   import FirebaseService from '../utils/firebase/firebase-service';
-  import store from '../store/'
   import { DEFAULT_CRITERIA } from '../utils/constants/constants';
 
   export default {
     name: 'Sprint',
 
+    // Template dependencies
+    components: {
+      Modal,
+      Team
+    },
+
+    // Interface
     props: {
       sprint: {
         type: Object,
@@ -19,16 +25,12 @@
       }
     },
 
+    // Local state
     data: () => ({
       showModal: false,
       showDeleteModal: false,
       teamToAdd: ""
     }),
-
-    components: {
-      Modal,
-      Team
-    },
 
     computed: {
       deleteActions: function() {
@@ -52,7 +54,7 @@
 
         FirebaseService.addTeamToSprint(this.project.id, this.sprint.id, newTeam);
 
-        store.commit('addTeamToSprint', {
+        this.$store.commit('addTeamToSprint', {
           projectId: this.project.id,
           sprintId: this.sprint.id,
           team: newTeam
@@ -73,8 +75,6 @@
     },
   }
 </script>
-
-
 
 <template>
   <tr>
@@ -105,7 +105,6 @@
       </div>
     </td>
 
-    <!-- Manage Sprint teams modal -->
     <Modal
       v-if="showModal"
       title="Add team to sprint"

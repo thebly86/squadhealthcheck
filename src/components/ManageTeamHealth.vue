@@ -1,110 +1,43 @@
-<template>
-<main class="grid">
-  <table 
-    v-if="!hasSprint"
-    class="grid__item healthcheck-table">
-    <colgroup>
-      <col class="healthcheck-table__criteria" span="1">
-      <col class="healthcheck-table__team" span="10">
-    </colgroup>
-    <thead class="text-center">
-      <tr>
-        <th></th>
-        <th
-          v-for="(team, i) in currentSprint.teams"
-          :key="i">
-          {{ team.name }}
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr
-        v-for="(criteria, k) in criteria"
-        :key="k"
-        :class="{ 'row--even': k % 2 === 0 }"
-        class="row">
-        <td>
-          <i class="fa icon icon--criteria" :class="criteria.icon"/>
-          <span>{{ criteria.label }}</span>
-        </td>
-        <td
-          v-for="(team, t) in currentSprint.teams"
-          :key="t">
-          <TeamStatus 
-            @click.native="changeStatus(team, k)"
-            :status="team.criteria_values[k]">
-          </TeamStatus>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-
-  <footer
-    v-if="!hasSprint"
-    class="grid__item footer">
-    <section class="footer__action-bar">
-      <button
-        :disabled="!hasChanged"
-        @click="save"
-        class="btn-primary">
-        Save
-      </button>
-      <button
-        :disabled="!hasChanged"
-        @click="reset"
-        class="btn-secondary">
-        Reset
-      </button>
-    </section>
-  </footer>
-</main>
-</template>
-
-
 <script>
   import FirebaseService from '../utils/firebase/firebase-service.js';
   import TeamStatus from './TeamStatus';
-  import store from '../store/'
 
 export default {
   name: 'ManageTeamHealth',
 
+  // Template dependencies
   components: {
     TeamStatus
   },
 
-
+  // Local state
   data: () => ({
     hasChanged: false,
     showModal: false
   }),
 
-
-  props: {
-    project: {
-      type: Object,
-      required: true
-    },
-    criteria: {
-      type: Array,
-      required: true
-    }
-  },
-
-
   computed: {
-    currentSprint: function() {
+    currentSprint() {
       return _.findLast(_.orderBy(this.project.sprints, "sprintNumber", "asc"))
     },
+
+    project() {
+      return this.$store.getters.getProject(this.$route.params.id);
+    },
+
     hasSprint: function() {
       return _.isEmpty(this.currentSprint);
+    },
+
+    criteria() {
+      return this.$store.getters.getCriteria;
     }
   },
 
+  // Non-Reactive properties
   methods: {
     save(data) {
       FirebaseService.saveSprint(this.project.id, this.currentSprint, this.project.sprints.length -1);
-      sessionStorage.removeItem(`${this.project.id}.sprints`);
       this.hasChanged = false;
     },
 
@@ -127,6 +60,77 @@ export default {
 }
 </script>
 
+<template>
+  <main class="grid">
+    <!--
+    <header class="grid__item">
+      <select>
+        <option>
+
+        </option>
+      </select>
+    </header>
+    -->
+
+    <table 
+      v-if="project.sprints"
+      class="grid__item healthcheck-table">
+      <colgroup>
+        <col class="healthcheck-table__criteria" span="1">
+        <col class="healthcheck-table__team" span="10">
+      </colgroup>
+      <thead class="text-center">
+        <tr>
+          <th></th>
+          <th
+            v-for="(team, i) in currentSprint.teams"
+            :key="i">
+            {{ team.name }}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="(criteria, k) in criteria"
+          :key="k"
+          :class="{ 'row--even': k % 2 === 0 }"
+          class="row">
+          <td>
+            <i class="fa icon icon--criteria" :class="criteria.icon"/>
+            <span>{{ criteria.label }}</span>
+          </td>
+          <td
+            v-for="(team, t) in currentSprint.teams"
+            :key="t">
+            <TeamStatus 
+              @click.native="changeStatus(team, k)"
+              :status="team.criteria_values[k]">
+            </TeamStatus>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <footer
+      v-if="project.sprints"
+      class="grid__item footer">
+      <section class="footer__action-bar">
+        <button
+          :disabled="!hasChanged"
+          @click="save"
+          class="btn-primary">
+          Save
+        </button>
+        <button
+          :disabled="!hasChanged"
+          @click="reset"
+          class="btn-secondary">
+          Reset
+        </button>
+      </section>
+    </footer>
+  </main>
+</template>
 
 <style>
   .healthcheck-table {

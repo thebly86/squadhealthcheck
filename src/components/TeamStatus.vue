@@ -1,3 +1,21 @@
+<script>
+    import { STATUS } from '../utils/constants/constants.js'
+
+    export default {
+        name: 'TeamStatus',
+
+        // Interface
+        props: {
+            status: Number
+        },
+
+        // Local state
+        data: () => ({
+            STATUS
+        })
+    }
+</script>
+
 <template>
     <div 
         :class="{
@@ -8,20 +26,6 @@
         class="status">
         </div>
 </template>
-<script>
-
-    import { STATUS } from '../utils/constants/constants.js'
-
-    export default {
-        name: 'TeamStatus',
-        props: {
-            status: Number
-        },
-        data: () => ({
-            STATUS
-        })
-    }
-</script>
 
 <style>
     .status {

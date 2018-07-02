@@ -1,3 +1,24 @@
+<script>
+  export default {
+    name: 'ProjectNav',
+    // Template dependencies
+    filters: {
+      uppercase: function (val) {
+        return val.toUpperCase();
+      }
+    },
+    
+    // Interface
+    props: {
+      tabs: {
+        type: Array,
+        required: true
+      }
+    }
+  }
+
+</script>
+
 <template>
   <nav class="nav">
     <ul class="tabs">
@@ -26,28 +47,6 @@
     </ul>
   </nav>
 </template>
-
-
-<script>
-  export default {
-    name: 'ProjectNav',
-
-    props: {
-      tabs: {
-        type: Array,
-        required: true
-      }
-    },
-    
-    filters: {
-      uppercase: function (val) {
-        return val.toUpperCase();
-      }
-    }
-  }
-
-</script>
-
 
 <style>
   .tabs {

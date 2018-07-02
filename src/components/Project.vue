@@ -1,3 +1,42 @@
+<script>
+  export default {
+    name: 'Project',
+
+    // Interface
+    props: {
+      project: {
+        type: Object,
+        required: true
+      }
+    },
+
+    // Local state
+    computed: {
+      projectAcronym: function() {
+        if (this.project.name.length < 2) {
+          return this.project.name;
+        }
+
+        const parts = this.project.name.split(" ", 2);
+        if (parts.length < 2) {
+          return this.project.name.substring(0, 2).toUpperCase();
+        }
+        else {
+          return parts[0].charAt(0).toUpperCase() + parts[1].charAt(0).toUpperCase();
+        }
+      }
+    },
+
+    // Non-Reactive properties
+    methods: {
+      getIconUrl(project) {
+        let icons = require.context('../assets/', false, /\.png$/);
+        return icons("./" + project + ".png");
+      }
+    }
+  }
+</script>
+
 <template>
   <tr>
     <td>
@@ -11,44 +50,6 @@
     </td>
   </tr>
 </template>
-
-
-<script>
-    export default {
-        name: 'Project',
-
-        props: {
-          project: {
-            type: Object,
-            required: true
-          }
-        },
-
-        computed: {
-          projectAcronym: function() {
-            if (this.project.name.length < 2) {
-              return this.project.name;
-            }
-
-            const parts = this.project.name.split(" ", 2);
-            if (parts.length < 2) {
-              return this.project.name.substring(0, 2).toUpperCase();
-            }
-            else {
-              return parts[0].charAt(0).toUpperCase() + parts[1].charAt(0).toUpperCase();
-            }
-          }
-        },
-
-        methods: {
-          getIconUrl(project) {
-            let icons = require.context('../assets/', false, /\.png$/);
-            return icons("./" + project + ".png");
-          }
-        }
-    }
-</script>
-
 
 <style>
     .project__logo {

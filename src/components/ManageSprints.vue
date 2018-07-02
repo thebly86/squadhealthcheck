@@ -1,3 +1,68 @@
+<script>
+  import FirebaseService from '../utils/firebase/firebase-service.js';
+  import Modal from './Modal';
+  import Sprint from './Sprint';
+  import { DEFAULT_CRITERIA } from '../utils/constants/constants';
+
+  export default {
+    name: 'ManageSprints',
+
+    // Template dependencies
+    components: {
+      Sprint,
+      Modal
+    },
+
+    // Interface
+    props: {
+      project: {
+        type: Object,
+        required: true
+      }
+    },
+
+    // Local state
+    data: () => ({
+      title: "Manage Sprints",
+      newSprint: {
+        id: 0,
+        sprintNumber: 0,
+        name: "",
+        startDate: "",
+        endDate: ""
+      }
+    }),
+
+    computed: {
+      minimumSprint: function() {
+        const currentSprint = _.findLast(_.orderBy(this.project.sprints, "sprintNumber", "asc"));
+
+        return !_.isEmpty(this.project.sprints) ?
+          parseInt(currentSprint.sprintNumber) + 1 : 1;
+      }
+    },
+
+    // Non-Reactive properties
+    methods: {
+      save() {
+        this.newSprint.name = "Sprint " + this.newSprint.sprintNumber;
+        this.newSprint.id = _.camelCase(this.newSprint.name);
+        if(this.project.teams) {
+          this.newSprint.teams = _.forEach(this.project.teams, team => team.criteria_values = DEFAULT_CRITERIA);
+        }
+        
+        FirebaseService.createSprint(this.project.id, this.newSprint);
+        this.$store.commit('addSprint', {
+          projectId: this.project.id,
+          sprint: this.newSprint
+        });
+
+        this.newSprint = {id: 0, sprintNumber: 0, name: "", startDate: "", endDate: ""};
+      }
+    }
+  }
+</script>
+
 <template>
   <main class="grid">
     <table
@@ -74,70 +139,6 @@
     </footer>
   </main>
 </template>
-
-
-<script>
-  import FirebaseService from '../utils/firebase/firebase-service.js';
-  import store from '../store/'
-  import Modal from './Modal';
-  import Sprint from './Sprint';
-  import { DEFAULT_CRITERIA } from '../utils/constants/constants';
-
-  export default {
-    name: 'ManageSprints',
-
-    components: {
-      Sprint,
-      Modal
-    },
-
-    data: () => ({
-      title: "Manage Sprints",
-      newSprint: {
-        id: 0,
-        sprintNumber: 0,
-        name: "",
-        startDate: "",
-        endDate: ""
-      }
-    }),
-
-    props: {
-      project: {
-        type: Object,
-        required: true
-      }
-    },
-
-    computed: {
-      minimumSprint: function() {
-        const currentSprint = _.findLast(_.orderBy(this.project.sprints, "sprintNumber", "asc"));
-
-        return !_.isEmpty(this.project.sprints) ?
-          parseInt(currentSprint.sprintNumber) + 1 : 1;
-      }
-    },
-
-    methods: {
-      save() {
-        this.newSprint.name = "Sprint " + this.newSprint.sprintNumber;
-        this.newSprint.id = _.camelCase(this.newSprint.name);
-        if(this.project.teams) {
-          this.newSprint.teams = _.forEach(this.project.teams, team => team.criteria_values = DEFAULT_CRITERIA);
-        }
-        
-        FirebaseService.createSprint(this.project.id, this.newSprint);
-        store.commit('addSprint', {
-          projectId: this.project.id,
-          sprint: this.newSprint
-        });
-
-        this.newSprint = {id: 0, sprintNumber: 0, name: "", startDate: "", endDate: ""};
-      }
-    }
-  }
-</script>
-
 
 <style>
   .sprints-table th {
