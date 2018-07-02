@@ -1,11 +1,16 @@
 <script>
-  import store from '../store/index.js'
   import FirebaseService from '../utils/firebase/firebase-service.js';
   import Modal from './Modal';
 
   export default {
     name: 'Team',
 
+    // Template dependencies
+    components: {
+      Modal
+    },
+
+    // Interface
     props: {
       team: {
         type: Object,
@@ -17,10 +22,7 @@
       }
     },
 
-    components: {
-      Modal
-    },
-
+    // Local state
     computed: {
       deleteActions: function() {
         return [
@@ -49,14 +51,14 @@
         
         if(this.sprint) {
           FirebaseService.removeTeamFromSprint(projectId, this.sprint.id, teamId);
-          store.commit('removeTeamFromSprint', {
+          this.$store.commit('removeTeamFromSprint', {
             projectId,
             sprintId: this.sprint.id,
             teamId
           });
         } else {
           FirebaseService.removeTeam(projectId, teamId);
-          store.commit('removeTeamFromProject', {
+          this.$store.commit('removeTeamFromProject', {
             projectId,
             teamId
           });

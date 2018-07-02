@@ -1,24 +1,3 @@
-<template>
-  <div id="app">
-    <div class="container">
-      <header>
-        <div class="app-logo">
-          <i class="fa fa-heartbeat"/>
-        </div>
-        <h1>Squad Health Check</h1>
-        <project-nav 
-          @closeTab="closeTab"
-          :tabs="tabs">
-        </project-nav>
-      </header>
-      <router-view 
-        @closeTab="closeTab"
-        @openTab="openTab">
-      </router-view>
-    </div>
-  </div>
-</template>
-
 <script>
   import * as firebase from "firebase";
   import ProjectNav from "./components/ProjectNav";
@@ -29,13 +8,23 @@
   export default {
     name: 'App',
 
+    // Template dependencies
+    store, 
+    
+    components: {
+      ProjectNav
+    },
+
+    // Local state
     data: () => ({
       tabs: []
     }),
 
+    // Events 
     created() {
       FirebaseService.initialiseDatabase();
       this.$store.commit('initialiseProjects');
+      this.$store.commit('initialiseCriteria');
 
       // Open previously opened tabs:
       if (sessionStorage.getItem('tabs')) {
@@ -43,10 +32,7 @@
       }
     },
 
-    components: {
-      ProjectNav
-    },
-
+    // Non-Reactive properties
     methods: {
       closeTab({ id }) {
         // Remove tab from list of open tabs
@@ -75,6 +61,26 @@
   }
 </script>
 
+<template>
+  <div id="app">
+    <div class="container">
+      <header>
+        <div class="app-logo">
+          <i class="fa fa-heartbeat"/>
+        </div>
+        <h1>Squad Health Check</h1>
+        <project-nav 
+          @closeTab="closeTab"
+          :tabs="tabs">
+        </project-nav>
+      </header>
+      <router-view 
+        @closeTab="closeTab"
+        @openTab="openTab">
+      </router-view>
+    </div>
+  </div>
+</template>
 
 <style>
   #app {

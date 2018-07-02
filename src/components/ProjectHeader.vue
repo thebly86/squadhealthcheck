@@ -1,5 +1,4 @@
 <script>
-import store from '../store/';
 import FirebaseService from '../utils/firebase/firebase-service.js';
 
 import DropdownMenu from './DropdownMenu';
@@ -24,7 +23,7 @@ export default {
 
   computed: {
     project() {
-        return store.getters.getProject(this.$route.params.id);
+        return this.$store.getters.getProject(this.$route.params.id);
     },
 
     deleteActions: function() {
@@ -57,8 +56,8 @@ export default {
 
     deleteProject() {
       FirebaseService.deleteProject(this.project);
-      store.commit('removeProject', { ...this.project })
-      this.$emit('closeProjectTab', this.project);
+      this.$store.commit('removeProject', { ...this.project })
+      this.$emit('closeTab', this.project);
     }
   }
 }

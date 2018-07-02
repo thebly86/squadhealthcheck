@@ -2,25 +2,22 @@
 import Project from './Project';
 import Modal from './Modal';
 import FirebaseService from '../utils/firebase/firebase-service';
-import store from '../store/'
 import { SSL_OP_NETSCAPE_CHALLENGE_BUG } from 'constants';
 
 export default {
   name: 'ProjectList',
   
+  // Template dependencies
   components: {
     Project,
     Modal
   },
 
+  // Local state
   data: () => ({
     newProject: "",
     showModal: false
   }),
-
-  created() {
-    
-  },
 
   computed: {
     actions() {
@@ -37,10 +34,11 @@ export default {
       return !_.isEmpty(this.projects);
     },
     projects() {
-      return store.state.projects
+      return this.$store.state.projects
     }
   },
 
+  // Non-Reactive properties
   methods: {
     save() {
       const project = {
@@ -50,7 +48,7 @@ export default {
         teams: {}
       };
       FirebaseService.createProject(project);
-      store.commit('addProject', { project })
+      this.$store.commit('addProject', { project })
 
       // If this is first project to be added, reload:
       if (_.isEmpty(this.projects)) {

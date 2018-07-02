@@ -6,7 +6,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    projects: {}
+    projects: {},
+    criteria: {}
   },
   mutations: {
     addProject({ projects }, { project }) {
@@ -54,11 +55,20 @@ export default new Vuex.Store({
     initialiseProjects(state) {
       FirebaseService.getProjects()
         .then((result) => state.projects = result)
+    },
+
+    initialiseCriteria(state) {
+      FirebaseService.getCriteria()
+        .then((result) => state.criteria = result)
     }
   },
   getters: {
     getProject: (state) => (projectId) => {
         return state.projects[projectId]
+    },
+    
+    getCriteria: (state) => {
+      return state.criteria;
     }
   }
 })

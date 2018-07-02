@@ -1,27 +1,28 @@
 <script>
   import FirebaseService from '../utils/firebase/firebase-service.js';
-  import store from '../store/'
   import ProjectHeader from './ProjectHeader';
 
   export default {
     name: 'ProjectView',
 
+    // Template dependencies
     components: {
       ProjectHeader
     },
 
+    // Local state
     data: () => ({
       criteria: []
     }),
 
     computed: {
       project() {
-          return store.getters.getProject(this.$route.params.id);
+          return this.$store.getters.getProject(this.$route.params.id);
       }
     },
 
+    // Events
     created() {
-      this.loadData();
       this.getCriteria();
     },
 
@@ -29,6 +30,7 @@
       this.$router.push({ name: 'ManageTeamHealth' });
     },
 
+    // Non-Reactive properties
     methods: {
       closeProjectTab() {
         this.$emit('closeTab', { id: this.$route.params.id });
@@ -45,27 +47,8 @@
         });
       },
 
-      loadData() {
-        // Promise.all([this.getProject(), this.getSprints()])
-        //   .then((results) => {
-        //     const [project, sprints] = results;
-        //     this.project = project;
-        //     this.sprints = !_.isNil(sprints) ? sprints : [];
-        //     this.updateSession();
-        // });
-      },
-
       getCriteria() {
         FirebaseService.getCriteria().then((data) => this.criteria = data);
-      },
-
-      getProject() {
-
-        // return FirebaseService.getProject(this.$route.params.id);
-      },
-
-      getSprints() {
-        return FirebaseService.getSprints(this.$route.params.id);
       },
 
       reset() {
@@ -79,19 +62,6 @@
         }
         let teamKey = _.camelCase(team);
         this.project.teams[teamKey] = team;
-        this.updateSession();
-      },
-
-      updateSession() {
-        sessionStorage.setItem(`${this.project.id}`, JSON.stringify(this.project));
-        sessionStorage.setItem(`${this.project.id}.sprints`, JSON.stringify(this.sprints));
-      }
-    },
-
-
-    watch: {
-      '$route': function (to, from) {
-        this.loadData();
       }
     }
   }
@@ -122,12 +92,11 @@
     <router-view
       @teamAdded="updateTeams"
       @createSprint="addSprint"
-      :criteria="criteria"
       :project="project"
       class="grid__item"></router-view>
     <router-view
       :project="project"
-      class="BINGO" name="manageTeams"></router-view>
+      name="manageTeams"></router-view>
     <router-view name="manageSprints"></router-view>
   </main>
 </template>
