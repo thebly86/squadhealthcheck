@@ -11,7 +11,7 @@
       <tr>
         <th></th>
         <th
-          v-for="(team, i) in project.teams"
+          v-for="(team, i) in currentSprint.teams"
           :key="i">
           {{ team.name }}
         </th>
@@ -94,10 +94,7 @@ export default {
 
   computed: {
     currentSprint: function() {
-
       return _.findLast(_.orderBy(this.project.sprints, "sprintNumber", "asc"))
-
-      // return this.project.sprints[this.project.sprints.length -1];
     }
   },
 

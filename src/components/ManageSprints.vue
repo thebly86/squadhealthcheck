@@ -25,13 +25,33 @@
         </Sprint>
         <tr>
           <td>
-            <span><input type="number" name="sprintName" id="sprintName" placeholder="Sprint number" v-model.trim="newSprint.name"/></span>
+            <span>
+              <input
+                type="number"
+                name="sprintName"
+                :min="minimumSprint"
+                id="sprintName"
+                placeholder="Sprint number"
+                v-model="newSprint.sprintNumber"/>
+            </span>
           </td>
           <td>
-            <span><input type="date" name="startDate" id="startDate" v-model.trim="newSprint.startDate"/></span>
+            <span>
+              <input
+                type="date"
+                name="startDate"
+                id="startDate"
+                v-model.trim="newSprint.startDate"/>
+            </span>
           </td>
           <td>
-            <span><input type="date" name="startDate" id="endDate" v-model.trim="newSprint.endDate"/></span>
+            <span>
+              <input
+                type="date"
+                name="startDate"
+                id="endDate"
+                v-model.trim="newSprint.endDate"/>
+            </span>
           </td>
           <td>
             <div class="sprint-actions">
@@ -73,11 +93,12 @@
     data: () => ({
       title: "Manage Sprints",
       newSprint: {
+        id: 0,
+        sprintNumber: 0,
         name: "",
         startDate: "",
         endDate: ""
-      },
-      showModal: false
+      }
     }),
 
     props: {
@@ -88,41 +109,25 @@
     },
 
     computed: {
-      actions: function() {
-        return [
-          {
-            name: 'Save',
-            class: 'btn-primary',
-            action: this.save
-          },
-          {
-            name: 'Cancel',
-            class: 'btn-secondary',
-            action: () => this.showModal = false
-          }
-        ]
-      }
-    },
-
-    created() {
-      if (this.$route.params.showModal === true) {
-        this.showModal = true;
+      minimumSprint: function() {
+        const currentSprint = _.findLast(_.orderBy(this.project.sprints, "sprintNumber", "asc"));
+        return parseInt(currentSprint.sprintNumber) + 1;
       }
     },
 
     methods: {
       save() {
+        this.newSprint.name = "Sprint " + this.newSprint.sprintNumber;
         this.newSprint.id = _.camelCase(this.newSprint.name);
+        this.newSprint.teams = _.forEach(this.project.teams, team => team.criteria_values = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]);
 
         FirebaseService.createSprint(this.project.id, this.newSprint);
-
         store.commit('addSprint', {
           projectId: this.project.id,
           sprint: this.newSprint
         });
 
-        this.showModal = false;
-        this.newSprint = {name: "", startDate: "", endDate: ""};
+        this.newSprint = {id: 0, sprintNumber: 0, name: "", startDate: "", endDate: ""};
       }
     }
   }

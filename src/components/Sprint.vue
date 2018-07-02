@@ -44,7 +44,8 @@
       saveTeam() {
         const newTeam = {
           id: _.camelCase(this.teamToAdd.id),
-          name: this.teamToAdd.name
+          name: this.teamToAdd.name,
+          criteria_values: [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
         };
 
         FirebaseService.addTeamToSprint(this.project.id, this.sprint.id, newTeam);
