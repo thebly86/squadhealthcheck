@@ -112,7 +112,9 @@
     computed: {
       minimumSprint: function() {
         const currentSprint = _.findLast(_.orderBy(this.project.sprints, "sprintNumber", "asc"));
-        return parseInt(currentSprint.sprintNumber) + 1;
+
+        return !_.isEmpty(this.project.sprints) ?
+          parseInt(currentSprint.sprintNumber) + 1 : 1;
       }
     },
 
@@ -120,8 +122,10 @@
       save() {
         this.newSprint.name = "Sprint " + this.newSprint.sprintNumber;
         this.newSprint.id = _.camelCase(this.newSprint.name);
-        this.newSprint.teams = _.forEach(this.project.teams, team => team.criteria_values = DEFAULT_CRITERIA);
-
+        if(this.project.teams) {
+          this.newSprint.teams = _.forEach(this.project.teams, team => team.criteria_values = DEFAULT_CRITERIA);
+        }
+        
         FirebaseService.createSprint(this.project.id, this.newSprint);
         store.commit('addSprint', {
           projectId: this.project.id,

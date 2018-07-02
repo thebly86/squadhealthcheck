@@ -82,7 +82,6 @@
     <Modal
       v-if="showModal"
       title="Add team to sprint"
-      :actions="actions"
       @close="showModal = false">
       <div slot="body">
         <form ref="addSprintForm">

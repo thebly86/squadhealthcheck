@@ -18,7 +18,7 @@
       },
       actions: {
         type: Array,
-        required: true
+        required: false
       }
     },
 
@@ -51,6 +51,7 @@
       <footer class="modal__footer">
         <div class="modal__buttons">
           <button
+            v-if="actions"
             v-for="(action, i) in actions"
             :key="i"
             :class="action.class"

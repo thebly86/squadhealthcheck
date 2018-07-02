@@ -18,6 +18,9 @@ export default new Vuex.Store({
     },
 
     addTeamToProject({ projects }, { projectId, team }) {
+      if(!projects[projectId].teams) {
+        Vue.set(projects[projectId], 'teams', {})
+      }
       Vue.set(projects[projectId].teams, [team.id], team)
     },
 
@@ -38,7 +41,7 @@ export default new Vuex.Store({
 
     addSprint({ projects }, { projectId, sprint}) {
       if(!projects[projectId].sprints) {
-        Vue.set(projects[projectId], sprints, {})
+        Vue.set(projects[projectId], "sprints", {})
       }
       Vue.set(projects[projectId].sprints, sprint.id, sprint)
       
