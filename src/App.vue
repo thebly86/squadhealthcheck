@@ -48,17 +48,17 @@
     },
 
     methods: {
-      closeTab(tab) {
+      closeTab({ id }) {
         // Remove tab from list of open tabs
-        const index = _.findIndex(this.tabs, { id: tab.id });
+        const index = _.findIndex(this.tabs, { id });
         if (index > -1) {
           this.tabs.splice(index, 1);
         }
 
         // Clear any associated session data
-        if (sessionStorage.getItem(tab.id)) {
-          sessionStorage.removeItem(tab.id);
-          sessionStorage.removeItem(`${tab.id}.sprints`);
+        if (sessionStorage.getItem(id)) {
+          sessionStorage.removeItem(id);
+          sessionStorage.removeItem(`${id}.sprints`);
         }
         sessionStorage.setItem('tabs', JSON.stringify(this.tabs));
         this.$router.push({ name: 'ProjectList'});

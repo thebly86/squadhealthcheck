@@ -13,8 +13,8 @@ export default new Vuex.Store({
       Vue.set(projects, project.id, project);
     },
 
-    removeProject({ projects }, { project }) {
-      Vue.delete(projects, project.id)
+    removeProject({ projects }, { id }) {
+      Vue.delete(projects, id)
     },
 
     addTeamToProject({ projects }, { projectId, team }) {

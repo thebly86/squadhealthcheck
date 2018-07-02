@@ -30,10 +30,9 @@
     },
 
     methods: {
-      deleteProject() {
-        FirebaseService.deleteProject(this.project);
-        this.$emit('closeTab', this.project);
-      },
+      closeProjectTab() {
+        this.$emit('closeTab', { id: this.$route.params.id });
+        },
 
       addSprint() {
         const sprint = { teams: [] };
@@ -44,12 +43,6 @@
             }
           });
         });
-
-        console.log('sprint', sprint);
-
-        //FirebaseService.createSprint();
-        
-        console.log('addSprint', this.project);
       },
 
       loadData() {
@@ -109,6 +102,7 @@
     v-if="project"
     class="grid">
     <ProjectHeader
+      @closeProjectTab="closeProjectTab"
       v-if="project">
     </ProjectHeader>
 
