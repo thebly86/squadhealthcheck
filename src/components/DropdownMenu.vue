@@ -22,7 +22,7 @@
       showItems: false
     }),
 
-    // None-reactive properties
+    // Non-reactive properties
     methods: {
       closeMenu() {
         this.showItems = false;

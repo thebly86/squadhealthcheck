@@ -1,6 +1,41 @@
+<script>
+  import { mixin as clickaway } from 'vue-clickaway';
+
+  export default {
+    name: 'Modal',
+
+    // Composition
+    mixins: [ clickaway ],
+
+    // Interface
+    props: {
+      showModal: {
+        type: Boolean,
+      },
+      title: {
+        type: String,
+        required: true 
+      },
+      actions: {
+        type: Array,
+        required: true
+      }
+    },
+
+    // Non-reactive properties
+    methods: {
+      close() {
+        this.$emit('close');
+      }
+    }
+  }
+</script>
+
 <template>
   <div class="modal">
-    <div class="modal-content">
+    <div 
+      v-on-clickaway="close"
+      class="modal-content">
       <header class="modal__header">
         <h3 class="modal__title">{{ title }}</h3>
         <span 
@@ -22,31 +57,16 @@
             @click="action.action">
             {{ action.name }}
           </button>
+          <button
+            @click="close"
+            class="btn-secondary">
+            Cancel
+          </button>
         </div>
       </footer>
     </div>
   </div>
 </template>
-
-
-<script>
-  export default {
-    name: 'Modal',
-
-    props: {
-      showModal: true,
-      title: String,
-      actions: Array
-    },
-
-    methods: {
-      close() {
-        this.$emit('close');
-      }
-    }
-  }
-</script>
-
 
 <style>
 .modal {
