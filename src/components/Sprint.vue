@@ -21,12 +21,25 @@
 
     data: () => ({
       showModal: false,
+      showDeleteModal: false,
       teamToAdd: ""
     }),
 
     components: {
       Modal,
       Team
+    },
+
+    computed: {
+      deleteActions: function() {
+        return [
+          {
+            name: 'Delete',
+            class: 'btn-primary btn--danger',
+            action: this.deleteSprint
+          }
+        ]
+      }
     },
 
     methods: {
@@ -46,6 +59,16 @@
         });
 
         this.teamToAdd = "";
+      },
+      deleteSprint() {
+        const projectId = this.project.id;
+        const sprintId = this.sprint.id;
+        
+        FirebaseService.removeSprint(projectId, sprintId);
+        store.commit('removeSprintFromProject', {
+          projectId,
+          sprintId
+        });
       }
     },
   }
@@ -74,11 +97,15 @@
         <a class="btn-action">
           <i class="icon icon--edit fa fa-edit"></i>
         </a>
-        <a class="btn-action">
+        <a
+          @click="showDeleteModal = true"
+          class="btn-action">
           <i class="icon icon--delete fa fa-trash"></i>
         </a>
       </div>
     </td>
+
+    <!-- Manage Sprint teams modal -->
     <Modal
       v-if="showModal"
       title="Add team to sprint"
@@ -121,6 +148,20 @@
             </div>
           </span>
         </form>
+      </div>
+    </Modal>
+
+    <!-- DELETE Sprint modal -->
+    <Modal
+      v-if="showDeleteModal"
+      title="Delete Team"
+      :actions="deleteActions"
+      @close="showDeleteModal = false">
+      <div slot="body">
+        <p class="text-center">
+          Are you sure you want to delete this sprint? <br/><br/>
+          <b>The sprint will be deleted permanently.</b>
+        </p>
       </div>
     </Modal>
   </tr>

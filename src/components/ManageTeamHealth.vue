@@ -1,7 +1,7 @@
 <template>
 <main class="grid">
   <table 
-    v-if="project.sprints"
+    v-if="!hasSprint"
     class="grid__item healthcheck-table">
     <colgroup>
       <col class="healthcheck-table__criteria" span="1">
@@ -40,7 +40,7 @@
   </table>
 
   <footer
-    v-if="project.sprints"
+    v-if="!hasSprint"
     class="grid__item footer">
     <section class="footer__action-bar">
       <button
@@ -95,6 +95,9 @@ export default {
   computed: {
     currentSprint: function() {
       return _.findLast(_.orderBy(this.project.sprints, "sprintNumber", "asc"))
+    },
+    hasSprint: function() {
+      return _.isEmpty(this.currentSprint);
     }
   },
 
