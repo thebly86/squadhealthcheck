@@ -81,7 +81,7 @@
   import store from '../store/'
   import Modal from './Modal';
   import Sprint from './Sprint';
-  import { constants } from '../utils/constants/constants.js'
+  import { DEFAULT_CRITERIA } from '../utils/constants/constants';
 
   export default {
     name: 'ManageSprints',
@@ -120,7 +120,7 @@
       save() {
         this.newSprint.name = "Sprint " + this.newSprint.sprintNumber;
         this.newSprint.id = _.camelCase(this.newSprint.name);
-        this.newSprint.teams = _.forEach(this.project.teams, team => team.criteria_values = constants.DEFUALT_CRITERIA);
+        this.newSprint.teams = _.forEach(this.project.teams, team => team.criteria_values = DEFAULT_CRITERIA);
 
         FirebaseService.createSprint(this.project.id, this.newSprint);
         store.commit('addSprint', {

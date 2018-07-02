@@ -1,4 +1,3 @@
-export const constants = {
-  DEFUALT_CRITERIA: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-}
+export const DEFAULT_CRITERIA = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
 

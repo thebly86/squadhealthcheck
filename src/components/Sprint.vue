@@ -3,7 +3,7 @@
   import Team from "./Team";
   import FirebaseService from '../utils/firebase/firebase-service';
   import store from '../store/'
-  import { constants } from '../utils/constants/constants.js';
+  import { DEFAULT_CRITERIA } from '../utils/constants/constants';
 
   export default {
     name: 'Sprint',
@@ -34,7 +34,7 @@
         const newTeam = {
           id: _.camelCase(this.teamToAdd.id),
           name: this.teamToAdd.name,
-          criteria_values: constants.DEFAULT_CRITERIA
+          criteria_values: DEFAULT_CRITERIA
         };
 
         FirebaseService.addTeamToSprint(this.project.id, this.sprint.id, newTeam);
