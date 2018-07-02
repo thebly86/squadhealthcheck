@@ -99,10 +99,10 @@
           id: _.camelCase(this.newTeamName),
           name: this.newTeamName
         };
-        FirebaseService.createTeam(this.project, newTeam);
 
+        FirebaseService.createTeam(this.project, newTeam);
         store.commit('addTeamToProject', {
-          project: this.project,
+          projectId: this.project.id,
           team: newTeam
         });
 

@@ -1,20 +1,25 @@
 <template>
     <div 
         :class="{
-            red: status === 1,
-            amber: status === 2,
-            green: status === 3
+            red: status === STATUS.RED,
+            amber: status === STATUS.AMBER,
+            green: status === STATUS.GREEN
         }"
         class="status">
         </div>
 </template>
-
 <script>
+
+    import { STATUS } from '../utils/constants/constants.js'
+
     export default {
         name: 'TeamStatus',
         props: {
             status: Number
-        }
+        },
+        data: () => ({
+            STATUS
+        })
     }
 </script>
 

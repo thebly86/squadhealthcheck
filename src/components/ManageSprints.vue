@@ -1,7 +1,7 @@
 <template>
   <main class="grid">
     <table
-      v-if="project.teams"
+      v-if="project"
       class="grid__item sprints-table">
       <colgroup>
         <col class="sprints-table__sprint">
@@ -18,50 +18,70 @@
       </thead>
       <tbody>
         <Sprint
-          v-for="(sprint, s) in sprints"
+          v-for="(sprint, s) in project.sprints"
           :key="s"
-          :sprint="sprint">
-          
+          :sprint="sprint"
+          :project="project">
         </Sprint>
+        <tr>
+          <td>
+            <span>
+              <input
+                type="number"
+                name="sprintName"
+                :min="minimumSprint"
+                id="sprintName"
+                placeholder="Sprint number"
+                v-model="newSprint.sprintNumber"/>
+            </span>
+          </td>
+          <td>
+            <span>
+              <input
+                type="date"
+                name="startDate"
+                id="startDate"
+                v-model.trim="newSprint.startDate"/>
+            </span>
+          </td>
+          <td>
+            <span>
+              <input
+                type="date"
+                name="startDate"
+                id="endDate"
+                v-model.trim="newSprint.endDate"/>
+            </span>
+          </td>
+          <td>
+            <div class="sprint-actions">
+              <a
+                @click="this.save"
+                class="btn-action">
+                <i class="icon icon--plus fa fa-plus"></i>
+              </a>
+            </div>
+          </td>
+        </tr>
       </tbody>
     </table>
 
     <footer
-      v-if="project.teams"
+      v-if="project"
       class="grid__item footer">
       <section class="footer__action-bar">
-        <button
-          @click="showModal = true"
-          class="btn-primary action-bar__button">
-          ADD SPRINT
-        </button>
       </section>
     </footer>
-
-    <Modal
-      v-if="showModal"
-      title="Add Sprint"
-      :actions="actions"
-      @close="showModal = false">
-      <div slot="body">
-        <form
-          ref="addSprintForm"
-          @submit="save">
-          <label for="startDate">Start date</label>
-          <input type="date" name="startDate" id="startDate"/>
-          <label for="startDate">End date</label>
-          <input type="date" name="startDate" id="endDate"/>
-        </form>
-      </div>
-    </Modal>
   </main>
 </template>
 
 
 <script>
   import FirebaseService from '../utils/firebase/firebase-service.js';
+  import store from '../store/'
   import Modal from './Modal';
   import Sprint from './Sprint';
+  import { DEFAULT_CRITERIA } from '../utils/constants/constants';
 
   export default {
     name: 'ManageSprints',
@@ -74,47 +94,45 @@
     data: () => ({
       title: "Manage Sprints",
       newSprint: {
-        id: -1,
+        id: 0,
+        sprintNumber: 0,
+        name: "",
         startDate: "",
         endDate: ""
-      },
-      showModal: false
+      }
     }),
 
     props: {
       project: {
         type: Object,
         required: true
-      },
-      sprints: {
-        type: Array,
-        required: true
       }
     },
 
     computed: {
-      actions: function() {
-        return [
-          {
-            name: 'Save',
-            class: 'btn-primary',
-            action: this.save
-          }
-        ]
-      }
-    },
+      minimumSprint: function() {
+        const currentSprint = _.findLast(_.orderBy(this.project.sprints, "sprintNumber", "asc"));
 
-    created() {
-      if (this.$route.params.showModal === true) {
-        this.showModal = true;
+        return !_.isEmpty(this.project.sprints) ?
+          parseInt(currentSprint.sprintNumber) + 1 : 1;
       }
     },
 
     methods: {
       save() {
-        this.newSprint.id = this.sprints.length;
-        this.newSprint.startDate = document.getElementById('startDate').val;
-        console.log('Save sprint', this.newSprint);
+        this.newSprint.name = "Sprint " + this.newSprint.sprintNumber;
+        this.newSprint.id = _.camelCase(this.newSprint.name);
+        if(this.project.teams) {
+          this.newSprint.teams = _.forEach(this.project.teams, team => team.criteria_values = DEFAULT_CRITERIA);
+        }
+        
+        FirebaseService.createSprint(this.project.id, this.newSprint);
+        store.commit('addSprint', {
+          projectId: this.project.id,
+          sprint: this.newSprint
+        });
+
+        this.newSprint = {id: 0, sprintNumber: 0, name: "", startDate: "", endDate: ""};
       }
     }
   }
@@ -140,5 +158,13 @@
 
   .sprints-table__actions {
     width: 50%;
+  }
+
+  .icon--plus {
+    color: var(--health-green)
+  }
+
+  .icon--plus:hover {
+    cursor: pointer;
   }
 </style>

@@ -1,7 +1,7 @@
 <template>
 <main class="grid">
   <table 
-    v-if="hasSprints"
+    v-if="project.sprints"
     class="grid__item healthcheck-table">
     <colgroup>
       <col class="healthcheck-table__criteria" span="1">
@@ -11,7 +11,7 @@
       <tr>
         <th></th>
         <th
-          v-for="(team, i) in project.teams"
+          v-for="(team, i) in currentSprint.teams"
           :key="i">
           {{ team.name }}
         </th>
@@ -40,7 +40,7 @@
   </table>
 
   <footer
-    v-if="hasSprints"
+    v-if="project.sprints"
     class="grid__item footer">
     <section class="footer__action-bar">
       <button
@@ -62,8 +62,8 @@
 
 
 <script>
-import FirebaseService from '../utils/firebase/firebase-service.js';
-import TeamStatus from './TeamStatus';
+  import FirebaseService from '../utils/firebase/firebase-service.js';
+  import TeamStatus from './TeamStatus';
   import store from '../store/'
 
 export default {
@@ -94,11 +94,7 @@ export default {
 
   computed: {
     currentSprint: function() {
-      return this.project.sprints[this.project.sprints.length -1];
-    },
-
-    hasSprints: function() {
-      return this.project.sprints && this.project.sprints.length > 0;
+      return _.findLast(_.orderBy(this.project.sprints, "sprintNumber", "asc"))
     }
   },
 
