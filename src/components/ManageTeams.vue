@@ -83,11 +83,6 @@
             name: 'Save',
             class: 'btn-primary',
             action: this.save
-          },
-          {
-            name: 'Cancel',
-            class: 'btn-secondary',
-            action: () => this.showModal = false
           }
         ]
       }

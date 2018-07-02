@@ -116,6 +116,7 @@ export default class FirebaseService {
 
   static deleteProject(project) {
     this._delete(`projects/${project.id}`);
+    this._delete(`available_projects/${project.id}`);
   }
 
 
