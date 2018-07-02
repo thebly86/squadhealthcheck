@@ -62,8 +62,8 @@
 
 
 <script>
-import FirebaseService from '../utils/firebase/firebase-service.js';
-import TeamStatus from './TeamStatus';
+  import FirebaseService from '../utils/firebase/firebase-service.js';
+  import TeamStatus from './TeamStatus';
   import store from '../store/'
 
 export default {
