@@ -26,7 +26,7 @@ export default {
     },
 
     hasSprint: function() {
-      return _.isEmpty(this.currentSprint);
+      return !_.isEmpty(this.currentSprint);
     },
 
     criteria() {
@@ -73,7 +73,7 @@ export default {
     -->
 
     <table 
-      v-if="project.sprints"
+      v-if="hasSprint"
       class="grid__item healthcheck-table">
       <colgroup>
         <col class="healthcheck-table__criteria" span="1">

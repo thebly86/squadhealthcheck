@@ -51,7 +51,7 @@
           this.newSprint.teams = _.forEach(this.project.teams, team => team.criteria_values = DEFAULT_CRITERIA);
         }
         
-        FirebaseService.createSprint(this.project.id, this.newSprint);
+        FirebaseService.saveSprint(this.project.id, this.newSprint);
         this.$store.commit('addSprint', {
           projectId: this.project.id,
           sprint: this.newSprint

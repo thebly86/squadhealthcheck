@@ -67,9 +67,7 @@
 
 <template>
   <main class="grid">
-    <table 
-      v-if="project.teams"
-      class="grid__item teams-table">
+    <table class="grid__item teams-table">
       <colgroup>
         <col class="teams-table__name">
         <col class="teams-table__edit">
@@ -81,7 +79,8 @@
         </tr>
       </thead>
       <tbody>
-        <team
+        <team 
+          v-if="project.teams"
           v-for="(team, t) in project.teams"
           :key="t"
           :team="team">
