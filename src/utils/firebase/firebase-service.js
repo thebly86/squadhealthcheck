@@ -67,12 +67,8 @@ export default class FirebaseService {
     return ref.set(data);
   }
 
-  static saveSprint(projectId, sprint, sprintNumber) {
-    const ref = firebase.database().ref(`projects/${projectId}/sprints/${sprintNumber}/teams`);
-    ref.set(sprint.teams);
-  }
 
-  static createSprint(projectId, sprint) {
+  static saveSprint(projectId, sprint) {
     return this._save(`projects/${projectId}/sprints/${sprint.id}`, sprint);
   }
 

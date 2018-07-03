@@ -66,7 +66,13 @@ span {
   color: var(--dark-grey);
   opacity: 0.7;
   cursor: pointer;
-  margin-right: 5px;
+  margin: 5px;
+}
+
+.icon--users {
+  color: var(--dark-grey);
+  opacity: 0.7;
+  cursor: pointer;
 }
 
 .icon--delete {
@@ -75,11 +81,18 @@ span {
   cursor: pointer;
 }
 
-.icon--edit, .icon--delete {
+.icon--close {
+  color: var(--danger);
+  opacity: 0.7;
+  cursor: pointer;
+  margin: 0px 5px;
+}
+
+.icon--edit, .icon--delete, .icon--users {
   font-size: 1.1rem;
 }
 
-.icon--edit:hover, .icon--delete:hover {
+.icon--edit:hover, .icon--delete:hover, .incon--cross:hover {
   opacity: 0.8;
 }
 

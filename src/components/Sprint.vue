@@ -29,7 +29,12 @@
     data: () => ({
       showModal: false,
       showDeleteModal: false,
-      teamToAdd: ""
+      editMode: false,
+      teamToAdd: "",
+      updatedSprint: {
+        startDate: "",
+        endDate: ""
+      }
     }),
 
     computed: {
@@ -67,10 +72,29 @@
         const sprintId = this.sprint.id;
         
         FirebaseService.removeSprint(projectId, sprintId);
-        store.commit('removeSprintFromProject', {
+        this.$store.commit('removeSprintFromProject', {
           projectId,
           sprintId
         });
+      },
+      setUpdateModel() {
+        this.updatedSprint = {
+          startDate: this.sprint.startDate,
+          endDate: this.sprint.endDate
+        }
+        return this.editMode = true;
+      },
+      updateSprint() {
+        this.updatedSprint = {
+          ...this.sprint,
+          startDate: this.updatedSprint.startDate,
+          endDate: this.updatedSprint.endDate
+        };
+
+        FirebaseService.saveSprint(this.project.id, this.updatedSprint);
+        this.$store.commit('addSprint', { projectId: this.project.id, sprint: this.updatedSprint });
+        this.editMode = false;
+        
       }
     },
   }
@@ -81,26 +105,62 @@
     <td>
       <span>{{ sprint.name }}</span>
     </td>
-    <td>
+    <td v-if="!editMode">
       <span>{{ sprint.startDate }}</span>
     </td>
-    <td>
+    <td v-if="!editMode">
       <span>{{ sprint.endDate }}</span>
     </td>
-    <td>
+    <td v-if="!editMode">
       <div class="sprint-actions">
         <a
         @click="showModal = true"
         class="btn-action">
           <i class="icon icon--users fa fa-users"></i>
         </a>
-        <a class="btn-action">
+        <a
+          @click="setUpdateModel"
+          class="btn-action">
           <i class="icon icon--edit fa fa-edit"></i>
         </a>
         <a
           @click="showDeleteModal = true"
           class="btn-action">
           <i class="icon icon--delete fa fa-trash"></i>
+        </a>
+      </div>
+    </td>
+
+    <!-- *********** Edit Mode *********** -->
+    <td v-if="editMode">
+      <span>
+        <input
+          type="date"
+          name="startDate"
+          id="startDate"
+          v-model.trim="updatedSprint.startDate"/>
+      </span>
+    </td>
+    <td v-if="editMode">
+      <span>
+        <input
+          type="date"
+          name="startDate"
+          id="endDate"
+          v-model.trim="updatedSprint.endDate"/>
+      </span>
+    </td>
+    <td v-if="editMode">
+      <div class="sprint-actions">
+        <button
+          @click="updateSprint"
+          class="btn-primary">
+          Update
+        </button>
+        <a
+          @click="editMode = false"
+          class="btn-action">
+          <i class="icon icon--close fa fa-times"></i>
         </a>
       </div>
     </td>
