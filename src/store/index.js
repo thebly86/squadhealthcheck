@@ -40,7 +40,7 @@ export default new Vuex.Store({
       Vue.delete(projects[projectId].sprints[sprintId].teams, teamId)
     },
 
-    addSprint({ projects }, { projectId, sprint}) {
+    addSprint({ projects }, { projectId, sprint }) {
       if(!projects[projectId].sprints) {
         Vue.set(projects[projectId], "sprints", {})
       }

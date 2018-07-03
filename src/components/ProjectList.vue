@@ -47,7 +47,7 @@ export default {
         sprints: {},
         teams: {}
       };
-      FirebaseService.createProject(project);
+      FirebaseService.saveProject(project);
       this.$store.commit('addProject', { project })
 
       // If this is first project to be added, reload:

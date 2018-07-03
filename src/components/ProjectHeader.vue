@@ -18,7 +18,8 @@ export default {
   // Local state
   data: () => ({
     showDeleteModal: false,
-    showEditModal: false
+    showEditModal: false,
+    newProjectName: ""
   }),
 
   computed: {
@@ -39,7 +40,7 @@ export default {
     editActions: function() {
       return [
         {
-          name: 'Save',
+          name: 'Update',
           class: 'btn-primary',
           action: this.editProject
         }
@@ -50,7 +51,10 @@ export default {
   // Non-reactive properties
   methods: {
     editProject() {
-      console.log('edit');
+      this.project.name = this.newProjectName;
+      FirebaseService.saveProject(this.project);
+      this.newProjectName = ""
+      this.showEditModal = false;
 
     },
 
@@ -113,10 +117,10 @@ export default {
       </div>
 
       <Modal
-      v-if="showDeleteModal"
-      title="Delete Project"
-      v-bind:actions="deleteActions"
-      @close="showDeleteModal = false">
+        v-if="showDeleteModal"
+        title="Delete Project"
+        v-bind:actions="deleteActions"
+        @close="showDeleteModal = false">
       <div slot="header" class="text--danger">
 
       </div>
@@ -135,7 +139,8 @@ export default {
       @close="showEditModal = false">
       <div slot="body">
         <form>
-
+          <label for="projectName">Project Name</label>
+          <input v-model.trim="newProjectName" type="text" name="projectName">
         </form>
       </div>
     </Modal>
