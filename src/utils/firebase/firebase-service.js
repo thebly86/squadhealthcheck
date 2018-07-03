@@ -84,7 +84,7 @@ export default class FirebaseService {
     return this._save(`projects/${project.id}/teams/${team.id}`, team);
   }
 
-  static createProject(project) {
+  static saveProject(project) {
     if (_.isObject(project)) {
       this._save(`projects/${project.id}`, project);
     }
