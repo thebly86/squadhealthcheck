@@ -82,7 +82,7 @@
           startDate: this.sprint.startDate,
           endDate: this.sprint.endDate
         }
-        return this.editMode = true;
+        this.editMode = true;
       },
       updateSprint() {
         this.updatedSprint = {
