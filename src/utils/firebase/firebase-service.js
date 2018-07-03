@@ -76,8 +76,8 @@ export default class FirebaseService {
     return this._save(`projects/${projectId}/sprints/${sprintId}/teams/${team.id}`, team);
   }
 
-  static createTeam(project, team) {
-    return this._save(`projects/${project.id}/teams/${team.id}`, team);
+  static saveTeam({ id }, team) {
+    return this._save(`projects/${id}/teams/${team.id}`, team);
   }
 
   static saveProject(project) {

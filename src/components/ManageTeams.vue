@@ -52,7 +52,7 @@
           name: this.newTeamName
         };
 
-        FirebaseService.createTeam(this.project, newTeam);
+        FirebaseService.saveTeam(this.project, newTeam);
         this.$store.commit('addTeamToProject', {
           projectId: this.project.id,
           team: newTeam
@@ -86,33 +86,36 @@
           :key="t"
           :team="team">
         </team>
+        <tr>
+          <td>
+            <span>
+              <input
+                type="text"
+                name="teamName"
+                id="teamName"
+                class="edit-team"
+                placeholder="Team Name"
+                v-model.trim="newTeamName"/>
+            </span>
+          </td>
+          <td>
+            <div class="edit-team-actions sprint-actions">
+              <a
+                @click="this.save"
+                class="btn-action">
+                <i class="icon icon--plus fa fa-plus"></i>
+              </a>
+            </div>
+          </td>
+        </tr>
       </tbody>
     </table>
 
     <footer 
       class="grid__item footer">
       <section class="footer__action-bar">
-        <button 
-          @click="showModal = true"
-          class="btn-primary action-bar__button">
-          ADD TEAM
-        </button>
       </section>
     </footer>
-
-    <!-- ADD TEAM -->
-    <Modal
-      v-if="showModal"
-      title="Add Team"
-      :actions="actions"
-      @close="showModal = false">
-      <div slot="body">
-        <form @submit.prevent="save">
-          <label for="teamName">Team name</label>
-          <input type="text" name="teamName" v-model.trim="newTeamName"/>
-        </form>
-      </div>
-    </Modal>
   </main>
 </template>
 
@@ -126,11 +129,19 @@
   }
 
   .teams-table__name {
-    width: 90%;
+    width: 80%;
     padding-left: 20px;
   }
 
   .teams-table__edit {
-    width: 10%;
+    width: 20%;
+  }
+
+  .edit-team {
+    width: 25%;
+  }
+
+  .edit-team-actions {
+    text-align: right;
   }
 </style>

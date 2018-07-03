@@ -41,7 +41,9 @@
     },
 
     data: () => ({
-      showDeleteModal: false
+      showDeleteModal: false,
+      editMode: false,
+      newTeamName: ""
     }),
 
     methods: {
@@ -64,6 +66,24 @@
           });
           this.showDeleteModal = false
         }
+      },
+      updateTeam() {
+        const updatedTeam = {
+          id: this.team.id,
+          name: this.newTeamName
+        }
+
+        FirebaseService.saveTeam(this.$route.params, updatedTeam);
+        this.$store.commit('addTeamToProject', {
+          projectId: this.$route.params.id,
+          team: updatedTeam
+        });
+
+        return this.editMode = false;
+      },
+      setUpdateModel() {
+        this.newTeamName = this.team.name
+        this.editMode = true
       }
     }
   }
@@ -73,11 +93,24 @@
 <template>
   <tr>
     <td>
-      <span class="team-name">{{ team.name }}</span>
+      <span
+        v-if="!editMode"
+        class="team-name">{{ team.name }}</span>
+      <input
+        v-if="editMode"
+        type="text"
+        name="teamName"
+        id="teamName"
+        class="edit-team"
+        placeholder="Team Name"
+        v-model.trim="newTeamName"/>
     </td>
-    <td class="team-actions">
+    <td
+      v-if="!editMode"
+      class="team-actions">
       <a
         v-if="!sprint"
+        @click="setUpdateModel"
         class="btn-action">
         <i class="icon icon--edit fa fa-edit"></i>
       </a>
@@ -87,6 +120,22 @@
         <i class="icon icon--delete fa fa-trash"></i>
       </a>
     </td>
+
+    <td v-if="editMode">
+      <div class="team-actions">
+        <button
+          @click="updateTeam"
+          class="btn-primary">
+          Update
+        </button>
+        <a
+          @click="editMode = false"
+          class="btn-action">
+          <i class="icon icon--close fa fa-times"></i>
+        </a>
+      </div>
+    </td>
+
     <Modal
       v-if="showDeleteModal"
       title="Delete Team"
