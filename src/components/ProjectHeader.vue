@@ -61,7 +61,7 @@ export default {
     deleteProject() {
       FirebaseService.deleteProject(this.project);
       this.$store.commit('removeProject', { ...this.project })
-      this.$emit('closeTab', this.project);
+      this.$emit('closeProjectTab', this.project);
     }
   }
 }
