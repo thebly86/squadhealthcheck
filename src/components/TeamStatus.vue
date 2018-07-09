@@ -6,13 +6,24 @@
 
         // Interface
         props: {
-            status: Number
+            status: Number,
+            statusChange: Number
         },
 
         // Local state
         data: () => ({
             STATUS
-        })
+        }),
+
+        computed: {
+          hasIncreased() {
+            return this.statusChange === 1;
+          },
+
+          hasDecreased() {
+            return this.statusChange === -1;
+          }
+        }
     }
 </script>
 
@@ -24,6 +35,14 @@
             green: status === STATUS.GREEN
         }"
         class="status">
+          <i 
+            v-if="hasIncreased" 
+            class="icon status__arrow fa fa-arrow-circle-up"
+          />
+          <i 
+            v-if="hasDecreased"
+            class="icon status__arrow fa fa-arrow-circle-down"
+          />
         </div>
 </template>
 
@@ -38,6 +57,12 @@
 
     .status:hover {
         cursor: pointer;
+    }
+
+    .status__arrow {
+      font-size: 14px;
+      margin: 3px 0 0 4px;
+      color: var(--light);
     }
 
     .red {

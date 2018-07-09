@@ -9,6 +9,9 @@ input {
   outline: none;
 }
 
+select {
+  padding: 0px;
+}
 
 button {
   border: none;

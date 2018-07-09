@@ -40,12 +40,6 @@
         if (index > -1) {
           this.tabs.splice(index, 1);
         }
-
-        // Clear any associated session data
-        if (sessionStorage.getItem(id)) {
-          sessionStorage.removeItem(id);
-          sessionStorage.removeItem(`${id}.sprints`);
-        }
         sessionStorage.setItem('tabs', JSON.stringify(this.tabs));
         this.$router.push({ name: 'ProjectList'});
       },

@@ -1,6 +1,8 @@
 <script>
-  import FirebaseService from '../utils/firebase/firebase-service.js';
-  import TeamStatus from './TeamStatus';
+import FirebaseService from '../utils/firebase/firebase-service.js';
+import TeamStatus from './TeamStatus';
+
+import { STATUS } from '../utils/constants/constants'
 
 export default {
   name: 'ManageTeamHealth',
@@ -17,8 +19,17 @@ export default {
   }),
 
   computed: {
-    currentSprint() {
-      return _.findLast(_.orderBy(this.project.sprints, "sprintNumber", "asc"))
+    currentSprint: {
+      get: function () {
+        return this.$store.getters.getCurrentSprint(this.project.id);
+      },
+      set: function(sprint) {
+        this.$store.commit('updateCurrentSprint', { projectId: this.project.id, ...sprint });
+      }
+    },
+
+    latestSprint() {
+      return _.findLast(_.orderBy(this.project.sprints, "sprintNumber", "asc"));
     },
 
     project() {
@@ -26,11 +37,19 @@ export default {
     },
 
     hasSprint: function() {
-      return !_.isEmpty(this.currentSprint);
+      return !_.isEmpty(this.project.sprints);
     },
 
     criteria() {
       return this.$store.getters.getCriteria;
+    }
+  },
+
+  // Events
+  created() {
+    // Set sprint to the latest, if currentSprint not set
+    if (_.isNil(this.currentSprint)) {
+      this.currentSprint = this.latestSprint;
     }
   },
 
@@ -42,35 +61,81 @@ export default {
     },
 
     reset() {
-      this.$emit('reset');
+      // TODO: Reset i
       this.hasChanged = false;
     },
 
     changeStatus(team, key) {
       this.hasChanged = false;
-      if (team.criteria_values[key] === 3) {
-          team.criteria_values[key] = 1;
+      if (team.criteria_values[key] === STATUS.GREEN) {
+          team.criteria_values[key] = STATUS.RED;
       }
       else {
           team.criteria_values[key]++;
       }
       this.hasChanged = true;
     },
+
+    /**
+     * Compares a team's criteria value with the previous sprint value, if it exists, 
+     * to determine whether there was an increase or decrease. 
+     * @returns -1 for decrease, 0 for no change, 1 for increase
+     */
+    getStatusChange(team, key) {
+      // Return 0 if this is the first sprint
+      if (this.currentSprint.sprintNumber === 0) {
+        return 0;
+      }
+
+      // Get the previous sprint
+      const previousSprintNo = parseInt(this.currentSprint.sprintNumber - 1).toString() 
+      const previousSprint = this.getSprintByNumber(previousSprintNo);
+
+      if (!_.isUndefined(previousSprint)) {
+        // Get the two sprint team values to compare
+        const currentVal = team.criteria_values[key];
+        const previousVal = previousSprint.teams[team.id].criteria_values[key];
+
+        if (currentVal === previousVal) {
+          return 0; // No change
+        }
+        else if (currentVal > previousVal) {
+          return 1; // Value increased
+        }
+        else {
+          return -1; // Value decreased
+        }
+      }
+      return 0;
+    },
+
+    getSprintByNumber(sprintNo) {
+      return _.find(this.project.sprints, { sprintNumber: sprintNo });
+    }
   }
 }
 </script>
 
 <template>
   <main class="grid">
-    <!--
-    <header class="grid__item">
-      <select>
-        <option>
-
-        </option>
-      </select>
+    <header 
+      v-if="hasSprint"
+      class="grid__item">
+      <section class="sprint-selection">
+        <label class="sprint-selection__label">Current sprint: </label>
+        <select 
+          v-model="currentSprint"
+          name="sprints"
+          class="sprint-selection__list">
+          <option
+            v-for="(sprint, s) in project.sprints"
+            :key="s"
+            :value="sprint">
+            {{ sprint.name }}
+          </option>
+        </select>
+      </section>
     </header>
-    -->
 
     <table 
       v-if="hasSprint"
@@ -104,7 +169,8 @@ export default {
             :key="t">
             <TeamStatus 
               @click.native="changeStatus(team, k)"
-              :status="team.criteria_values[k]">
+              :status="team.criteria_values[k]"
+              :statusChange="getStatusChange(team, k)">
             </TeamStatus>
           </td>
         </tr>
@@ -161,4 +227,17 @@ export default {
     padding-left: 10px;
   }
 
+  .sprint-selection {
+    margin: 0 15px;
+  }
+
+  .sprint-selection__label {
+    display: inline-block;
+    font-size: 12px;
+    color: var(--dark-grey);
+  }
+
+  .sprint-selection__list {
+    color: red;
+  }
 </style>
