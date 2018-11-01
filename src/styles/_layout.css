@@ -6,7 +6,7 @@
   --breakpoint-xl: 1200px;
 }
 
-main {
+.background--white {
   background-color: var(--light);
 }
 
@@ -53,10 +53,6 @@ main {
   padding: 0px 20px 10px 10px ;
 }
 
-.action-bar {
-  padding: 20px;
-}
-
 .footer__action-bar {
   display: inline-block;
   float: right;
@@ -74,9 +70,9 @@ table {
   color: var(--darker-grey);
 }
 
-thead tr:hover {
+/* thead tr:hover {
   background-color: var(--light);
-}
+} */
 
 th {
   padding-bottom: 5px;
@@ -84,21 +80,68 @@ th {
 }
 
 tr {
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid var(--light-grey);
 }
 
 tr:nth-child(even) {
   background-color: var(--lightest-grey);
 }
 
-tr:hover {
+/* tr:hover {
   background-color: var(--lighter-grey);
+} */
+
+tr:last-of-type:hover {
+  background-color: var(--lightest-grey);
 }
 
 td {
   padding: 5px 0px 0px 0px;
 }
 
+.data-table th {
+  padding: 0px 20px 5px 20px;
+}
+
+.data-table td {
+  padding: 10px 20px;
+}
+
+.row--add {
+  background-color: var(--lightest-grey);
+}
+
+.row__action-bar {
+}
+
+.row__action-bar button {
+  padding: 0;
+  min-width: 0;
+  background-color: inherit;
+}
+
+
+/* List */
+.list {
+  width: 100%;
+}
+
+.list__item {
+  margin: 0;
+  border-bottom: 1px solid var(--light-grey);
+}
+
+.list__item:first-of-type {
+  border-top: 1px solid var(--light-grey);
+}
+
+.list__item:nth-child(even) {
+  background-color: var(--lightest-grey);
+}
+
+.list__item:hover {
+  cursor: pointer;
+}
 
 
 /**

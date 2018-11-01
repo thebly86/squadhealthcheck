@@ -111,13 +111,17 @@ export default {
 
     getSprintByNumber(sprintNo) {
       return _.find(this.project.sprints, { sprintNumber: sprintNo });
+    },
+
+    hasProjectData() {
+      return !_.isEmpty(this.project.teams) && !_.isEmpty(this.project.sprints);
     }
   }
 }
 </script>
 
 <template>
-  <main class="grid">
+  <main class="grid project-data">
     <header 
       v-if="hasSprint"
       class="grid__item">
@@ -137,8 +141,28 @@ export default {
       </section>
     </header>
 
+    <section 
+      v-if="!hasProjectData()"
+      class="grid__item no-data">
+      <p>
+        Add a
+        <router-link 
+          :to="{ name: 'ManageTeams' }"
+          class="no-data__link">
+          team
+        </router-link>
+        and a
+        <router-link
+          :to="{ name: 'ManageSprints' }"
+          class="no-data__link">
+          sprint
+        </router-link>
+        to get started.
+      </p>
+    </section>
+
     <table 
-      v-if="hasSprint"
+      v-if="hasProjectData()"
       class="grid__item healthcheck-table">
       <colgroup>
         <col class="healthcheck-table__criteria" span="1">
@@ -178,7 +202,7 @@ export default {
     </table>
 
     <footer
-      v-if="project.sprints"
+      v-if="hasProjectData()"
       class="grid__item footer">
       <section class="footer__action-bar">
         <button
@@ -199,6 +223,10 @@ export default {
 </template>
 
 <style>
+  .project-data {
+    padding: 10px 0;
+  }
+
   .healthcheck-table {
     color: var(--darker-grey);
     font-size: 13px;

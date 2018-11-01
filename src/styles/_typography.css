@@ -13,8 +13,16 @@ h2 {
 }
 
 h3 {
-  display: inline-block;
+  display: block;
   font-size: 18px;
+  padding: 0;
+  margin: 0;
+}
+
+.subtitle {
+  margin-left: 15px;
+  margin-bottom: 5px;
+  color: var(--darker-grey);
 }
 
 
@@ -29,6 +37,14 @@ span {
 
 .text--danger {
   color: var(--danger);
+}
+
+.error-message {
+  color: var(--danger);
+  padding: 0;
+  margin-top: 0;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 
@@ -88,6 +104,17 @@ span {
   margin: 0px 5px;
 }
 
+.icon--plus {
+  color: var(--health-green);
+  margin-top: 4px;
+  opacity: 0.9;
+}
+
+.icon--plus:hover {
+  cursor: pointer;
+  opacity: 1;
+}
+
 .icon--edit, .icon--delete, .icon--users {
   font-size: 1.1rem;
 }
@@ -123,7 +150,7 @@ ul {
 }
 
 li {
-  display: inline-block;
+  display: block;
   margin-right: 10px;
 }
 

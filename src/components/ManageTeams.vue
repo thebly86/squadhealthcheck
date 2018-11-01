@@ -1,5 +1,6 @@
 <script>
   import FirebaseService from '../utils/firebase/firebase-service.js';
+  import Validator from '../utils/validation/validation.js'
   import Modal from './Modal';
   import Team from "./Team";
 
@@ -8,21 +9,11 @@
 
     // Template dependencies
     components: {
-      Modal,
       Team
-    },
-
-    // Interface
-    props: {
-      project: {
-        type: Object,
-        required: true
-      }
     },
 
     // Local state
     data: () => ({
-      showModal: false,
       newTeamName: ""
     }),
 
@@ -35,13 +26,22 @@
             action: this.save
           }
         ]
+      },
+
+      project() {
+        return this.$store.getters.getProject(this.$route.params.id);
+      },
+
+      validTeam: function() {
+        return !Validator.isEmpty(this.newTeamName) &&
+          Validator.isAlphaNumeric(this.newTeamName) &&
+          !this.hasTeam();
       }
     },
 
     // Events
     created() {
-      if (this.$route.params.showModal === true) 
-        this.showModal = true;
+      console.log(this.project);
     },
 
     // Non-Reactive properties
@@ -58,89 +58,80 @@
           team: newTeam
         });
 
-        this.showModal = false;
         this.newTeamName = "";
+      },
+
+      hasTeam() {
+        return _.find(this.project.teams, { name: this.newTeamName });
       }
     }
   }
 </script>
 
 <template>
-  <main class="grid">
-    <table class="grid__item teams-table">
-      <colgroup>
-        <col class="teams-table__name">
-        <col class="teams-table__edit">
-      </colgroup>
-      <thead>
-        <tr>
-          <th>Team</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <team 
+  <section class="teams">
+    <section>
+      <h3 class="subtitle">Teams</h3>
+      <ul 
+        v-if="project.teams"
+        class="list">
+        <team
           v-if="project.teams"
-          v-for="(team, t) in project.teams"
-          :key="t"
-          :team="team">
+          v-for="team in project.teams"
+          :key="team.id"
+          :team="team"
+          class="list__item">
         </team>
-        <tr>
-          <td>
-            <span>
-              <input
-                type="text"
-                name="teamName"
-                id="teamName"
-                class="edit-team"
-                placeholder="Team Name"
-                v-model.trim="newTeamName"/>
-            </span>
-          </td>
-          <td>
-            <div class="edit-team-actions sprint-actions">
-              <a
-                @click="this.save"
-                class="btn-action">
-                <i class="icon icon--plus fa fa-plus"></i>
-              </a>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+      </ul>
+    </section>
 
-    <footer 
-      class="grid__item footer">
-      <section class="footer__action-bar">
-      </section>
-    </footer>
-  </main>
+    <!-- Add team -->
+    <section class="add-row">
+      <form id="add-team">
+        <input
+          v-model.trim="newTeamName"
+          type="text"
+          name="teamname"
+          id="teamName"
+          placeholder="Enter a new team..."
+          required/>
+      </form>
+      <button
+        @click="save"
+        :disabled="!validTeam"
+        class="btn--inline btn--add-team">
+        <i class="icon icon--plus fa fa-plus"></i>
+      </button>
+    </section>
+    <section 
+      v-if="hasTeam()"
+      class="error">
+      <p class="error-message">This team already exists.</p>
+    </section>
+  </section>
 </template>
 
-<style>
-  .teams-table th {
-    padding: 0px 20px 5px 20px;
+<style scoped>
+  .teams {
+    padding: 5px 0px;
   }
 
-  .teams-table td {
-    padding: 10px 20px;
+  .error {
+    margin-left: 15px;
   }
 
-  .teams-table__name {
-    width: 80%;
-    padding-left: 20px;
+  .add-row {
+    margin: 5px 0px 5px 15px;
+    padding: 8px 0;
   }
 
-  .teams-table__edit {
-    width: 20%;
+  .btn--add-team {
+    position: relative;
+    left: 4%;
+    top: 4px;
   }
-
-  .edit-team {
+  
+  #add-team {
     width: 25%;
-  }
-
-  .edit-team-actions {
-    text-align: right;
   }
 </style>

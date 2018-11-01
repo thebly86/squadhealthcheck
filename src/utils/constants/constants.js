@@ -5,4 +5,4 @@ export const STATUS = {
   GREEN: 3
 }
 
-export const DEFAULT_CRITERIA = Array(10).fill(0);
+export const DEFAULT_CRITERIA = Array(11).fill(0);

@@ -76,7 +76,8 @@ export default {
           <router-link 
             to="health" 
             tag="li" 
-            class="actions__item">
+            class="actions__item"
+            disabled="true">
             <i class="fa fa-heartbeat icon--action"/>
             <span>TEAM HEALTH</span>
           </router-link>
@@ -157,6 +158,7 @@ export default {
   }
 
   .actions__item {
+    display: inline-block;
     cursor: pointer;
     text-decoration: underline;
   }

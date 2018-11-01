@@ -30,11 +30,6 @@
             name: 'Delete',
             class: 'btn-primary btn--danger',
             action: this.deleteTeam
-          }, 
-          {
-            name: 'Cancel',
-            class: 'btn-secondary',
-            action: () => this.showDeleteModal = false
           }
         ]
       }
@@ -46,6 +41,18 @@
       newTeamName: ""
     }),
 
+    // Events
+    watch: {
+      editMode: function() {
+        if (this.editMode) {
+          this.newTeamName = this.team.name;
+        } else {
+          this.newTeamName = "";
+        }
+      }
+    },
+
+    // Non-reactive properties
     methods: {
       deleteTeam() {
         const projectId = this.$route.params.id;
@@ -67,6 +74,7 @@
           this.showDeleteModal = false
         }
       },
+
       updateTeam() {
         const updatedTeam = {
           id: this.team.id,
@@ -81,61 +89,56 @@
 
         return this.editMode = false;
       },
+
       setUpdateModel() {
         this.newTeamName = this.team.name
         this.editMode = true
       }
     }
+
+
   }
 </script>
 
 
 <template>
-  <tr>
-    <td>
-      <span
-        v-if="!editMode"
-        class="team-name">{{ team.name }}</span>
-      <input
-        v-if="editMode"
-        type="text"
-        name="teamName"
-        id="teamName"
-        class="edit-team"
-        placeholder="Team Name"
-        v-model.trim="newTeamName"/>
-    </td>
-    <td
-      v-if="!editMode"
-      class="team-actions">
-      <a
-        v-if="!sprint"
-        @click="setUpdateModel"
-        class="btn-action">
-        <i class="icon icon--edit fa fa-edit"></i>
-      </a>
-      <a
-        @click="showDeleteModal = true"
-        class="btn-action">
-        <i class="icon icon--delete fa fa-trash"></i>
-      </a>
-    </td>
-
-    <td v-if="editMode">
-      <div class="team-actions">
+  <li class="team">
+    <section v-if="!editMode">
+      <span>{{ team.name }}</span>
+      <section class="team-actions">
+        <button
+          @click="editMode = true"
+          class="btn--inline">
+          <i class="icon icon--edit fa fa-edit"></i>
+        </button>
+        <button
+          @click="showDeleteModal = true"
+          class="btn--inline">
+          <i class="icon icon--delete fa fa-trash"></i>
+        </button>
+      </section>
+    </section>
+    <section v-if="editMode">
+      <form id="update-team">
+        <input
+          v-model.trim="newTeamName"
+          type="text"
+          name="teamName"
+          id="editTeamName"/>
+      </form>
+      <div class="edit-actions">
         <button
           @click="updateTeam"
           class="btn-primary">
-          Update
+          Save
         </button>
-        <a
+        <button
           @click="editMode = false"
-          class="btn-action">
-          <i class="icon icon--close fa fa-times"></i>
-        </a>
+          class="btn-secondary">
+          Cancel
+        </button>
       </div>
-    </td>
-
+    </section>
     <Modal
       v-if="showDeleteModal"
       title="Delete Team"
@@ -149,11 +152,19 @@
         </p>
       </div>
     </Modal>
-  </tr>
+  </li>
 </template>
 
 
 <style>
+.team {
+  padding: 8px 15px;
+}
+
+.team:hover .team-actions {
+  visibility: visible;
+}
+
 .team-name {
   padding: 2px 2px;
 }
@@ -161,14 +172,17 @@
 .team-actions {
   text-align: right;
   padding: 3px;
-}
-
-tr:hover .btn-action {
+  margin-left: 25%;
   display: inline-block;
+  visibility: hidden;
 }
 
-.btn-action {
-  display: inline-block;
+.edit-actions {
+  display: inline-block; 
+  margin-left: 5%;
 }
 
+#update-team {
+  width: 25%;
+}
 </style>

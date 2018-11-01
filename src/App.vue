@@ -63,15 +63,8 @@
           <i class="fa fa-heartbeat"/>
         </div>
         <h1>Squad Health Check</h1>
-        <project-nav 
-          @closeTab="closeTab"
-          :tabs="tabs">
-        </project-nav>
       </header>
-      <router-view 
-        @closeTab="closeTab"
-        @openTab="openTab">
-      </router-view>
+      <router-view></router-view>
     </div>
   </div>
 </template>

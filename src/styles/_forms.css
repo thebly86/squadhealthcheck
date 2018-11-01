@@ -1,12 +1,40 @@
+form {
+  display: inline-block;
+}
+
 label {
   display: block;
   margin: 5px 0px;
 }
 
+/* Input */
 input {
   padding: 5px;
   width: 97%;
+}
+
+input[type=text] {
   outline: none;
+  padding: 8px;
+  border: 1px solid #DDDDDD;
+  color: var(--dark-grey);
+  min-width: 300px;
+}
+
+input[type=text]:focus {
+  box-shadow: 0 0 5px (81, 203, 238, 1);
+}
+
+input[type=date] {
+  padding: 2px;
+}
+
+.invalid {
+  border: 1px solid var(--danger);
+}
+
+.valid {
+  border: 1px solid var(--health-green);
 }
 
 select {
@@ -73,4 +101,10 @@ button:last-of-type {
 
 .selectable:hover {
   opacity: 0.8;
+}
+
+.btn--inline {
+  padding: 0;
+  min-width: 0;
+  background-color: inherit;
 }

@@ -13,14 +13,6 @@
       Modal
     },
 
-    // Interface
-    props: {
-      project: {
-        type: Object,
-        required: true
-      }
-    },
-
     // Local state
     data: () => ({
       title: "Manage Sprints",
@@ -39,7 +31,11 @@
 
         return !_.isEmpty(this.project.sprints) ?
           parseInt(currentSprint.sprintNumber) + 1 : 1;
-      }
+      },
+
+      project() {
+        return this.$store.getters.getProject(this.$route.params.id);
+      },
     },
 
     // Non-Reactive properties
@@ -67,7 +63,7 @@
   <main class="grid">
     <table
       v-if="project"
-      class="grid__item sprints-table">
+      class="grid__item data-table">
       <colgroup>
         <col class="sprints-table__sprint">
         <col class="sprints-table__dates" span="2">
@@ -141,14 +137,6 @@
 </template>
 
 <style>
-  .sprints-table th {
-    padding: 0px 20px 5px 20px;
-  }
-
-  .sprints-table td {
-    padding: 10px 20px;
-  }
-
   .sprints-table__sprint {
     width: 25%;
   }
@@ -159,13 +147,5 @@
 
   .sprints-table__actions {
     width: 50%;
-  }
-
-  .icon--plus {
-    color: var(--health-green)
-  }
-
-  .icon--plus:hover {
-    cursor: pointer;
   }
 </style>

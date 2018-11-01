@@ -45,9 +45,9 @@
         </span>
         <slot name="header"></slot>
       </header>
-      <main class="modal__body">
+      <section class="modal__body">
         <slot name="body"></slot>
-      </main>
+      </section>
       <footer class="modal__footer">
         <div class="modal__buttons">
           <button
@@ -127,7 +127,8 @@
 }
 
 .modal__title {
-  margin: 10px;
+  margin: 0;
+  padding: 10px;
+  display: inline-block;
 }
-
 </style>

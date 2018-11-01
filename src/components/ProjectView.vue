@@ -28,14 +28,25 @@
     // Events
     created() {
       this.getCriteria();
-      
+
       // Persists the current sprint correctly on navigation or refreshing the app.
       this.$store.commit('updateCurrentSprint', 
         { projectId: this.project.id, ...this.latestSprint });
     },
 
-    beforeMount() {
-      this.$router.push({ name: 'ManageTeamHealth' });
+    mounted() {
+      if (this.hasProjectData()) 
+      {
+        this.$router.push({ name: 'ManageTeamHealth' });
+      }
+      else if (_.isEmpty(this.project.teams)) 
+      {
+        this.$router.push({ name: 'ManageTeams' });
+      }
+      else if (_.isEmpty(this.project.sprints)) 
+      {
+        this.$router.push({ name: 'ManageSprints' });
+      }
     },
 
     // Non-Reactive properties
@@ -70,6 +81,10 @@
         }
         let teamKey = _.camelCase(team);
         this.project.teams[teamKey] = team;
+      },
+
+      hasProjectData() {
+        return !_.isEmpty(this.project.teams) && !_.isEmpty(this.project.sprints);
       }
     }
   }
@@ -84,27 +99,8 @@
       v-if="project">
     </ProjectHeader>
 
-    <section 
-      v-if="!project.teams"
-      class="grid__item no-data">
-      <p>
-        <router-link 
-          :to="{ name: 'ManageTeams', params: { showModal: true }}"
-          class="no-data__link">
-          Add a team
-        </router-link>
-        to get started.
-      </p>
-    </section>
-
-    <router-view
-      @teamAdded="updateTeams"
-      @createSprint="addSprint"
-      :project="project"
-      class="grid__item"></router-view>
-    <router-view
-      :project="project"
-      name="manageTeams"></router-view>
+    <router-view class="grid__item"></router-view>
+    <router-view name="manageTeams"></router-view>
     <router-view name="manageSprints"></router-view>
   </main>
 </template>

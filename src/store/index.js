@@ -30,7 +30,7 @@ export default new Vuex.Store({
     /* INITIALISE */
     initialiseProjects(state) {
       FirebaseService.getProjects()
-        .then((result) => state.projects = result)
+        .then((result) =>  state.projects = result ? result : {});
     },
 
     initialiseCriteria(state) {
@@ -39,8 +39,8 @@ export default new Vuex.Store({
     },
 
     /* ADD/EDIT */
-    addProject({ projects }, { project }) {
-      Vue.set(projects, project.id, project);
+    addProject(state, { project }) {
+      Vue.set(state.projects, project.id, project);
     },
 
     addSprint({ projects }, { projectId, sprint }) {
@@ -52,7 +52,7 @@ export default new Vuex.Store({
 
     addTeamToProject({ projects }, { projectId, team }) {
       if(!projects[projectId].teams) {
-        Vue.set(projects[projectId], 'teams', {})
+        Vue.set(projects[projectId], 'teams', [])
       }
       Vue.set(projects[projectId].teams, [team.id], team)
     },
