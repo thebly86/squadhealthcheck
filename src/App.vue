@@ -1,6 +1,5 @@
 <script>
   import * as firebase from "firebase";
-  import ProjectNav from "./components/ProjectNav";
   import FirebaseService from './utils/firebase/firebase-service';
   import store from './store/'
   import "./styles/main.css";
@@ -11,10 +10,6 @@
     // Template dependencies
     store, 
     
-    components: {
-      ProjectNav
-    },
-
     // Local state
     data: () => ({
       tabs: []
@@ -25,32 +20,6 @@
       FirebaseService.initialiseDatabase();
       this.$store.commit('initialiseProjects');
       this.$store.commit('initialiseCriteria');
-
-      // Open previously opened tabs:
-      if (sessionStorage.getItem('tabs')) {
-        this.tabs = JSON.parse(sessionStorage.getItem('tabs'));
-      }
-    },
-
-    // Non-Reactive properties
-    methods: {
-      closeTab({ id }) {
-        // Remove tab from list of open tabs
-        const index = _.findIndex(this.tabs, { id });
-        if (index > -1) {
-          this.tabs.splice(index, 1);
-        }
-        sessionStorage.setItem('tabs', JSON.stringify(this.tabs));
-        this.$router.push({ name: 'ProjectList'});
-      },
-
-      openTab(tab) {
-        if (!_.find(this.tabs, { id: tab.id })) {
-          this.tabs.push(tab); 
-          sessionStorage.setItem('tabs', JSON.stringify(this.tabs));
-        }
-        this.$router.push({ name: 'ProjectView', params: { id: tab.id}});
-      }
     }
   }
 </script>
@@ -76,10 +45,10 @@
     -moz-osx-font-smoothing: grayscale;
     text-align: left;
     color: var(--dark-grey);
-    background-color: #f2f2f2;
+    background-color: var(--lighter-grey);
   }
 
   body {
-    background-color: #f2f2f2;
+    background-color: var(--lighter-grey);
   }
 </style>

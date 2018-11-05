@@ -6,10 +6,6 @@
   --breakpoint-xl: 1200px;
 }
 
-.background--white {
-  background-color: var(--light);
-}
-
 .container {
   width: 100%;
   padding-right: 15px;
@@ -44,9 +40,22 @@
 
 
 /* */
+main {
+  background-color: var(--light);
+}
+
 .header {
   padding: 20px;
-  border-bottom: 5px solid #f2f2f2;
+  display: flex;
+  border-bottom: 5px solid var(--lighter-grey);
+}
+
+.action-bar {
+  margin-left: auto;
+}
+
+.action-bar__item {
+
 }
 
 .footer {
@@ -70,149 +79,26 @@ table {
   color: var(--darker-grey);
 }
 
-/* thead tr:hover {
-  background-color: var(--light);
-} */
-
-th {
-  padding-bottom: 5px;
-  font-weight: 600;
-}
-
-tr {
-  border-bottom: 1px solid var(--light-grey);
-}
-
-tr:nth-child(even) {
-  background-color: var(--lightest-grey);
-}
-
-/* tr:hover {
-  background-color: var(--lighter-grey);
-} */
-
-tr:last-of-type:hover {
-  background-color: var(--lightest-grey);
-}
-
-td {
-  padding: 5px 0px 0px 0px;
-}
-
-.data-table th {
-  padding: 0px 20px 5px 20px;
-}
-
-.data-table td {
-  padding: 10px 20px;
-}
-
-.row--add {
-  background-color: var(--lightest-grey);
-}
-
-.row__action-bar {
-}
-
-.row__action-bar button {
-  padding: 0;
-  min-width: 0;
-  background-color: inherit;
-}
-
 
 /* List */
-.list {
+.data-list {
   width: 100%;
 }
 
-.list__item {
-  margin: 0;
+.data-list__item {
+  padding: 20px;
   border-bottom: 1px solid var(--light-grey);
 }
 
-.list__item:first-of-type {
-  border-top: 1px solid var(--light-grey);
+.data-list__item:last-of-type {
+  border-bottom: none;
 }
 
-.list__item:nth-child(even) {
-  background-color: var(--lightest-grey);
+.data-list__item:nth-child(even) {
+  
 }
 
-.list__item:hover {
+.data-list__item:hover {
   cursor: pointer;
-}
-
-
-/**
- * Custom Grid Layout 
- */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  grid-auto-rows: max-content;
-  grid-gap: 10px;
-  width: 100%;
-}
-
-/**
- * Remove the gutters from the grid
- */
- .grid--flush {
-  grid-gap: 0;
-}
-
-/**
- * By default, all grid items will be 100% width
- */
- .grid__item {
-  grid-column-end: span 12;
-}
-
-.u-1\/12 {
-  grid-column-end: span 1;
-}
-
-.u-2\/12 {
-  grid-column-end: span 2;
-}
-
-.u-3\/12 {
-  grid-column-end: span 3;
-}
-
-.u-4\/12 {
-  grid-column-end: span 4;
-}
-
-.u-5\/12 {
-  grid-column-end: span 5;
-}
-
-.u-6\/12 {
-  grid-column-end: span 6;
-}
-
-.u-7\/12 {
-  grid-column-end: span 7;
-}
-
-.u-8\/12 {
-  grid-column-end: span 8;
-}
-
-.u-9\/12 {
-  grid-column-end: span 9;
-}
-
-.u-10\/12 {
-  grid-column-end: span 10;
-}
-
-.u-11\/12 {
-  grid-column-end: span 11;
-}
-
-.u-12\/12 {
-  grid-column-end: span 12;
+  background-color: var(--lightest-grey);
 }

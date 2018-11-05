@@ -1,20 +1,19 @@
 /* Headers */
 h1 {
-  font-size: 30px;
+  font-size: 1.875rem;
   font-weight: lighter;
   color: var(--dark-grey);
   display: inline-block;
 }
 
 h2 {
-  font-size: 24px;
+  font-size: 1.5rem;
   color: var(--health-green);
   margin: 0;
 }
 
 h3 {
-  display: block;
-  font-size: 18px;
+  font-size: 1.125rem;
   padding: 0;
   margin: 0;
 }
@@ -29,6 +28,8 @@ h3 {
 /* Text */
 p {
   font-size: 14px;
+  padding: 0;
+  margin: 0;
 }
 
 span {
@@ -134,10 +135,11 @@ span {
 /* Links */
 a {
   text-decoration: none;
+  color: var(--darker-grey);
 }
 
 a:visited {
-  color: var(--grey);
+  color: var(--darker-grey);
 }
 
 
@@ -151,7 +153,6 @@ ul {
 
 li {
   display: block;
-  margin-right: 10px;
 }
 
 li:last-of-type {
@@ -162,7 +163,7 @@ li:last-of-type {
 /* Data */
 .no-data {
   text-align: center;
-  background: var(--lightest-grey);
+  padding: 20px;
 }
 
 .no-data:last-of-type {

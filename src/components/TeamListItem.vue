@@ -1,9 +1,9 @@
 <script>
-  import FirebaseService from '../utils/firebase/firebase-service.js';
+  import FirebaseService from '@/utils/firebase/firebase-service.js';
   import Modal from './Modal';
 
   export default {
-    name: 'Team',
+    name: 'TeamListItem',
 
     // Template dependencies
     components: {
@@ -102,6 +102,10 @@
 
 
 <template>
+  <section>
+    Test
+  </section>
+  <!--
   <li class="team">
     <section v-if="!editMode">
       <span>{{ team.name }}</span>
@@ -153,6 +157,7 @@
       </div>
     </Modal>
   </li>
+  -->
 </template>
 
 

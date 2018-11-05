@@ -38,29 +38,41 @@
 </script>
 
 <template>
-  <div>
+  <router-link 
+    :to="{ name: 'ManageProject', params: { id: project.id }}"
+    class="project">
     <div class="project__logo">
       <span>{{ projectAcronym }}</span>
     </div>
-    <span>{{ project.name }}</span>
-  </div>
+    <span class="project__name">{{ project.name }}</span>
+  </router-link>
 </template>
 
-<style>
+<style scoped>
+  .project {
+    display: flex;
+    align-items: center;
+  }
+
   .project__logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: 45px;
       height: 45px;
-      margin: 0px 0px 5px 20px;
+      margin-right: 20px;
       text-align: center;
       color: var(--light);
       background: var(--grey);
   }
 
   .project__logo span {
-    position: relative;
-    top: 5px;
-    font-size: 26px;
+    font-size: 1.5rem;
     font-weight: 600;
-    margin: 0 5px;
+    line-height: 45px;
+  }
+
+  .project__name {
+    font-size: 1.1rem;
   }
 </style>

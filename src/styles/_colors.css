@@ -33,3 +33,7 @@
 
   /* Text */
 }
+
+.background--white {
+  background-color: var(--light);
+}

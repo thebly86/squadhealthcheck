@@ -1,9 +1,9 @@
 <script>
-  import FirebaseService from '../utils/firebase/firebase-service.js';
-  import ProjectHeader from './ProjectHeader';
+  import FirebaseService from '@/utils/firebase/firebase-service.js';  
+  import ProjectHeader from '@/components/ProjectHeader';
 
   export default {
-    name: 'ProjectView',
+    name: 'ManageProject',
 
     // Template dependencies
     components: {
@@ -91,20 +91,10 @@
 </script>
 
 <template>
-  <main
-    v-if="project"
-    class="grid">
-    <ProjectHeader
-      @closeProjectTab="closeProjectTab"
-      v-if="project">
-    </ProjectHeader>
-
-    <router-view class="grid__item"></router-view>
-    <router-view name="manageTeams"></router-view>
+  <main>
+    <ProjectHeader v-if="project"></ProjectHeader>
+    <router-view></router-view>
+    <router-view name="ManageTeams"></router-view>
     <router-view name="manageSprints"></router-view>
   </main>
 </template>
-
-<style>
-
-</style>

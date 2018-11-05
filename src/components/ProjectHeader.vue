@@ -68,56 +68,54 @@ export default {
 </script>
 
 <template>
-  <header class="grid__item header">
-    <div class="grid">
-      <div class="grid__item u-8/12">
-        <h2 class="project-title">{{ project.name }}</h2>
-        <ul class="actions">
-          <router-link 
-            to="health" 
-            tag="li" 
-            class="actions__item"
-            disabled="true">
-            <i class="fa fa-heartbeat icon--action"/>
-            <span>TEAM HEALTH</span>
-          </router-link>
-          <router-link 
-            to="teams" 
-            tag="li" 
-            class="actions__item">
-            <i class="fa fa-user icon--action"/>
-            <span>TEAMS</span>
-          </router-link>
-          <router-link 
-            to="sprints" 
-            tag="li" 
-            class="actions__item">
-            <i class="fa fa-bolt icon--action"/>
-            <span>SPRINTS</span>
-          </router-link>
-        </ul>
-      </div>
+  <header class="header">
+    <h2 class="project-title">{{ project.name }}</h2>
 
-      <div class="grid__item u-4/12">
-        <div class="action-bar--project">
-          <DropdownMenu title="OPTIONS">
-            <DropdownMenuButton
-              text="Edit project"
-              @click.native="showEditModal = true"
-              :class="['dropdown__button', 'dropdown__button--edit']">
+    <!-- Project navigation -->
+    <ul class="project-nav">
+      <li class="project-nav__item">
+        <router-link
+          to="health">
+          <i class="fa fa-heartbeat icon--action"/>
+          <span>TEAM HEALTH</span>
+        </router-link>
+      </li>
+      <li class="project-nav__item">
+        <router-link
+          to="teams">
+          <i class="fa fa-user icon--action"/>
+          <span>TEAMS</span>
+        </router-link>
+      </li>
+      <li class="project-nav__item">
+        <router-link
+          to="sprints">
+          <i class="fa fa-bolt icon--action"/>
+          <span>SPRINTS</span>
+        </router-link>
+      </li>
+    </ul>
 
-            </DropdownMenuButton>
-            <DropdownMenuButton
-              text="Delete project"
-              @click.native="showDeleteModal = true"
-              :class="['dropdown__button', 'dropdown__button--delete']">
+    <!-- Action bar -->
+    <ul class="action-bar">
+      <li class="action-bar__item">
+        <DropdownMenu title="OPTIONS">
+          <DropdownMenuButton
+            text="Edit project"
+            @click.native="showEditModal = true"
+            :class="['dropdown__button', 'dropdown__button--edit']">
+          </DropdownMenuButton>
+          <DropdownMenuButton
+            text="Delete project"
+            @click.native="showDeleteModal = true"
+            :class="['dropdown__button', 'dropdown__button--delete']">
+          </DropdownMenuButton>
+        </DropdownMenu>
+      </li>
+    </ul>
 
-            </DropdownMenuButton>
-          </DropdownMenu>
-        </div>
-      </div>
-
-      <Modal
+    <!-- Delete project modal -->
+    <Modal
         v-if="showDeleteModal"
         title="Delete Project"
         v-bind:actions="deleteActions"
@@ -133,6 +131,7 @@ export default {
       </div>
     </Modal>
 
+    <!-- Edit project modal -->
     <Modal
       v-if="showEditModal"
       title="Edit Project"
@@ -145,35 +144,26 @@ export default {
         </form>
       </div>
     </Modal>
-    </div>
   </header>
 </template>
 
-<style>
-  .actions {
-    display: inline-block;
-    list-style: none;
-    color: var(--darker-grey);
-    font-weight: 500;
+<style scoped>
+  .project-title {
+    margin-right: 20px;
   }
 
-  .actions__item {
-    display: inline-block;
-    cursor: pointer;
-    text-decoration: underline;
+  .project-nav {
+    display: flex;
+    align-items: center;
+  }
+
+  .project-nav__item {
+    margin-right: 15px;
   }
 
   li.actions__item .tab__link--active {
     color: var(--health-green);
   } 
-
-  .actions__item span:hover {
-    text-decoration: underline;
-  }
-
-  .action-bar--project {
-    float: right;
-  }
 
   .tab__link--active span {
     color: var(--health-green);
@@ -182,10 +172,5 @@ export default {
 
   .tab__link--active .icon--action {
     color: var(--health-green);
-  }
-
-  .project-title {
-    display: inline-block;
-    margin-right: 40px;
   }
 </style>

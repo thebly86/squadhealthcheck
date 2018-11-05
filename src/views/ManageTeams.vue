@@ -1,22 +1,15 @@
 <script>
-  import FirebaseService from '../utils/firebase/firebase-service.js';
-  import Validator from '../utils/validation/validation.js'
-  import Modal from './Modal';
-  import Team from "./Team";
+  import TeamList from "@/components/TeamList";
 
   export default {
     name: 'ManageTeams',
 
     // Template dependencies
     components: {
-      Team
+      TeamList
     },
 
     // Local state
-    data: () => ({
-      newTeamName: ""
-    }),
-
     computed: {
       actions: function() {
         return [
@@ -28,10 +21,6 @@
         ]
       },
 
-      project() {
-        return this.$store.getters.getProject(this.$route.params.id);
-      },
-
       validTeam: function() {
         return !Validator.isEmpty(this.newTeamName) &&
           Validator.isAlphaNumeric(this.newTeamName) &&
@@ -39,13 +28,12 @@
       }
     },
 
-    // Events
-    created() {
-      console.log(this.project);
-    },
+    // Non-reactive properties
+    method: {
+      hasTeam() {
+        return _.find(this.project.teams, { name: this.newTeamName });
+      },
 
-    // Non-Reactive properties
-    methods: {
       save() {
         const newTeam = {
           id: _.camelCase(this.newTeamName),
@@ -59,33 +47,17 @@
         });
 
         this.newTeamName = "";
-      },
-
-      hasTeam() {
-        return _.find(this.project.teams, { name: this.newTeamName });
       }
     }
   }
 </script>
 
 <template>
-  <section class="teams">
-    <section>
-      <h3 class="subtitle">Teams</h3>
-      <ul 
-        v-if="project.teams"
-        class="list">
-        <team
-          v-if="project.teams"
-          v-for="team in project.teams"
-          :key="team.id"
-          :team="team"
-          class="list__item">
-        </team>
-      </ul>
-    </section>
+  <section>
+    <h3>Teams</h3>
+    <team-list></team-list>
 
-    <!-- Add team -->
+    <!-- Add team  -->
     <section class="add-row">
       <form id="add-team">
         <input
@@ -112,26 +84,5 @@
 </template>
 
 <style scoped>
-  .teams {
-    padding: 5px 0px;
-  }
 
-  .error {
-    margin-left: 15px;
-  }
-
-  .add-row {
-    margin: 5px 0px 5px 15px;
-    padding: 8px 0;
-  }
-
-  .btn--add-team {
-    position: relative;
-    left: 4%;
-    top: 4px;
-  }
-  
-  #add-team {
-    width: 25%;
-  }
 </style>

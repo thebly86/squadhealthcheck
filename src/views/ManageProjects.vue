@@ -66,25 +66,22 @@
 </script>
 
 <template>
-  <section class="background--white">
-    <!-- Projects Header -->
+  <main>
     <header class="header">
-      <div>
-        <div>
-          <h2>MANAGE PROJECTS</h2>
-        </div>
-        <div class="action-bar--project-list">
-          <button 
+      <h2>MANAGE PROJECTS</h2>
+      <ul class="action-bar">
+        <li class="action-bar__item">
+          <button
             @click="showModal = true"
-            class="btn-primary action-bar__button">
+            class="btn-primary">
             ADD PROJECT
           </button>
-        </div>
-      </div>
+        </li>
+      </ul>
     </header>
 
     <section 
-      v-if="!hasProjects"
+      v-if="!hasProjects()"
       class="no-data no-data--projects">
       <p>
         <a
@@ -98,7 +95,7 @@
 
     <!-- Project List -->
     <project-list
-      v-if="hasProjects"
+      v-if="hasProjects()"
       :projects="projects">
     </project-list>
 
@@ -109,11 +106,17 @@
       v-bind:actions="actions"
       @close="showModal = false">
       <div slot="body">
-        <form submit.prevent="save">
+        <form 
+          @submit.prevent="save"
+          class="">
           <label>Project name</label>
           <input type="text" name="text" v-model.trim="newProject"/>
         </form>
       </div>
     </Modal>
-  </section>
+  </main>
 </template>
+
+<style scoped>
+
+</style>

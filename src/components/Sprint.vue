@@ -1,6 +1,6 @@
 <script>
   import Modal from './Modal';
-  import Team from "./Team";
+  import Team from "./TeamListItem";
   import FirebaseService from '../utils/firebase/firebase-service';
   import { DEFAULT_CRITERIA } from '../utils/constants/constants';
 

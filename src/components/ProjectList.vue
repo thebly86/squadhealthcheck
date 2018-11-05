@@ -25,17 +25,16 @@ export default {
 </script>
 
 <template>
-  <ul class="list">
+  <ul class="data-list">
     <li
       v-for="project in projects"
       :key="project.id"
-      @click.native="$emit('openTab', project)"
-      class="list__item">
+      class="data-list__item">
       <project-list-item :project=project></project-list-item>
     </li>
   </ul>
 </template>
 
-<style>
+<style scoped>
 
 </style>
