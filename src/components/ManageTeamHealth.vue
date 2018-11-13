@@ -208,7 +208,7 @@ export default {
         <button
           :disabled="!hasChanged"
           @click="save"
-          class="btn-primary">
+          class="btn--primary">
           Save
         </button>
         <button

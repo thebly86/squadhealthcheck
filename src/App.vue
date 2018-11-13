@@ -1,5 +1,6 @@
 <script>
   import * as firebase from "firebase";
+  import AppHeader from '@/views/AppHeader';
   import FirebaseService from './utils/firebase/firebase-service';
   import store from './store/'
   import "./styles/main.css";
@@ -8,18 +9,15 @@
     name: 'App',
 
     // Template dependencies
+    components: {
+      AppHeader
+    },
+
     store, 
-    
-    // Local state
-    data: () => ({
-      tabs: []
-    }),
 
     // Events 
     created() {
       FirebaseService.initialiseDatabase();
-      this.$store.commit('initialiseProjects');
-      this.$store.commit('initialiseCriteria');
     }
   }
 </script>
@@ -27,13 +25,10 @@
 <template>
   <div id="app">
     <div class="container">
-      <header>
-        <div class="app-logo">
-          <i class="fa fa-heartbeat"/>
-        </div>
-        <h1>Squad Health Check</h1>
-      </header>
-      <router-view></router-view>
+      <app-header></app-header>
+      <main>
+        <router-view></router-view>
+      </main>
     </div>
   </div>
 </template>

@@ -27,11 +27,7 @@
 
     // Events
     created() {
-      this.getCriteria();
-
-      // Persists the current sprint correctly on navigation or refreshing the app.
-      this.$store.commit('updateCurrentSprint', 
-        { projectId: this.project.id, ...this.latestSprint });
+      this.$store.dispatch('loadCriteria');
     },
 
     mounted() {

@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import ManageProjects from '@/views/ManageProjects'
+import Dashboard from '@/views/Dashboard'
 import ManageProject from '@/views/ManageProject'
-import ManageSprints from '@/components/ManageSprints'
 import ManageTeams from '@/views/ManageTeams'
+import ManageSprints from '@/components/ManageSprints'
 import ManageTeamHealth from '@/components/ManageTeamHealth'
 
 Vue.use(Router)
@@ -14,8 +14,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Projects',
-      component: ManageProjects
+      name: 'Dashboard',
+      component: Dashboard
     },
     {
       path: '/project/:id',

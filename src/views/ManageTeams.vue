@@ -1,52 +1,71 @@
 <script>
-  import TeamList from "@/components/TeamList";
+  import Validator from '@/utils/validation.js'
+  import DataList from "@/components/DataList";
 
   export default {
     name: 'ManageTeams',
 
     // Template dependencies
     components: {
-      TeamList
+      DataList
     },
 
     // Local state
+    data: () => ({
+      actions: [
+        {
+          name: 'Edit',
+          action: this.updateTeam,
+          class: 'btn--outlined'
+        },
+        {
+          name: 'Delete',
+          action: this.deleteTeam,
+          class: 'btn--danger'
+        }
+      ],
+      keys: ['name'],
+      newTeam: ""
+    }),
+
     computed: {
-      actions: function() {
-        return [
-          {
-            name: 'Save',
-            class: 'btn-primary',
-            action: this.save
-          }
-        ]
+      project() {
+        return this.$store.getters.getProject(this.$route.params.id);
       },
 
-      validTeam: function() {
-        return !Validator.isEmpty(this.newTeamName) &&
-          Validator.isAlphaNumeric(this.newTeamName) &&
-          !this.hasTeam();
+      validTeam() {
+        return !Validator.isEmpty(this.newTeam) &&
+          Validator.isAlphaNumeric(this.newTeam) &&
+          !this.teamExists();
       }
     },
 
+    // Events
+    created() {
+    },
+
     // Non-reactive properties
-    method: {
-      hasTeam() {
-        return _.find(this.project.teams, { name: this.newTeamName });
+    methods: {
+      deleteTeam() {
+        console.log('delete');
+      },
+
+      editTeam() {
+        console.log('edit');
+      },
+
+      teamExists() {
+        return _.find(this.project.teams, { name: this.newTeam });
       },
 
       save() {
-        const newTeam = {
-          id: _.camelCase(this.newTeamName),
-          name: this.newTeamName
+        const team = {
+          id: _.camelCase(this.newTeam),
+          name: this.newTeam
         };
 
-        FirebaseService.saveTeam(this.project, newTeam);
-        this.$store.commit('addTeamToProject', {
-          projectId: this.project.id,
-          team: newTeam
-        });
-
-        this.newTeamName = "";
+        this.$store.dispatch('addTeam', {  projectId: this.project.id, team });
+        this.newTeam = "";
       }
     }
   }
@@ -54,35 +73,47 @@
 
 <template>
   <section>
-    <h3>Teams</h3>
-    <team-list></team-list>
-
-    <!-- Add team  -->
+    <data-list
+      :dataList="project.teams"
+      :keys="keys"
+      :actions="actions">
+    </data-list>
     <section class="add-row">
-      <form id="add-team">
+      <form @submit.prevent="save()">
         <input
-          v-model.trim="newTeamName"
+          v-model.trim="newTeam"
           type="text"
           name="teamname"
-          id="teamName"
-          placeholder="Enter a new team..."
+          placeholder="Enter a new team name"
+          id="team-name-input"
+          :class="{ invalid: teamExists() }"
           required/>
       </form>
+      <div
+        v-if="teamExists()" 
+        class="error">
+        <p class="error-message">This team already exists.</p>
+      </div>
       <button
-        @click="save"
+        v-if="!teamExists()"
+        @click="save()"
         :disabled="!validTeam"
-        class="btn--inline btn--add-team">
-        <i class="icon icon--plus fa fa-plus"></i>
+        class="btn--primary">
+        Add Team
       </button>
-    </section>
-    <section 
-      v-if="hasTeam()"
-      class="error">
-      <p class="error-message">This team already exists.</p>
     </section>
   </section>
 </template>
 
 <style scoped>
+  .add-row {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-top: 1px solid var(--light-grey);
+  }
 
+  .add-row form {
+    margin-right: 20px;
+  }
 </style>

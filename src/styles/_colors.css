@@ -9,7 +9,7 @@
   --light: #FFFFFF;
   --health-green: #2DC798;
   --darker-health-green: #29bc90;
-  --danger: #cc0000;
+  --danger: #e60000;
   --status-green: #00CC6D;
   --status-amber: #FECA4D;
   --status-red: #FF2821;
@@ -18,7 +18,14 @@
 
   /* Buttons */
   --btn-primary-color: var(--health-green);
-  --btn-secondary-color: var(--light-grey);
+  --btn-primary-hover-color: #2abb90;
+
+  --btn-secondary-color: #e5e5e5;
+  --btn-secondary-hover-color: #d9d9d9;
+
+  --btn-danger-color: var(--danger);
+  --btn-danger-hover-color: #cc0000;
+
 
   /* Links */
   --link-inactive-color: var(--grey);

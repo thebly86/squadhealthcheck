@@ -32,18 +32,11 @@ export default class FirebaseService {
     });
   }
 
-  static getAvailableProjects() {
-    return this._get('available_projects').then((snapshot) => snapshot.val());
-  }
-
   static getProjects() {
     return this._get('projects').then((snapshot) => snapshot.val());
   }
 
   static getProject(id) {
-    if (sessionStorage.getItem(id)) {
-      return JSON.parse(sessionStorage.getItem(id));
-    } 
     return this._get(`projects/${id}`).then((snapshot) => snapshot.val());
   }
 
@@ -63,10 +56,15 @@ export default class FirebaseService {
    * Saving Data
    */
   static _save(url, data) {
-    const ref = firebase.database().ref(url);
-    return ref.set(data);
+    const ref = firebase.database().ref(url).push();
+    const refId = ref.key;
+    ref.set(data);
+    return Promise.resolve(refId);
   }
 
+  static addProject(project) {
+    return this._save(`projects`, project);
+  }
 
   static saveSprint(projectId, sprint) {
     return this._save(`projects/${projectId}/sprints/${sprint.id}`, sprint);
@@ -76,14 +74,22 @@ export default class FirebaseService {
     return this._save(`projects/${projectId}/sprints/${sprintId}/teams/${team.id}`, team);
   }
 
-  static saveTeam({ id }, team) {
-    return this._save(`projects/${id}/teams/${team.id}`, team);
+  static addTeamToProject(projectId, team) {
+    return this._save(`projects/${projectId}/teams/${team.id}`, team);
   }
 
-  static saveProject(project) {
-    if (_.isObject(project)) {
-      this._save(`projects/${project.id}`, project);
-    }
+
+  /*
+  * Updating Project
+  */
+
+  static _update(url, data) {
+    const ref = firebase.database().ref(url);
+    return ref.update(data);
+  }
+
+  static updateProject(project, keys) {
+    return this._update(`projects/${project.id}`, _.pick(project, keys), keys);
   }
 
 
@@ -92,17 +98,11 @@ export default class FirebaseService {
    */
   static _delete(url) {
     const ref = firebase.database().ref(url);
-    ref.remove();
-  }
-
-  static deleteProject(project) {
-    this._delete(`projects/${project.id}`);
-    this._delete(`available_projects/${project.id}`);
-  }
-
-  static _remove(url) {
-    const ref = firebase.database().ref(url);
     return ref.remove();
+  }
+
+  static deleteProject(projectId) {
+    return this._delete(`projects/${projectId}`);
   }
 
   static removeTeam(projectId, teamId) {

@@ -78,27 +78,3 @@ table {
   font-weight: 500;
   color: var(--darker-grey);
 }
-
-
-/* List */
-.data-list {
-  width: 100%;
-}
-
-.data-list__item {
-  padding: 20px;
-  border-bottom: 1px solid var(--light-grey);
-}
-
-.data-list__item:last-of-type {
-  border-bottom: none;
-}
-
-.data-list__item:nth-child(even) {
-  
-}
-
-.data-list__item:hover {
-  cursor: pointer;
-  background-color: var(--lightest-grey);
-}

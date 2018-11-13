@@ -15,11 +15,13 @@
       team: {
         type: Object,
         required: true
-      },
+      }
+      /*
       sprint: {
         type: Object,
         required: false
       }
+      */
     },
 
     // Local state
@@ -28,7 +30,7 @@
         return [
           {
             name: 'Delete',
-            class: 'btn-primary btn--danger',
+            class: 'btn--primary btn--danger',
             action: this.deleteTeam
           }
         ]
@@ -43,6 +45,7 @@
 
     // Events
     watch: {
+      /*
       editMode: function() {
         if (this.editMode) {
           this.newTeamName = this.team.name;
@@ -50,10 +53,11 @@
           this.newTeamName = "";
         }
       }
+      */
     },
 
     // Non-reactive properties
-    methods: {
+    methods: {/*
       deleteTeam() {
         const projectId = this.$route.params.id;
         const teamId = this.team.id;
@@ -94,9 +98,8 @@
         this.newTeamName = this.team.name
         this.editMode = true
       }
+      */
     }
-
-
   }
 </script>
 
@@ -133,7 +136,7 @@
       <div class="edit-actions">
         <button
           @click="updateTeam"
-          class="btn-primary">
+          class="btn--primary">
           Save
         </button>
         <button

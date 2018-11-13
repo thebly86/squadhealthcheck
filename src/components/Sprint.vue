@@ -42,7 +42,7 @@
         return [
           {
             name: 'Delete',
-            class: 'btn-primary btn--danger',
+            class: 'btn--primary btn--danger',
             action: this.deleteSprint
           }
         ]
@@ -154,7 +154,7 @@
       <div class="sprint-actions">
         <button
           @click="updateSprint"
-          class="btn-primary">
+          class="btn--primary">
           Update
         </button>
         <a
