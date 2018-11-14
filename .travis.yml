@@ -9,4 +9,4 @@ services:
 - docker build -t squad-docker-tests thebly86/squadhealthcheck .
 
 script:
-- docker run -t squad-docker-tests
+- docker-compose up --build

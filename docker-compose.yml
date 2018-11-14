@@ -1,0 +1,12 @@
+version: '3'
+services:
+  squad-database:
+    # Will build .database/Dockerfile
+    build: ./database/
+    ports:
+     - "3306:3306"
+  squad-cypress:
+    depends_on:
+       - squad-database
+    # Will build the app and run Cypress tests
+    build: .
