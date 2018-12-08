@@ -1,9 +1,9 @@
 sudo: required
 
 services:
-  - docker
+- docker
 
-  before_install:
+before_install:
 - cd thebly86/squadhealthcheck;
 - docker build -t squad-docker-tests .
 
