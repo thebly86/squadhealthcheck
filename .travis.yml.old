@@ -1,11 +1,10 @@
-sudo: required
+sudo: true
+dist: trusty
 
-services:
-- docker
-
-before_install:
-- cd thebly86/squadhealthcheck;
-- docker build -t squad-docker-tests .
-
-script:
-- docker run -it squad-docker-tests
+jobs:
+  include:
+    - stage: build docker image
+      script:
+      - docker build -t squad-health-check-tests .
+    - stage: Run tests
+      script: docker run -it squad-health-check-tests
