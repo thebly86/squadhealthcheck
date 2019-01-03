@@ -6,14 +6,15 @@ RUN mkdir squadhealthcheck
 # Set log level for npm to warn, to prevent excessive logging from Cypress
 RUN npm config set loglevel warn
 
-# Install Cypress and install the FE code
-RUN npm install --save-dev cypress
+# Install Cypress and install the FE code. Setting --silent to prevent excess logging. May need to remove to debug any future issues.
+RUN npm install --silent --save-dev cypress
 
 # Add project files and subdirectories to container directory
 ADD . / squadhealthcheck/
 WORKDIR /squadhealthcheck/
 
-RUN npm install 
+RUN npm audit fix
+RUN npm install --build-from-source
 
 # Start the localhost and run the tests in the container
 CMD echo "Running local build and kicking off Cypress tests" && \
