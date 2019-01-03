@@ -3,6 +3,9 @@ FROM cypress/browsers:chrome69
 # Create container directory to house Project
 RUN mkdir squadhealthcheck
 
+# Set log level for npm to warn, to prevent excessive logging from Cypress
+RUN npm config set loglevel warn
+
 # Install Cypress and install the FE code
 RUN npm install --save-dev cypress
 
