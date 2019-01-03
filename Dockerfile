@@ -1,4 +1,4 @@
-FROM cypress/browsers:chrome69
+FROM cypress/browsers:chrome67
 
 # Create container directory to house Project
 RUN mkdir squadhealthcheck
@@ -13,8 +13,10 @@ RUN npm install --silent --save-dev cypress
 ADD . / squadhealthcheck/
 WORKDIR /squadhealthcheck/
 
-RUN npm audit fix
-RUN npm install --build-from-source
+RUN rm -rf node_modules/
+
+# Install Dependencies
+RUN npm install
 
 # Start the localhost and run the tests in the container
 CMD echo "Running local build and kicking off Cypress tests" && \

@@ -11,4 +11,5 @@ describe('End to end User journey', function()
         // Add a team to the project
         // Setup a sprint
         // Fill out health check
-    }
+    })
+})
