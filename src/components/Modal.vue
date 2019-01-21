@@ -135,4 +135,9 @@
 .custom-buttons {
   margin-right: 5px;
 }
+
+label {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
 </style>

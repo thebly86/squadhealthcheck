@@ -10,22 +10,21 @@ label {
 input {
   padding: 10px 5px;
   margin: 5px 0px;
+  min-width: 200px;
 }
 
 input[type=text] {
   outline: none;
-  border: 1px solid #DDDDDD;
   color: var(--dark-grey);
   width: 98%;
-  min-width: 300px;
+}
+
+input[type=date] {
+
 }
 
 input[type=text]:focus {
   box-shadow: 0 0 5px (81, 203, 238, 1);
-}
-
-input[type=date] {
-  padding: 2px;
 }
 
 .invalid {

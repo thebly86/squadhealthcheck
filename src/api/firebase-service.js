@@ -2,7 +2,7 @@ import firebase from 'firebase';
 
 export default class FirebaseService {
 
-  /**  
+  /**
    * Sets up the firebase connection
    */
   static initialiseDatabase() {
@@ -23,7 +23,7 @@ export default class FirebaseService {
 
   /*
    * Getting Data
-   */ 
+   */
   static _get(url) {
     const ref = firebase.database().ref(url);
     return new Promise(function(resolve, reject) {
@@ -40,18 +40,6 @@ export default class FirebaseService {
     return this._get(`projects/${id}`).then((snapshot) => snapshot.val());
   }
 
-  static getCriteria() {
-    return this._get('criteria').then((snapshot) => snapshot.val());
-  }
-
-  static getSprints(project) {
-    if (sessionStorage.getItem(`${project}.sprints`)) {
-      return JSON.parse(sessionStorage.getItem(`${project}.sprints`));
-    }
-    return this._get(`sprints/${project}`).then((snapshot) => snapshot.val());
-  }
-
-
   /*
    * Saving Data
    */
@@ -66,30 +54,46 @@ export default class FirebaseService {
     return this._save(`projects`, project);
   }
 
-  static saveSprint(projectId, sprint) {
-    return this._save(`projects/${projectId}/sprints/${sprint.id}`, sprint);
+  static addTeamToProject(projectId, team) {
+    return this._save(`projects/${projectId}/teams`, team);
+  }
+
+  static addSprintToProject(projectId, sprint) {
+    return this._save(`projects/${projectId}/sprints`, sprint);
   }
 
   static addTeamToSprint(projectId, sprintId, team) {
     return this._save(`projects/${projectId}/sprints/${sprintId}/teams/${team.id}`, team);
   }
 
-  static addTeamToProject(projectId, team) {
-    return this._save(`projects/${projectId}/teams/${team.id}`, team);
-  }
-
 
   /*
-  * Updating Project
+  * Updating Data
   */
-
   static _update(url, data) {
     const ref = firebase.database().ref(url);
     return ref.update(data);
   }
 
   static updateProject(project, keys) {
-    return this._update(`projects/${project.id}`, _.pick(project, keys), keys);
+    return this._update(`projects/${project.id}`, _.pick(project, keys));
+  }
+
+  static updateTeam(projectId, team, keys) {
+    return this._update(`projects/${projectId}/teams/${team.id}`, _.pick(team, keys));
+  }
+
+  static updateSprints(projectId, sprints) {
+    return this._update(`projects/${projectId}/sprints`, sprints);
+  }
+
+  static updateSprint(projectId, sprintId, sprint) {
+    return this._update(`projects/${projectId}/sprints/${sprintId}`, sprint);
+  }
+
+  // Method to update the main team health data
+  static updateTeamsSprintData(projectId, sprintId, sprint) {
+    return this._update(`projects/${projectId}/sprints/${sprintId}/teams`, sprint.teams);
   }
 
 
@@ -105,14 +109,19 @@ export default class FirebaseService {
     return this._delete(`projects/${projectId}`);
   }
 
-  static removeTeam(projectId, teamId) {
+  static deleteTeamFromProject(projectId, teamId) {
     const url = `projects/${projectId}/teams/${teamId}`;
-    return this._remove(url);
+    return this._delete(url);
   }
 
-  static removeTeamFromSprint(projectId, sprintId, teamId) {
+  static deleteSprintFromProject(projectId, sprintId) {
+    const url = `projects/${projectId}/sprints/${sprintId}`;
+    return this._delete(url);
+  }
+
+  static deleteTeamFromSprint(projectId, sprintId, teamId) {
     const url = `projects/${projectId}/sprints/${sprintId}/teams/${teamId}`;
-    return this._remove(url);
+    return this._delete(url);
   }
 
   static removeSprint(projectId, sprintId) {

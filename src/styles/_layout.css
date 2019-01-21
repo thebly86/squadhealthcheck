@@ -74,7 +74,5 @@ main {
 table {
   border-spacing: 0;
   border-collapse: collapse;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--darker-grey);
+  table-layout: fixed;
 }

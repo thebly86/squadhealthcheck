@@ -1,7 +1,7 @@
 <script>
   import * as firebase from "firebase";
   import AppHeader from '@/views/AppHeader';
-  import FirebaseService from './utils/firebase/firebase-service';
+  import FirebaseService from '@/api/firebase-service';
   import store from './store/'
   import "./styles/main.css";
 
@@ -13,9 +13,9 @@
       AppHeader
     },
 
-    store, 
+    store,
 
-    // Events 
+    // Events
     created() {
       FirebaseService.initialiseDatabase();
     }

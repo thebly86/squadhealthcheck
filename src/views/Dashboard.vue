@@ -14,8 +14,20 @@
 
     /* Local state */
     data: () => ({
-      keys: ['name'],
-      newProject: { name: ""} ,
+      fields: [ 
+        {
+          field: 'name',
+          visible: true,
+        },
+        {
+          field: 'color',
+          visible: false
+        }
+      ],
+      newProject: { 
+        name: '',
+        color: '#cccccc' 
+      },
       modals: {
         add: false,
         edit: false,
@@ -46,7 +58,7 @@
       },
 
       selectedProject: function() {
-        return this.$store.getters.getSelectedProject;
+        return this.$store.getters.getActiveProject;
       },
 
       validProject: function() {
@@ -82,10 +94,10 @@
        * @param {Object} project the project the user selected the action on
        * @param {String} projectId the unique identifier for a project
        */
-      openModal(action, project, projectId) {
-        this.modals[action.type] = true;
+      openModal({ type }, project, projectId) {
+        this.modals[type] = true;
         project.id = projectId;
-        this.$store.commit('updateSelectedProject', _.clone(project));
+        this.$store.commit('setActiveProject', _.clone(project));
       },
 
       /**
@@ -102,7 +114,12 @@
        * @returns {Boolean} true or false
        */
       projectExists(project) {
-        return _.find(this.projects, { name: project.name });
+        // omits the project from the list to check against when editing, so it doesn't validate against itself
+        let projects = this.projects
+        if (project.id) {
+          projects = _.omit(projects, project.id);
+        }
+        return _.find(projects, { name: project.name });
       },
 
       /**
@@ -110,9 +127,13 @@
        * then closes the add modal.
        */
       addProject() {
-        const project = { name: this.newProject.name };
-        this.$store.dispatch('addProject', project);
-        this.newProject.name = "";
+        this.$store.dispatch('addProject', this.newProject);
+
+        // Reset new project and close modal
+        this.newProject = {
+          name: '',
+          color: '#cccccc'
+        };
         this.modals.add = false;
       },
 
@@ -121,7 +142,8 @@
        * then closes the edit modal.
        */
       updateProject() {
-        this.$store.dispatch('updateProject', { ...this.selectedProject, keys: this.keys });
+        const keys = _.map(this.fields, (field) => field.field );
+        this.$store.dispatch('updateProject', { ...this.selectedProject, keys });
         this.modals.edit = false;
       },
 
@@ -140,7 +162,7 @@
 <template>
   <section>
     <header class="header">
-      <h2>Manage Projects</h2>
+      <h2>Dashboard</h2>
       <ul class="action-bar">
         <li class="action-bar__item">
           <button
@@ -169,9 +191,9 @@
     <data-list
       v-if="hasProjects()"
       :dataList="projects"
-      :keys="keys"
+      :fields="fields"
       :actions="actions"
-      @callback="openProject">
+      @onClick="openProject">
     </data-list>
 
      <!-- Add Project modal -->
@@ -182,42 +204,39 @@
       <div slot="body">
         <form 
           @submit.prevent="addProject"
-          class="">
-          <label>Project name</label>
-          <input
-            v-model.trim="newProject.name"
-            type="text" 
-            name="text"/>
+          id="form-add-project">
+          <div>
+            <label for="projectName">Project name</label>
+            <input
+              v-model.trim="newProject.name"
+              type="text" 
+              name="projectName"
+              id="input_add-project-name"/>
+          </div>
+          <div>
+            <label for="projectColor">Project colour</label>
+            <input 
+              v-model="newProject.color"
+              type="color"
+              name="projectColor"
+              value="#CCCCCC"
+              class="project-color"
+              id="input_add-project-color"/>
+          </div>
         </form>
+        <div
+          v-if="projectExists(newProject)"
+          class="error">
+          <p class="error__text">This project already exists.</p>
+        </div>
       </div>
       <div slot="buttons">
         <button
           @click="addProject()"
-          :disabled="!validProject(this.newProject)"
-          class="button btn--primary">
+          :disabled="!validProject(newProject)"
+          class="button btn--primary"
+          id="btn_add-project">
           Save
-        </button>
-      </div>
-    </Modal>
-
-    <!-- Delete project modal -->
-    <Modal
-        v-if="modals.delete"
-        title="Delete Project"
-        @close="modals.delete = false">
-      <div slot="header" class="text--danger">
-      </div>
-      <div slot="body">
-        <p class="text-center">
-          Are you sure you want to delete this project? <br/><br/>
-          <b>All team and sprint data will be lost permanently.</b>
-        </p>
-      </div>
-      <div slot="buttons">
-        <button
-          @click="deleteProject()"
-          class="button btn--danger">
-          Delete
         </button>
       </div>
     </Modal>
@@ -228,17 +247,60 @@
       title="Edit Project"
       @close="modals.edit = false">
       <div slot="body">
-        <form>
-          <label for="projectName">Project Name</label>
-          <input v-model.trim="selectedProject.name" type="text" name="projectName">
+        <form @submit.prevent="updateProject">
+          <div>
+            <label for="projectName">Project name</label>
+            <input 
+              v-model.trim="selectedProject.name" 
+              type="text" 
+              name="projectName"
+              id="input_edit-project-name">
+          </div>
+          <div>
+            <label for="projectColor">Project colour</label>
+            <input 
+              v-model.trim="selectedProject.color" 
+              type="color" 
+              name="projectColor"
+              class="project-color"
+              id="input_edit-project-color">
+          </div>
         </form>
+        <div
+          v-if="projectExists(selectedProject)"
+          class="error">
+          <p class="error__text">This project already exists.</p>
+        </div>
       </div>
       <div slot="buttons">
         <button
           @click="updateProject()"
-          :disabled="!validProject(this.selectedProject)"
-          class="button btn--primary">
+          :disabled="!validProject(selectedProject)"
+          class="button btn--primary"
+          id="btn_update-project">
           Save
+        </button>
+      </div>
+    </Modal>
+
+    <!-- Delete project modal -->
+    <Modal
+        v-if="modals.delete"
+        title="Delete Project"
+        @close="modals.delete = false">
+      <div slot="header" class="text--danger"></div>
+      <div slot="body">
+        <p class="text-center">
+          Are you sure you want to delete this project? <br/><br/>
+          <b>All team and sprint data will be lost permanently.</b>
+        </p>
+      </div>
+      <div slot="buttons">
+        <button
+          @click="deleteProject()"
+          class="button btn--danger"
+          id="btn_delete-project">
+          Delete
         </button>
       </div>
     </Modal>
@@ -249,5 +311,14 @@
   .data-list-item:hover {
     cursor: pointer;
     background-color: var(--lightest-grey);
+  }
+
+  .project-color {
+    -webkit-appearance: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    min-width: 50px;
+    min-height: 50px;
   }
 </style>

@@ -39,7 +39,11 @@ span {
   color: var(--danger);
 }
 
-.error-message {
+.error {
+  display: flex;
+}
+
+.error__text {
   color: var(--danger);
   padding: 0;
   margin-top: 0;

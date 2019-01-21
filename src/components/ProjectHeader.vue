@@ -1,5 +1,5 @@
 <script>
-import FirebaseService from '../utils/firebase/firebase-service.js';
+import FirebaseService from '@/api/firebase-service.js';
 
 import DropdownMenu from './DropdownMenu';
 import DropdownMenuButton from './DropdownMenuButton';
@@ -50,14 +50,20 @@ export default {
 
   // Non-reactive properties
   methods: {
-    
+    projectColor(property) {
+      return { [property]: this.project.color };
+    },
   }
 }
 </script>
 
 <template>
   <header class="header">
-    <h2 class="project-title">{{ project.name }}</h2>
+    <h2
+      :style="projectColor('color')" 
+      class="project-title">
+      {{ project.name }}
+    </h2>
 
     <!-- Project navigation -->
     <ul class="project-nav">
@@ -100,16 +106,20 @@ export default {
     margin-right: 15px;
   }
 
+  .project-nav__item:hover {
+    text-decoration: underline;
+  }
+
   li.actions__item .tab__link--active {
-    color: var(--health-green);
+    color: var(--dark-grey);
   } 
 
   .tab__link--active span {
-    color: var(--health-green);
+    color: var(--dark-grey);
     text-decoration: underline;
   }
 
   .tab__link--active .icon--action {
-    color: var(--health-green);
+    color: var(--dark-grey);
   }
 </style>

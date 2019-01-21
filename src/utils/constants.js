@@ -1,5 +1,5 @@
 export const STATUS = {
-  NOT_SET: 0,
+  EMPTY: 0,
   RED: 1,
   AMBER: 2,
   GREEN: 3

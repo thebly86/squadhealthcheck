@@ -1,6 +1,8 @@
 <script>
-  import FirebaseService from '@/utils/firebase/firebase-service.js';  
+  import FirebaseService from '@/api/firebase-service.js';
   import ProjectHeader from '@/components/ProjectHeader';
+
+  import criteria from '@/data/criteria.json';
 
   export default {
     name: 'ManageProject',
@@ -27,22 +29,11 @@
 
     // Events
     created() {
-      this.$store.dispatch('loadCriteria');
+      this.$store.commit('initialiseCriteria', criteria);
     },
 
     mounted() {
-      if (this.hasProjectData()) 
-      {
-        this.$router.push({ name: 'ManageTeamHealth' });
-      }
-      else if (_.isEmpty(this.project.teams)) 
-      {
-        this.$router.push({ name: 'ManageTeams' });
-      }
-      else if (_.isEmpty(this.project.sprints)) 
-      {
-        this.$router.push({ name: 'ManageSprints' });
-      }
+      this.$router.push({ name: 'ManageTeamHealth' });
     },
 
     // Non-Reactive properties
@@ -87,10 +78,11 @@
 </script>
 
 <template>
-  <main>
+  <section>
     <ProjectHeader v-if="project"></ProjectHeader>
     <router-view></router-view>
-    <router-view name="ManageTeams"></router-view>
+    <router-view name="ManageTeams">
+    </router-view>
     <router-view name="manageSprints"></router-view>
-  </main>
+  </section>
 </template>

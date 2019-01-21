@@ -1,4 +1,6 @@
 <script>
+  import dayjs from 'dayjs';
+
   export default {
     name: 'DataListItem',
 
@@ -9,7 +11,7 @@
         required: true
       },
 
-      keys: {
+      fields: {
         type: Array,
         required: true
       },
@@ -21,6 +23,16 @@
 
       actions: {
         type: Array,
+        required: false
+      },
+
+      showIcon: {
+        type: Boolean,
+        required: false
+      },
+
+      color: {
+        type: String,
         required: false
       }
     },
@@ -46,48 +58,76 @@
       }
     },
 
-    // Events 
-    created() {
-     
-    },
-
     // Non-Reactive properties
     methods: {
-      
+      iconColor(color) {
+        return { background: color };
+      },
+
+      isDate(field) {
+        const regex = RegExp(/^\d{4}-\d{2}-\d{2}$/);
+        return regex.test(field);
+      },
+
+      formatDate(date) {
+        return dayjs(date).format('DD MMM YYYY');
+      },
+
+      setCssProperty(property, color) {
+        const tinycolor = require('tinycolor2');
+
+        if (color) {
+          return { [property]: color };
+        }
+        else {
+          return { [property]: tinycolor(this.color).setAlpha(0.5) };
+        }
+      },
     }
   }
 </script>
 
 <template>
-  <li>
-    <div 
-      v-if="item.name"
-      class="data-list-item__icon">
-      {{ icon }}
+  <li class="data-list-item">
+    <div class="data-list-view">
+      <div
+        v-if="item.name"
+        class="data-list-view__icon"
+        :style="setCssProperty('background', item.color)">
+        {{ icon }}
+      </div>
+      <div class="field-list">
+        <div
+          v-for="field in fields"
+          :key="field.field"
+          class="field-list__item">
+          <span v-if="field.visible && !isDate(item[field.field])">
+            {{ item[field.field] || '-' }}
+          </span>
+          <span v-if="field.visible && isDate(item[field.field])">
+            {{ formatDate(item[field.field]) }}
+          </span>
+        </div>
+      </div>
+      <ul
+        v-if="actions"
+        @click.stop
+        class="action-list">
+        <li
+          v-for="(action, index) in actions"
+          :key="index"
+          class="action-list__item">
+          <button
+            @click="action.action(action, item, itemId)"
+            :class="action.class"
+            class="button"
+            :id="`button-${action.type}${itemId}`">
+            <span>{{ action.name }}</span>
+            <i></i>
+          </button>
+        </li>
+      </ul>
     </div>
-    <span
-      v-for="key in keys"
-      :key=key
-      class="data-list-item__field">
-      {{ item[key] }}
-    </span>
-    <ul 
-      v-if="actions"
-      @click.stop
-      class="action-list">
-      <li 
-        v-for="(action, key) in actions"
-        :key="key"
-        class="action-list__item">
-        <button
-          @click="action.action(action, item, itemId)"
-          :class="action.class"
-          class="button">
-          <span>{{ action.name }}</span>
-          <i></i>
-        </button>
-      </li>
-    </ul>
   </li>
 </template>
 
@@ -116,7 +156,13 @@
     cursor: pointer;
   }
 
-  .data-list-item__icon {
+  .data-list-view {
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  .data-list-view__icon {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -131,8 +177,13 @@
       line-height: 45px;
   }
 
-  .data-list-item__field {
+  .field-list {
+    display: flex;
     font-size: 1.1rem;
+  }
+
+  .field-list__item {
+    min-width: 230px;
   }
 
   .action-list {
@@ -151,5 +202,4 @@
   .action-list__item:last-of-type {
     margin-right: 0;
   }
-
 </style>

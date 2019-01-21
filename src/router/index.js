@@ -3,8 +3,8 @@ import Router from 'vue-router'
 import Dashboard from '@/views/Dashboard'
 import ManageProject from '@/views/ManageProject'
 import ManageTeams from '@/views/ManageTeams'
-import ManageSprints from '@/components/ManageSprints'
-import ManageTeamHealth from '@/components/ManageTeamHealth'
+import ManageSprints from '@/views/ManageSprints'
+import ManageTeamHealth from '@/views/ManageTeamHealth'
 
 Vue.use(Router)
 
