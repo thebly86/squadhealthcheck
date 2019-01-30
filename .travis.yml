@@ -1,0 +1,10 @@
+sudo: required
+
+services:
+  - docker
+
+install:
+  - docker build -t squad-docker-tests .
+
+script:
+  - docker run -it squad-docker-tests
