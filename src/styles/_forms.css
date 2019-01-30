@@ -1,18 +1,48 @@
-label {
-  display: block;
-  margin: 5px 0px;
+form {
+  
 }
 
+label {
+  display: block;
+}
+
+/* Input */
 input {
-  padding: 5px;
-  width: 97%;
+  padding: 10px 5px;
+  margin: 5px 0px;
+  min-width: 200px;
+}
+
+input[type=text] {
   outline: none;
+  color: var(--dark-grey);
+  width: 98%;
+}
+
+input[type=date] {
+
+}
+
+input[type=text]:focus {
+  box-shadow: 0 0 5px (81, 203, 238, 1);
+}
+
+.invalid {
+  border: 1px solid var(--danger);
+}
+
+.valid {
+  border: 1px solid var(--health-green);
 }
 
 select {
   padding: 0px;
 }
 
+
+/*
+* Buttons
+*/
 button {
   border: none;
   padding: 10px 20px;
@@ -29,48 +59,54 @@ button:disabled {
   opacity: 0.5;
 }
 
-button:last-of-type {
-  margin-right: 0;  
+button span {
+  font-size: 12px;
 }
 
-.btn-primary {
+.btn--primary {
   background-color: var(--btn-primary-color);
   color: var(--light);
-  margin-right: 5px;
 }
 
-.btn-primary:hover {
-  background-color: var(--darker-health-green);
+.btn--primary:hover {
+  background-color: var(--btn-primary-hover-color);
 }
 
-.btn-secondary {
+.btn--secondary {
   background-color: var(--btn-secondary-color);
   color: var(--dark-grey);
-  opacity: 0.7;
 }
 
-.btn-secondary:hover {
+.btn--secondary:hover {
   background-color: #ccc;
   color: var(--dark-grey);
-  opacity: 0.8;
 }
 
 .btn--danger {
-  background-color: var(--danger);
+  background-color: var(--btn-danger-color);
   color: var(--light);
-  opacity: 0.7;
 }
 
 .btn--danger:hover {
-  background-color: var(--danger);
-  opacity: 0.8;
+  background-color: var(--btn-danger-hover-color);
 }
 
-.selectable {
-  cursor: pointer;
-  opacity: 0.7;
+.clickable:hover {
+  background-color: var(--lightest-grey);
 }
 
-.selectable:hover {
-  opacity: 0.8;
+.btn--inline {
+  display: inline-block;
+  padding: 0;
+  min-width: 0;
+  background-color: inherit;
+}
+
+.btn--outlined {
+  border: 1px solid var(--grey);
+  color: var(--dark-grey);
+}
+
+.btn--outlined:hover {
+  background: var(--lightest-grey);
 }

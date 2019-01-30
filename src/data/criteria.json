@@ -1,0 +1,34 @@
+[ {
+  "icon" : "fa-shopping-cart",
+  "label" : "Delivering Value"
+}, {
+  "icon" : "fa-repeat",
+  "label" : "Easy to Release"
+}, {
+  "icon" : "fa-smile-o",
+  "label" : "Fun"
+}, {
+  "icon" : "fa-medkit",
+  "label" : "Health of Codebase"
+}, {
+  "icon" : "fa-graduation-cap",
+  "label" : "Learning"
+}, {
+  "icon" : "fa-map",
+  "label" : "Mission"
+}, {
+  "icon" : "fa-play",
+  "label" : "Pawns or Players"
+}, {
+  "icon" : "fa-bolt",
+  "label" : "Speed"
+}, {
+  "icon" : "fa-check",
+  "label" : "Suitable Process"
+}, {
+  "icon" : "fa-life-ring",
+  "label" : "Support"
+}, {
+  "icon" : "fa-users",
+  "label" : "Teamwork"
+} ]
