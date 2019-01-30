@@ -1,9 +1,11 @@
 <script>
-  import FirebaseService from '../utils/firebase/firebase-service.js';
-  import ProjectHeader from './ProjectHeader';
+  import FirebaseService from '@/api/firebase-service.js';
+  import ProjectHeader from '@/components/ProjectHeader';
+
+  import criteria from '@/data/criteria.json';
 
   export default {
-    name: 'ProjectView',
+    name: 'ManageProject',
 
     // Template dependencies
     components: {
@@ -27,14 +29,10 @@
 
     // Events
     created() {
-      this.getCriteria();
-      
-      // Persists the current sprint correctly on navigation or refreshing the app.
-      this.$store.commit('updateCurrentSprint', 
-        { projectId: this.project.id, ...this.latestSprint });
+      this.$store.commit('initialiseCriteria', criteria);
     },
 
-    beforeMount() {
+    mounted() {
       this.$router.push({ name: 'ManageTeamHealth' });
     },
 
@@ -70,45 +68,21 @@
         }
         let teamKey = _.camelCase(team);
         this.project.teams[teamKey] = team;
+      },
+
+      hasProjectData() {
+        return !_.isEmpty(this.project.teams) && !_.isEmpty(this.project.sprints);
       }
     }
   }
 </script>
 
 <template>
-  <main
-    v-if="project"
-    class="grid">
-    <ProjectHeader
-      @closeProjectTab="closeProjectTab"
-      v-if="project">
-    </ProjectHeader>
-
-    <section 
-      v-if="!project.teams"
-      class="grid__item no-data">
-      <p>
-        <router-link 
-          :to="{ name: 'ManageTeams', params: { showModal: true }}"
-          class="no-data__link">
-          Add a team
-        </router-link>
-        to get started.
-      </p>
-    </section>
-
-    <router-view
-      @teamAdded="updateTeams"
-      @createSprint="addSprint"
-      :project="project"
-      class="grid__item"></router-view>
-    <router-view
-      :project="project"
-      name="manageTeams"></router-view>
+  <section>
+    <ProjectHeader v-if="project"></ProjectHeader>
+    <router-view></router-view>
+    <router-view name="ManageTeams">
+    </router-view>
     <router-view name="manageSprints"></router-view>
-  </main>
+  </section>
 </template>
-
-<style>
-
-</style>

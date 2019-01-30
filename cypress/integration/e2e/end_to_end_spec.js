@@ -2,8 +2,7 @@ describe('End to end User journey', function()
 {
     var newProjectName = 'Cypress E2E Test';
     var newTeamName = "Team 1";
-    var startDate = "01/01/2001";
-    var endDate = "07/01/2001";
+    var healthCount = 0;
 
     beforeEach(function() {
         cy.visit('');
@@ -29,7 +28,7 @@ describe('End to end User journey', function()
         .click();
 
         // Go to newly created team
-        cy.get(this.element.projectList)
+        cy.get(this.element.homePage.projectList)
         .children()
         .contains('.data-list-view__icon', 'CE')
         .click();
@@ -63,7 +62,7 @@ describe('End to end User journey', function()
         // cy.get(this.element.sprintPage.sprintEndDate)
         // .type(endDate);
 
-        cy.get(this.element.projectListElement.buttons)
+        cy.get(this.element.homePage.projectListElement.buttons)
         .click();
         
         // Fill out health check
@@ -71,18 +70,61 @@ describe('End to end User journey', function()
         .children()
         .contains('span', 'TEAM HEALTH')
         .click();
+
+        cy.get(this.element.healthPage.healthRadioButton)
+        .each(($el) => {
+            if(healthCount === 0) {
+                cy.wrap($el).click();
+                healthCount++;
+            }
+            else if(healthCount === 1) {
+                cy.wrap($el).click();
+                cy.wrap($el).click();
+                healthCount++;
+            }
+            else {
+                cy.wrap($el).click();
+                cy.wrap($el).click();
+                cy.wrap($el).click();
+                healthCount = 0;
+            }
+        });
+
+        // Save the changes
+        cy.get(this.element.healthPage.healthSaveButton)
+        .click();
+
+        //Reset the counter 
+        var healthColour = 0;
+
+        // Check each radio button is assigned the correct value
+        cy.get(this.element.healthPage.healthRadioButton)
+        .each(($el) => {
+            if(healthColour === 0) {
+                cy.wrap($el).should('have.css', 'background-color', 'rgb(255, 51, 0)');
+                healthColour++;
+            }
+            else if(healthColour === 1) {
+                cy.wrap($el).should('have.css', 'background-color', 'rgb(255, 204, 51)');
+                healthColour++;
+            }
+            else {
+                cy.wrap($el).should('have.css', 'background-color', 'rgb(0, 204, 102)');
+                healthColour = 0;
+            }
+        });
     })
 
     after(function() {
         // Deletes new project
         cy.visit('');
-        cy.get(this.element.projectList)
+        cy.get(this.element.homePage.projectList)
         .contains('.data-list-view__icon', 'CE')
         .parent()
         .as('project');
 
         cy.get('@project')
-        .find(this.element.projectListElement.buttons)
+        .find(this.element.homePage.projectListElement.buttons)
         .contains('span', 'Delete')
         .click();
 

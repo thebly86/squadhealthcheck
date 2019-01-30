@@ -7,9 +7,11 @@
         "newProjectButton": "section > header button.btn--primary",
         "projectNavigation": ".project-nav__item"
     },
-    "projectList": ".data-list-item",
-    "projectListElement": {
+    "homePage": {
+        "projectList": ".data-list-item",
+        "projectListElement": {
         "buttons": "button"
+        }
     },
     "teamPage": {
         "teamInputField": "#team-name-input",
@@ -19,6 +21,11 @@
         "sprintNumberField": "#add-sprint-sprintNumber",
         "sprintStartDate": "#add-sprint-startDate",
         "sprintEndDate": "#add-sprint-endDate"
+    },
+    "healthPage": {
+        "healthElementList": ".health-check__row",
+        "healthRadioButton": "[class^=\"status\"]",
+        "healthSaveButton": ".health-check__footer > button.btn--primary"
     },
     "modalElements": {
         "modalHeaderText": ".modal__header h3",

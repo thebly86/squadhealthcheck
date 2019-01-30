@@ -1,5 +1,5 @@
 <script>
-import FirebaseService from '../utils/firebase/firebase-service.js';
+import FirebaseService from '@/api/firebase-service.js';
 
 import DropdownMenu from './DropdownMenu';
 import DropdownMenuButton from './DropdownMenuButton';
@@ -31,7 +31,7 @@ export default {
       return [
         {
           name: 'Delete',
-          class: 'btn-primary btn--danger',
+          class: 'btn--primary btn--danger',
           action: this.deleteProject
         }
       ]
@@ -41,7 +41,7 @@ export default {
       return [
         {
           name: 'Update',
-          class: 'btn-primary',
+          class: 'btn--primary',
           action: this.editProject
         }
       ]
@@ -50,140 +50,76 @@ export default {
 
   // Non-reactive properties
   methods: {
-    editProject() {
-      this.project.name = this.newProjectName;
-      FirebaseService.saveProject(this.project);
-      this.newProjectName = ""
-      this.showEditModal = false;
-
+    projectColor(property) {
+      return { [property]: this.project.color };
     },
-
-    deleteProject() {
-      FirebaseService.deleteProject(this.project);
-      this.$store.commit('removeProject', { ...this.project })
-      this.$emit('closeProjectTab', this.project);
-    }
   }
 }
 </script>
 
 <template>
-  <header class="grid__item header">
-    <div class="grid">
-      <div class="grid__item u-8/12">
-        <h2 class="project-title">{{ project.name }}</h2>
-        <ul class="actions">
-          <router-link 
-            to="health" 
-            tag="li" 
-            class="actions__item">
-            <i class="fa fa-heartbeat icon--action"/>
-            <span>TEAM HEALTH</span>
-          </router-link>
-          <router-link 
-            to="teams" 
-            tag="li" 
-            class="actions__item">
-            <i class="fa fa-user icon--action"/>
-            <span>TEAMS</span>
-          </router-link>
-          <router-link 
-            to="sprints" 
-            tag="li" 
-            class="actions__item">
-            <i class="fa fa-bolt icon--action"/>
-            <span>SPRINTS</span>
-          </router-link>
-        </ul>
-      </div>
+  <header class="header">
+    <h2
+      :style="projectColor('color')" 
+      class="project-title">
+      {{ project.name }}
+    </h2>
 
-      <div class="grid__item u-4/12">
-        <div class="action-bar--project">
-          <DropdownMenu title="OPTIONS">
-            <DropdownMenuButton
-              text="Edit project"
-              @click.native="showEditModal = true"
-              :class="['dropdown__button', 'dropdown__button--edit']">
-
-            </DropdownMenuButton>
-            <DropdownMenuButton
-              text="Delete project"
-              @click.native="showDeleteModal = true"
-              :class="['dropdown__button', 'dropdown__button--delete']">
-
-            </DropdownMenuButton>
-          </DropdownMenu>
-        </div>
-      </div>
-
-      <Modal
-        v-if="showDeleteModal"
-        title="Delete Project"
-        v-bind:actions="deleteActions"
-        @close="showDeleteModal = false">
-      <div slot="header" class="text--danger">
-
-      </div>
-      <div slot="body">
-        <p class="text-center">
-          Are you sure you want to delete this project? <br/><br/>
-          <b>All team and sprint data will be lost permanently.</b>
-        </p>
-      </div>
-    </Modal>
-
-    <Modal
-      v-if="showEditModal"
-      title="Edit Project"
-      :actions="editActions"
-      @close="showEditModal = false">
-      <div slot="body">
-        <form>
-          <label for="projectName">Project Name</label>
-          <input v-model.trim="newProjectName" type="text" name="projectName">
-        </form>
-      </div>
-    </Modal>
-    </div>
+    <!-- Project navigation -->
+    <ul class="project-nav">
+      <li class="project-nav__item">
+        <router-link
+          to="health">
+          <i class="fa fa-heartbeat icon--action"/>
+          <span>TEAM HEALTH</span>
+        </router-link>
+      </li>
+      <li class="project-nav__item">
+        <router-link
+          to="teams">
+          <i class="fa fa-user icon--action"/>
+          <span>TEAMS</span>
+        </router-link>
+      </li>
+      <li class="project-nav__item">
+        <router-link
+          to="sprints">
+          <i class="fa fa-bolt icon--action"/>
+          <span>SPRINTS</span>
+        </router-link>
+      </li>
+    </ul>
   </header>
 </template>
 
-<style>
-  .actions {
-    display: inline-block;
-    list-style: none;
-    color: var(--darker-grey);
-    font-weight: 500;
+<style scoped>
+  .project-title {
+    margin-right: 20px;
   }
 
-  .actions__item {
-    cursor: pointer;
+  .project-nav {
+    display: flex;
+    align-items: center;
+  }
+
+  .project-nav__item {
+    margin-right: 15px;
+  }
+
+  .project-nav__item:hover {
     text-decoration: underline;
   }
 
   li.actions__item .tab__link--active {
-    color: var(--health-green);
+    color: var(--dark-grey);
   } 
 
-  .actions__item span:hover {
-    text-decoration: underline;
-  }
-
-  .action-bar--project {
-    float: right;
-  }
-
   .tab__link--active span {
-    color: var(--health-green);
+    color: var(--dark-grey);
     text-decoration: underline;
   }
 
   .tab__link--active .icon--action {
-    color: var(--health-green);
-  }
-
-  .project-title {
-    display: inline-block;
-    margin-right: 40px;
+    color: var(--dark-grey);
   }
 </style>

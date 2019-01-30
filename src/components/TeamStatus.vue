@@ -1,19 +1,27 @@
 <script>
-    import { STATUS } from '../utils/constants/constants.js'
+    import { STATUS } from '@/utils/constants'
 
     export default {
         name: 'TeamStatus',
 
+        /* Local state */
+        data: () => ({
+          STATUS
+        }),
+
         // Interface
         props: {
-            status: Number,
-            statusChange: Number
+          status: {
+            type: Number,
+            required: false,
+            default: 0
+          },
+          statusChange: {
+            type: Number,
+            required: false,
+            default: 0
+          }
         },
-
-        // Local state
-        data: () => ({
-            STATUS
-        }),
 
         computed: {
           hasIncreased() {
@@ -22,37 +30,39 @@
 
           hasDecreased() {
             return this.statusChange === -1;
-          }
+          },
         }
     }
 </script>
 
 <template>
-    <div 
+    <div
         :class="{
+            empty: status === STATUS.EMPTY,
             red: status === STATUS.RED,
             amber: status === STATUS.AMBER,
             green: status === STATUS.GREEN
         }"
         class="status">
-          <i 
-            v-if="hasIncreased" 
-            class="icon status__arrow fa fa-arrow-circle-up"
+          <i
+            v-if="hasIncreased"
+            class="status__arrow fa fa-arrow-up"
           />
-          <i 
+          <i
             v-if="hasDecreased"
-            class="icon status__arrow fa fa-arrow-circle-down"
+            class="status__arrow fa fa-arrow-down"
           />
         </div>
 </template>
 
 <style>
     .status {
-        width: 20px;
-        height: 20px;
-        border-radius: 10px;
+        width: 24px;
+        height: 24px;
+        border-radius: 12px;
         border: solid 1px #ccc;
         margin: auto;
+        display: flex;
     }
 
     .status:hover {
@@ -60,8 +70,8 @@
     }
 
     .status__arrow {
-      font-size: 14px;
-      margin: 3px 0 0 4px;
+      font-size: 1.1rem;
+      margin: auto;
       color: var(--light);
     }
 
