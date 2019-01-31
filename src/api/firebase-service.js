@@ -1,7 +1,6 @@
-import firebase from 'firebase';
+import firebase from "firebase";
 
 export default class FirebaseService {
-
   /**
    * Sets up the firebase connection
    */
@@ -20,31 +19,33 @@ export default class FirebaseService {
     }
   }
 
-
   /*
    * Getting Data
    */
   static _get(url) {
     const ref = firebase.database().ref(url);
     return new Promise(function(resolve, reject) {
-      const data = ref.once('value');
-      !_.isNil(data) ? resolve(data) : reject(Error('Unable to load data.'));
+      const data = ref.once("value");
+      !_.isNil(data) ? resolve(data) : reject(Error("Unable to load data."));
     });
   }
 
   static getProjects() {
-    return this._get('projects').then((snapshot) => snapshot.val());
+    return this._get("projects").then(snapshot => snapshot.val());
   }
 
   static getProject(id) {
-    return this._get(`projects/${id}`).then((snapshot) => snapshot.val());
+    return this._get(`projects/${id}`).then(snapshot => snapshot.val());
   }
 
   /*
    * Saving Data
    */
   static _save(url, data) {
-    const ref = firebase.database().ref(url).push();
+    const ref = firebase
+      .database()
+      .ref(url)
+      .push();
     const refId = ref.key;
     ref.set(data);
     return Promise.resolve(refId);
@@ -63,13 +64,15 @@ export default class FirebaseService {
   }
 
   static addTeamToSprint(projectId, sprintId, team) {
-    return this._save(`projects/${projectId}/sprints/${sprintId}/teams/${team.id}`, team);
+    return this._save(
+      `projects/${projectId}/sprints/${sprintId}/teams/${team.id}`,
+      team
+    );
   }
 
-
   /*
-  * Updating Data
-  */
+   * Updating Data
+   */
   static _update(url, data) {
     const ref = firebase.database().ref(url);
     return ref.update(data);
@@ -80,7 +83,10 @@ export default class FirebaseService {
   }
 
   static updateTeam(projectId, team, keys) {
-    return this._update(`projects/${projectId}/teams/${team.id}`, _.pick(team, keys));
+    return this._update(
+      `projects/${projectId}/teams/${team.id}`,
+      _.pick(team, keys)
+    );
   }
 
   static updateSprints(projectId, sprints) {
@@ -93,9 +99,11 @@ export default class FirebaseService {
 
   // Method to update the main team health data
   static updateTeamsSprintData(projectId, sprintId, sprint) {
-    return this._update(`projects/${projectId}/sprints/${sprintId}/teams`, sprint.teams);
+    return this._update(
+      `projects/${projectId}/sprints/${sprintId}/teams`,
+      sprint.teams
+    );
   }
-
 
   /**
    * Deleting Data
