@@ -1,0 +1,37 @@
+{
+    "appHeaderElements": {
+        "elementName": "CSS_GOES_HERE",
+        "AppLogo": ".app-logo",
+        "headerText": ".app-header h1",
+        "headerTitle": "section > header h2",
+        "newProjectButton": "section > header button.btn--primary",
+        "projectNavigation": ".project-nav__item"
+    },
+    "homePage": {
+        "projectList": ".data-list-item",
+        "projectListElement": {
+        "buttons": "button"
+        }
+    },
+    "teamPage": {
+        "teamInputField": "#team-name-input",
+        "addTeamButton": "button"
+    },
+    "sprintPage": {
+        "sprintNumberField": "#add-sprint-sprintNumber",
+        "sprintStartDate": "#add-sprint-startDate",
+        "sprintEndDate": "#add-sprint-endDate"
+    },
+    "healthPage": {
+        "healthElementList": ".health-check__row",
+        "healthRadioButton": "[class^=\"status\"]",
+        "healthSaveButton": ".health-check__footer > button.btn--primary"
+    },
+    "modalElements": {
+        "modalHeaderText": ".modal__header h3",
+        "modalProjectNameField": ".modal__body #input_add-project-name",
+        "modalSaveButton": ".modal__footer .btn--primary",
+        "modalCancelButton": ".modal__footer .btn--cancel",
+        "modalDeleteButton": ".modal__footer .btn--danger"
+    }
+}
