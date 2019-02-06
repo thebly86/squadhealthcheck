@@ -15,10 +15,17 @@
     <nav class="site-nav">
       <ul>
         <li>
-          <router-link 
+          <router-link
             :to="{ name: 'Dashboard' }"
             class="site-nav__link">
-            My Projects  
+            My Projects
+          </router-link>
+        </li>
+        <li>
+          <router-link
+            :to="{ name: 'ManageConfig' }"
+            class="site-nav__link">
+            Firebase Config
           </router-link>
         </li>
       </ul>
@@ -31,7 +38,7 @@
     display: flex;
     align-items: center;
   }
- 
+
   .site-nav {
     margin-left: auto;
   }
