@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Dashboard from '@/views/Dashboard'
+import ManageConfig from '@/views/ManageConfig'
 import ManageProject from '@/views/ManageProject'
 import ManageTeams from '@/views/ManageTeams'
 import ManageSprints from '@/views/ManageSprints'
@@ -41,6 +42,11 @@ export default new Router({
           component: ManageSprints
         }
       ]
+    },
+    {
+      path: 'firebaseConfig',
+      name: 'ManageConfig',
+      component: ManageConfig
     }
   ]
 });

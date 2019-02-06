@@ -124,6 +124,14 @@ export default new Vuex.Store({
 
     deleteTeamFromSprint(state, { projectId, sprintId, teamId }) {
       Vue.delete(state.projects[projectId].sprints[sprintId].teams, teamId);
+    },
+
+    resetStore(state) {
+      Vue.set(state, 'projects', {});
+      Vue.set(state, 'criteria', {});
+      Vue.set(state, 'activeSprint', {});
+      Vue.set(state, 'activeProject', {});
+      Vue.set(state, 'activeTeam', {});
     }
   },
 

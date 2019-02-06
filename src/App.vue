@@ -17,7 +17,23 @@
 
     // Events
     created() {
-      FirebaseService.initialiseDatabase();
+      let firebaseConfig = localStorage.getItem('firebaseConfig');
+      firebaseConfig = JSON.parse(firebaseConfig);
+
+      let hasAllConfigValues = false
+
+      for (var key in firebaseConfig) {
+        if (firebaseConfig[key] !== null && firebaseConfig[key] != "") {
+          hasAllConfigValues = true;
+        }
+      }
+
+
+      if (firebaseConfig && hasAllConfigValues) {
+        FirebaseService.initialiseDatabase(firebaseConfig);
+      } else {
+        alert('You do not have a Firebase Config set, please navigate to the config page.');
+      }
     }
   }
 </script>

@@ -5,17 +5,10 @@ export default class FirebaseService {
   /**
    * Sets up the firebase connection
    */
-  static initialiseDatabase() {
-    const config = {
-      apiKey: "AIzaSyBQ9Eo9cpSCRld4vpzjmV1XrgcDiWCE3Hc",
-      authDomain: "team-health-check-9141c.firebaseapp.com",
-      databaseURL: "https://team-health-check-9141c.firebaseio.com/",
-      projectId: "team-health-check-9141c",
-      storageBucket: "team-health-check-9141c.appspot.com",
-      messagingSenderId: "60524480289"
-    };
-
+  static initialiseDatabase(config) {
+    debugger;
     if (!firebase.apps.length) {
+      debugger;
       firebase.initializeApp(config);
     }
   }
