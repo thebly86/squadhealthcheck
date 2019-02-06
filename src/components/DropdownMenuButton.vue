@@ -1,17 +1,16 @@
 <script>
-  export default {
-    name: 'DropdownMenuButton',
+export default {
+  name: "DropdownMenuButton",
 
-    // Interface 
-    props: {
-      text: {
-        type: String,
-        required: true
-      }
+  // Interface
+  props: {
+    text: {
+      type: String,
+      required: true
     }
   }
+};
 </script>
-
 
 <template>
   <button>
@@ -19,24 +18,23 @@
   </button>
 </template>
 
-
 <style>
-  .dropdown__button {
-    display: block;
-    width: 140px;
-    text-align: right;
-  }
+.dropdown__button {
+  display: block;
+  width: 140px;
+  text-align: right;
+}
 
-  .dropdown__button:hover {
-    text-decoration: underline;
-  }
-  
-  .dropdown__button--edit {
-    background-color: var(--light-grey);
-  }
+.dropdown__button:hover {
+  text-decoration: underline;
+}
 
-  .dropdown__button--delete {
-    background-color: var(--danger);
-    color: var(--light);
-  }
+.dropdown__button--edit {
+  background-color: var(--light-grey);
+}
+
+.dropdown__button--delete {
+  background-color: var(--danger);
+  color: var(--light);
+}
 </style>

@@ -1,8 +1,7 @@
-import firebase from 'firebase';
+import firebase from "firebase";
 
 export default class FirebaseService {
-
-  /**  
+  /**
    * Sets up the firebase connection
    */
   static initialiseDatabase() {
@@ -20,44 +19,43 @@ export default class FirebaseService {
     }
   }
 
-
   /*
    * Getting Data
-   */ 
+   */
+
   static _get(url) {
     const ref = firebase.database().ref(url);
     return new Promise(function(resolve, reject) {
-      const data = ref.once('value');
-      !_.isNil(data) ? resolve(data) : reject(Error('Unable to load data.'));
+      const data = ref.once("value");
+      !_.isNil(data) ? resolve(data) : reject(Error("Unable to load data."));
     });
   }
 
   static getAvailableProjects() {
-    return this._get('available_projects').then((snapshot) => snapshot.val());
+    return this._get("available_projects").then(snapshot => snapshot.val());
   }
 
   static getProjects() {
-    return this._get('projects').then((snapshot) => snapshot.val());
+    return this._get("projects").then(snapshot => snapshot.val());
   }
 
   static getProject(id) {
     if (sessionStorage.getItem(id)) {
       return JSON.parse(sessionStorage.getItem(id));
-    } 
-    return this._get(`projects/${id}`).then((snapshot) => snapshot.val());
+    }
+    return this._get(`projects/${id}`).then(snapshot => snapshot.val());
   }
 
   static getCriteria() {
-    return this._get('criteria').then((snapshot) => snapshot.val());
+    return this._get("criteria").then(snapshot => snapshot.val());
   }
 
   static getSprints(project) {
     if (sessionStorage.getItem(`${project}.sprints`)) {
       return JSON.parse(sessionStorage.getItem(`${project}.sprints`));
     }
-    return this._get(`sprints/${project}`).then((snapshot) => snapshot.val());
+    return this._get(`sprints/${project}`).then(snapshot => snapshot.val());
   }
-
 
   /*
    * Saving Data
@@ -67,13 +65,15 @@ export default class FirebaseService {
     return ref.set(data);
   }
 
-
   static saveSprint(projectId, sprint) {
     return this._save(`projects/${projectId}/sprints/${sprint.id}`, sprint);
   }
 
   static addTeamToSprint(projectId, sprintId, team) {
-    return this._save(`projects/${projectId}/sprints/${sprintId}/teams/${team.id}`, team);
+    return this._save(
+      `projects/${projectId}/sprints/${sprintId}/teams/${team.id}`,
+      team
+    );
   }
 
   static saveTeam({ id }, team) {
@@ -85,7 +85,6 @@ export default class FirebaseService {
       this._save(`projects/${project.id}`, project);
     }
   }
-
 
   /**
    * Deleting Data
