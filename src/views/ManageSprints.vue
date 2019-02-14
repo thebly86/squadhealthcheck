@@ -170,45 +170,33 @@ export default {
       :actions="actions"
       :showKeys="true"
       :color="this.project.color"
-    >
-    </data-list>
+    ></data-list>
 
     <!-- Add sprint inline -->
     <section class="add-sprint">
       <form @submit.prevent="addSprint()">
         <div class="field">
-          <label v-if="!hasSprints()" for="sprintNumber">
-            Sprint number
-          </label>
+          <label v-if="!hasSprints()" for="sprintNumber">Sprint number</label>
           <input
             v-model="newSprint.sprintNumber"
             type="number"
             :min="0"
             name="sprintNumber"
             id="add-sprint-sprintNumber"
-          />
+          >
         </div>
         <div class="field">
-          <label v-if="!hasSprints()" for="sprintNumber">
-            Start date
-          </label>
+          <label v-if="!hasSprints()" for="sprintNumber">Start date</label>
           <input
             v-model="newSprint.startDate"
             type="date"
             name="startDate"
             id="add-sprint-startDate"
-          />
+          >
         </div>
         <div class="field">
-          <label v-if="!hasSprints()" for="endDate">
-            End date
-          </label>
-          <input
-            v-model="newSprint.endDate"
-            type="date"
-            name="endDate"
-            id="add-sprint-endDate"
-          />
+          <label v-if="!hasSprints()" for="endDate">End date</label>
+          <input v-model="newSprint.endDate" type="date" name="endDate" id="add-sprint-endDate">
         </div>
       </form>
       <button
@@ -216,9 +204,7 @@ export default {
         :disabled="!validSprint(newSprint)"
         class="btn--primary"
         id="add-sprint-save"
-      >
-        Add Sprint
-      </button>
+      >Add Sprint</button>
     </section>
 
     <!-- Edit project modal -->
@@ -231,8 +217,9 @@ export default {
               v-model="selectedSprint.sprintNumber"
               type="number"
               name="startDate"
+              min="0"
               id="edit-sprint-sprintNumber"
-            />
+            >
           </div>
           <div class="edit-field">
             <label for="startDate">Start date</label>
@@ -241,7 +228,7 @@ export default {
               type="date"
               name="startDate"
               id="edit-sprint-startDate"
-            />
+            >
           </div>
           <div class="edit-field">
             <label for="startDate">End date</label>
@@ -250,7 +237,7 @@ export default {
               type="date"
               name="endDate"
               id="edit-sprint-endDate"
-            />
+            >
           </div>
         </form>
       </div>
@@ -260,33 +247,22 @@ export default {
           :disabled="!validSprint(selectedSprint)"
           class="button btn--primary"
           id="edit-sprint-save"
-        >
-          Save
-        </button>
+        >Save</button>
       </div>
     </Modal>
 
     <!-- Delete sprint modal -->
-    <Modal
-      v-if="modals.delete"
-      title="Delete Sprint"
-      @close="modals.delete = false"
-    >
+    <Modal v-if="modals.delete" title="Delete Sprint" @close="modals.delete = false">
       <div slot="header" class="text--danger"></div>
       <div slot="body">
-        <p class="text-center">
-          Are you sure you want to delete this sprint? <br /><br />
+        <p class="text-center">Are you sure you want to delete this sprint?
+          <br>
+          <br>
           <b>All team data will be lost permanently.</b>
         </p>
       </div>
       <div slot="buttons">
-        <button
-          @click="deleteSprint()"
-          class="button btn--danger"
-          id="delete-sprint"
-        >
-          Delete
-        </button>
+        <button @click="deleteSprint()" class="button btn--danger" id="delete-sprint">Delete</button>
       </div>
     </Modal>
   </section>
