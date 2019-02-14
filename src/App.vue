@@ -1,25 +1,25 @@
 <script>
-  import * as firebase from "firebase";
-  import AppHeader from '@/views/AppHeader';
-  import FirebaseService from '@/api/firebase-service';
-  import store from './store/'
-  import "./styles/main.css";
+import * as firebase from "firebase";
+import AppHeader from "@/views/AppHeader";
+import FirebaseService from "@/api/firebase-service";
+import store from "./store/";
+import "./styles/main.css";
 
-  export default {
-    name: 'App',
+export default {
+  name: "App",
 
-    // Template dependencies
-    components: {
-      AppHeader
-    },
+  // Template dependencies
+  components: {
+    AppHeader
+  },
 
-    store,
+  store,
 
-    // Events
-    created() {
-      FirebaseService.initialiseDatabase();
-    }
+  // Events
+  created() {
+    FirebaseService.initialiseDatabase();
   }
+};
 </script>
 
 <template>
@@ -34,16 +34,16 @@
 </template>
 
 <style>
-  #app {
-    font-family: 'Avenir', Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: left;
-    color: var(--dark-grey);
-    background-color: var(--lighter-grey);
-  }
+#app {
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: left;
+  color: var(--dark-grey);
+  background-color: var(--lighter-grey);
+}
 
-  body {
-    background-color: var(--lighter-grey);
-  }
+body {
+  background-color: var(--lighter-grey);
+}
 </style>

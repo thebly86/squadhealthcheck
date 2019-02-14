@@ -23,7 +23,6 @@ h3 {
   color: var(--darker-grey);
 }
 
-
 /* Text */
 p {
   font-size: 14px;
@@ -32,7 +31,7 @@ p {
 }
 
 span {
-   font-size: 14px;
+  font-size: 14px;
 }
 
 .text--danger {
@@ -51,9 +50,8 @@ span {
   font-weight: bold;
 }
 
-
 /* Text - alignment */
-.text-left { 
+.text-left {
   text-align: left;
 }
 
@@ -62,9 +60,8 @@ span {
 }
 
 .text-center {
-  text-align: center; 
+  text-align: center;
 }
-
 
 /* Icons */
 .icon {
@@ -112,11 +109,15 @@ span {
   color: var(--health-green);
 }
 
-.icon--edit, .icon--delete, .icon--users {
+.icon--edit,
+.icon--delete,
+.icon--users {
   font-size: 1.1rem;
 }
 
-.icon--edit:hover, .icon--delete:hover, .incon--cross:hover {
+.icon--edit:hover,
+.icon--delete:hover,
+.incon--cross:hover {
   opacity: 0.8;
 }
 
@@ -126,7 +127,6 @@ span {
   display: inline-block;
   margin-right: 0.25rem;
 }
-
 
 /* Links */
 a {
@@ -138,14 +138,12 @@ a:visited {
   color: var(--darker-grey);
 }
 
-
 /* Lists */
 ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
-
 
 /* Data */
 .no-data {
