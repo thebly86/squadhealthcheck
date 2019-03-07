@@ -47,7 +47,7 @@ export default {
         sprintId,
         ...sprint
       }));
-      return sprints;
+      return _.orderBy(sprints, sprint => sprint.sprintNumber, ["asc"]);
     },
 
     latestSprint: function() {
@@ -121,10 +121,8 @@ export default {
       }
 
       // Get the previous sprint
-      const previousSprintNo = parseInt(
-        this.currentSprint.sprintNumber - 1
-      ).toString();
-      const previousSprint = this.getSprintByNumber(previousSprintNo);
+      const currentSprintIndex = _.findIndex(this.sprints, this.currentSprint);
+      const previousSprint = this.sprints[currentSprintIndex - 1];
 
       if (previousSprint) {
         const currentVal = this.currentSprint.teams[teamId][key].value;
@@ -193,10 +191,7 @@ export default {
       <!-- Sprint data -->
       <div class="project-health__content">
         <table class="health-check__table">
-          <thead
-            :style="this.setCssProperty('background')"
-            class="health-check__table-header"
-          >
+          <thead :style="this.setCssProperty('background')" class="health-check__table-header">
             <tr class="health-check__headings">
               <th class="health-check__sprint-selection">
                 <select
@@ -210,8 +205,7 @@ export default {
                     :key="sprintId"
                     :value="sprint"
                     :id="`health-check_sprint-${sprint.sprintNumber}`"
-                    >Sprint {{ sprint.sprintNumber }}</option
-                  >
+                  >Sprint {{ sprint.sprintNumber }}</option>
                 </select>
               </th>
               <th
@@ -219,9 +213,7 @@ export default {
                 :key="index"
                 class="health-check__header"
                 :id="`health-check_team-${index}`"
-              >
-                {{ team.name }}
-              </th>
+              >{{ team.name }}</th>
             </tr>
           </thead>
           <tbody>
@@ -232,7 +224,7 @@ export default {
               class="health-check__row"
             >
               <td class="tooltip-target health-check__criteria">
-                <i class="fa icon icon--criteria" :class="criteria.icon" />
+                <i class="fa icon icon--criteria" :class="criteria.icon"/>
                 <span>{{ criteria.label }}</span>
               </td>
               <td
@@ -258,25 +250,16 @@ export default {
 
       <!-- Sprint data actions -->
       <div class="health-check__footer">
-        <button :disabled="!hasChanged" @click="save" class="btn--primary">
-          Save
-        </button>
-        <button :disabled="!hasChanged" @click="reset" class="btn--secondary">
-          Reset
-        </button>
+        <button :disabled="!hasChanged" @click="save" class="btn--primary">Save</button>
+        <button :disabled="!hasChanged" @click="reset" class="btn--secondary">Reset</button>
       </div>
     </section>
 
     <!-- No sprint data section -->
     <section v-if="!hasProjectData()" class="grid__item no-data">
-      <p>
-        Add a
-        <router-link :to="{ name: 'ManageTeams' }" class="no-data__link"
-          >team</router-link
-        >and a
-        <router-link :to="{ name: 'ManageSprints' }" class="no-data__link"
-          >sprint</router-link
-        >to get started.
+      <p>Add a
+        <router-link :to="{ name: 'ManageTeams' }" class="no-data__link">team</router-link>and a
+        <router-link :to="{ name: 'ManageSprints' }" class="no-data__link">sprint</router-link>to get started.
       </p>
     </section>
   </section>
