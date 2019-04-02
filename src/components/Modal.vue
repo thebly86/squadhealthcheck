@@ -1,46 +1,42 @@
 <script>
-  import { mixin as clickaway } from 'vue-clickaway';
+import { mixin as clickaway } from "vue-clickaway";
 
-  export default {
-    name: 'Modal',
+export default {
+  name: "Modal",
 
-    // Composition
-    mixins: [ clickaway ],
+  // Composition
+  mixins: [clickaway],
 
-    // Interface
-    props: {
-      showModal: {
-        type: Boolean,
-      },
-      title: {
-        type: String,
-        required: true 
-      },
-      actions: {
-        type: Array,
-        required: false
-      }
+  // Interface
+  props: {
+    showModal: {
+      type: Boolean
     },
+    title: {
+      type: String,
+      required: true
+    },
+    actions: {
+      type: Array,
+      required: false
+    }
+  },
 
-    // Non-reactive properties
-    methods: {
-      close() {
-        this.$emit('close');
-      }
+  // Non-reactive properties
+  methods: {
+    close() {
+      this.$emit("close");
     }
   }
+};
 </script>
 
 <template>
   <div class="modal">
-    <div 
-      v-on-clickaway="close"
-      class="modal-content">
+    <div v-on-clickaway="close" class="modal-content">
       <header class="modal__header">
         <h3 class="modal__title">{{ title }}</h3>
-        <span 
-          @click="close"
-          class="btn--close">
+        <span @click="close" class="btn--close">
           &times;
         </span>
         <slot name="header"></slot>
@@ -50,13 +46,8 @@
       </section>
       <footer class="modal__footer">
         <div class="modal__buttons">
-          <slot 
-            v-if="!actions"
-            name="buttons">
-          </slot>
-          <button
-            @click="close"
-            class="btn--secondary btn--cancel">
+          <slot v-if="!actions" name="buttons"> </slot>
+          <button @click="close" class="btn--secondary btn--cancel">
             Cancel
           </button>
         </div>
@@ -76,7 +67,7 @@
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgb(0,0,0,0.4);
+  background-color: rgb(0, 0, 0, 0.4);
   z-index: 20;
 }
 
@@ -94,7 +85,7 @@
 }
 
 .btn--cancel {
-  margin-left: 5px
+  margin-left: 5px;
 }
 
 .btn--close:hover,

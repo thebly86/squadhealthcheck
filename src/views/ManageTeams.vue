@@ -1,190 +1,192 @@
 <script>
-  import Vue from 'vue';
+import Vue from "vue";
 
-  import DataList from "@/components/DataList";
-  import Modal from "@/components/Modal";
-  import Validator from '@/utils/validation.js'
+import DataList from "@/components/DataList";
+import Modal from "@/components/Modal";
+import Validator from "@/utils/validation.js";
 
-  export default {
-    name: 'ManageTeams',
+export default {
+  name: "ManageTeams",
 
-    /* Template dependencies */
-    components: {
-      DataList,
-      Modal
+  /* Template dependencies */
+  components: {
+    DataList,
+    Modal
+  },
+
+  /* Local state */
+  data: () => ({
+    fields: [{ field: "name", visible: "true" }],
+    newTeam: { name: "" },
+    modals: {
+      edit: false,
+      delete: false
+    }
+  }),
+
+  computed: {
+    actions: function() {
+      return [
+        {
+          type: "edit",
+          name: "Edit",
+          action: this.openModal,
+          class: "btn--outlined"
+        },
+        {
+          type: "delete",
+          name: "Delete",
+          action: this.openModal,
+          class: "btn--danger"
+        }
+      ];
     },
 
-    /* Local state */
-    data: () => ({
-      fields: [
-        { field: 'name', visible: 'true'}
-      ],
-      newTeam: { name: '' },
-      modals: {
-        edit: false,
-        delete: false
+    criteria: function() {
+      return this.$store.getters.getCriteria;
+    },
+
+    project() {
+      return this.$store.getters.getProject(this.$route.params.id);
+    },
+
+    selectedTeam: function() {
+      return this.$store.getters.getActiveTeam;
+    },
+
+    validTeam: function() {
+      return team =>
+        !this.teamExists(team) &&
+        !Validator.isEmpty(team.name) &&
+        Validator.isAlphaNumeric(team.name);
+    }
+  },
+
+  // Non-reactive properties
+  methods: {
+    /**
+     * @summary method is triggered when user clicks the edit or delete action for
+     * a team; determines which modal to open.
+     * @param {Object} action the action which the user selected 'edit' or 'delete'
+     * @param {Object} team the team the user selected the action on
+     * @param {String} teamId the unique identifier for a team
+     */
+    openModal(action, team, teamId) {
+      this.modals[action.type] = true;
+      team.id = teamId;
+      this.$store.commit("setActiveTeam", _.clone(team));
+    },
+
+    /**
+     * @summary
+     */
+    _addTeamToSprints(teamId) {
+      _.forEach(this.project.sprints, sprint => {
+        if (!sprint.teams) {
+          sprint.teams = {};
+        }
+        sprint.teams[teamId] = this._defaultSprintData();
+      });
+    },
+
+    _deleteTeamFromSprints(teamId) {
+      _.forEach(this.project.sprints, sprint => {
+        if (sprint.teams) {
+          Vue.delete(sprint.teams, teamId);
+        }
+      });
+    },
+
+    _defaultSprintData() {
+      const defaultCriteria = this.criteria.map(criterion => ({
+        criteria: criterion.label,
+        value: 0
+      }));
+      return Array.fill(defaultCriteria, 0, 11);
+    },
+
+    /**
+     * @summary dispatches action to add team to firebase and vuex store
+     */
+    async addTeamToProject() {
+      // This bit added to prevent a submission when a keyboard shortcut is used
+      if (!this.validTeam(this.newTeam)) {
+        return;
       }
-    }),
 
-    computed: {
-      actions: function() {
-        return [
-          {
-            type: 'edit',
-            name: 'Edit',
-            action: this.openModal,
-            class: 'btn--outlined'
-          },
-          {
-            type: 'delete',
-            name: 'Delete',
-            action: this.openModal,
-            class: 'btn--danger'
-          }
-        ]
-      },
+      // Adds team to project and returns the team id
+      const teamId = await this.$store.dispatch("addTeamToProject", {
+        projectId: this.$route.params.id,
+        team: this.newTeam
+      });
 
-      criteria: function() {
-        return this.$store.getters.getCriteria;
-      },
-
-      project() {
-        return this.$store.getters.getProject(this.$route.params.id);
-      },
-
-      selectedTeam: function() {
-        return this.$store.getters.getActiveTeam;
-      },
-
-      validTeam: function() {
-        return (team) => !this.teamExists(team) &&
-          !Validator.isEmpty(team.name) &&
-          Validator.isAlphaNumeric(team.name)
-      },
-    },
-
-    // Non-reactive properties
-    methods: {
-      /**
-       * @summary method is triggered when user clicks the edit or delete action for
-       * a team; determines which modal to open.
-       * @param {Object} action the action which the user selected 'edit' or 'delete'
-       * @param {Object} team the team the user selected the action on
-       * @param {String} teamId the unique identifier for a team
-       */
-      openModal(action, team, teamId) {
-        this.modals[action.type] = true;
-        team.id = teamId;
-        this.$store.commit('setActiveTeam', _.clone(team));
-      },
-
-      /**
-       * @summary
-       */
-      _addTeamToSprints(teamId) {
-        _.forEach(this.project.sprints, (sprint) => {
-          if (!sprint.teams) {
-            sprint.teams = {}
-          }
-          sprint.teams[teamId] = this._defaultSprintData();
-        });
-      },
-
-      _deleteTeamFromSprints(teamId) {
-        _.forEach(this.project.sprints, (sprint) => {
-          if (sprint.teams) {
-            Vue.delete(sprint.teams, teamId);
-          }
-        })
-      },
-
-      _defaultSprintData() {
-        const defaultCriteria = this.criteria.map((criterion) => ({ criteria: criterion.label, value: 0 }));
-        return Array.fill(defaultCriteria, 0, 11);
-      },
-
-      /**
-       * @summary dispatches action to add team to firebase and vuex store
-       */
-      async addTeamToProject() {
-        // This bit added to prevent a submission when a keyboard shortcut is used
-        if (!this.validTeam(this.newTeam)) {
-          return;
-        }
-
-        // Adds team to project and returns the team id
-        const teamId = await this.$store.dispatch('addTeamToProject', {
+      // Adds the new team to any existing sprints
+      if (this.project.sprints) {
+        this._addTeamToSprints(teamId);
+        await this.$store.dispatch("updateSprints", {
           projectId: this.$route.params.id,
-          team: this.newTeam
-        });
-
-        // Adds the new team to any existing sprints
-        if (this.project.sprints) {
-          this._addTeamToSprints(teamId);
-          await this.$store.dispatch('updateSprints', {
-            projectId: this.$route.params.id,
-            sprints: this.project.sprints
-          });
-
-          // We want to reload the project data when a new sprint/team is added
-          this.$store.dispatch('loadProject', {
-            projectId: this.$route.params.id
-          })
-        }
-
-        // Resets the new team to its default
-        this.newTeam = { name: '' };
-      },
-
-      /**
-       * @summary dispatches action to update the selected team in
-       * the current projet, then closes the edit modal.
-       */
-      updateTeam() {
-        this.$store.dispatch('updateTeam', {
-          projectId: this.$route.params.id,
-          ...this.selectedTeam,
-          keys: this.keys
-          });
-        this.modals.edit = false;
-      },
-
-      /**
-       * @summary dispatches action to delete the selected team from the
-       * current project, then closes the delete modal.
-       */
-      deleteTeam() {
-        this.$store.dispatch('deleteTeamFromProject', {
-          projectId: this.$route.params.id,
-          teamId: this.selectedTeam.id,
           sprints: this.project.sprints
         });
 
-        this._deleteTeamFromSprints(this.selectedTeam.id);
-        this.$store.dispatch('updateSprints', {
-          projectId: this.$route.params.id,
-          sprints: this.project.sprints
-        })
-        this.modals.delete = false;
-      },
-
-      /**
-       * @summary checks if a given team already exists in a list of teams
-       * @returns {Boolean} true if it exists, otherwise false
-       */
-      teamExists(team) {
-        return _.find(this.project.teams, { name: team.name });
-      },
-
-      /**
-       * @summary checks if the current project has any teams
-       * @returns {Boolean} true or false
-       */
-      hasTeams() {
-        return !_.isEmpty(this.project.teams);
+        // We want to reload the project data when a new sprint/team is added
+        this.$store.dispatch("loadProject", {
+          projectId: this.$route.params.id
+        });
       }
+
+      // Resets the new team to its default
+      this.newTeam = { name: "" };
+    },
+
+    /**
+     * @summary dispatches action to update the selected team in
+     * the current projet, then closes the edit modal.
+     */
+    updateTeam() {
+      this.$store.dispatch("updateTeam", {
+        projectId: this.$route.params.id,
+        ...this.selectedTeam,
+        keys: this.keys
+      });
+      this.modals.edit = false;
+    },
+
+    /**
+     * @summary dispatches action to delete the selected team from the
+     * current project, then closes the delete modal.
+     */
+    deleteTeam() {
+      this.$store.dispatch("deleteTeamFromProject", {
+        projectId: this.$route.params.id,
+        teamId: this.selectedTeam.id,
+        sprints: this.project.sprints
+      });
+
+      this._deleteTeamFromSprints(this.selectedTeam.id);
+      this.$store.dispatch("updateSprints", {
+        projectId: this.$route.params.id,
+        sprints: this.project.sprints
+      });
+      this.modals.delete = false;
+    },
+
+    /**
+     * @summary checks if a given team already exists in a list of teams
+     * @returns {Boolean} true if it exists, otherwise false
+     */
+    teamExists(team) {
+      return _.find(this.project.teams, { name: team.name });
+    },
+
+    /**
+     * @summary checks if the current project has any teams
+     * @returns {Boolean} true or false
+     */
+    hasTeams() {
+      return !_.isEmpty(this.project.teams);
     }
   }
+};
 </script>
 
 <template>
@@ -194,7 +196,8 @@
       :dataList="project.teams"
       :fields="fields"
       :actions="actions"
-      :color="this.project.color">
+      :color="this.project.color"
+    >
     </data-list>
 
     <!-- Add team inline -->
@@ -206,38 +209,36 @@
           name="teamname"
           placeholder="Enter a new team name"
           id="team-name-input"
-          required/>
+          required
+        />
       </form>
-      <div
-        v-if="teamExists(newTeam)"
-        class="error">
+      <div v-if="teamExists(newTeam)" class="error">
         <p class="error__text">This team already exists.</p>
       </div>
       <button
         v-if="!teamExists(newTeam)"
         @click="addTeamToProject()"
         :disabled="!validTeam(newTeam)"
-        class="btn--primary">
+        class="btn--primary"
+      >
         Add Team
       </button>
     </section>
 
     <!-- Edit project modal -->
-    <Modal
-      v-if="modals.edit"
-      title="Edit Team"
-      @close="modals.edit = false">
+    <Modal v-if="modals.edit" title="Edit Team" @close="modals.edit = false">
       <div slot="body">
         <form @submit.prevent="updateTeam">
           <label for="teamName">Team Name</label>
-          <input v-model.trim="selectedTeam.name" type="text" name="teamName">
+          <input v-model.trim="selectedTeam.name" type="text" name="teamName" />
         </form>
       </div>
       <div slot="buttons">
         <button
           @click="updateTeam()"
           :disabled="!validTeam(selectedTeam)"
-          class="button btn--primary">
+          class="button btn--primary"
+        >
           Save
         </button>
       </div>
@@ -245,21 +246,19 @@
 
     <!-- Delete project modal -->
     <Modal
-        v-if="modals.delete"
-        title="Delete Team"
-        @close="modals.delete = false">
-      <div slot="header" class="text--danger">
-      </div>
+      v-if="modals.delete"
+      title="Delete Team"
+      @close="modals.delete = false"
+    >
+      <div slot="header" class="text--danger"></div>
       <div slot="body">
         <p class="text-center">
-          Are you sure you want to delete this team? <br/><br/>
+          Are you sure you want to delete this team? <br /><br />
           <b>All team data will be lost permanently.</b>
         </p>
       </div>
       <div slot="buttons">
-        <button
-          @click="deleteTeam()"
-          class="button btn--danger">
+        <button @click="deleteTeam()" class="button btn--danger">
           Delete
         </button>
       </div>
@@ -268,15 +267,15 @@
 </template>
 
 <style scoped>
-  .add-team {
-    display: flex;
-    align-items: center;
-    padding: 20px;
-    border-top: 1px solid var(--light-grey);
-  }
+.add-team {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  border-top: 1px solid var(--light-grey);
+}
 
-  .add-team form {
-    display: flex;
-    margin-right: 20px;
-  }
+.add-team form {
+  display: flex;
+  margin-right: 20px;
+}
 </style>

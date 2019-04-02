@@ -38,7 +38,6 @@
   }
 }
 
-
 /* */
 main {
   background-color: var(--light);
@@ -55,18 +54,16 @@ main {
 }
 
 .action-bar__item {
-
 }
 
 .footer {
-  padding: 0px 20px 10px 10px ;
+  padding: 0px 20px 10px 10px;
 }
 
 .footer__action-bar {
   display: inline-block;
   float: right;
 }
-
 
 /**
  * Tables

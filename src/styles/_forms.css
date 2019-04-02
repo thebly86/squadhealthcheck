@@ -1,5 +1,4 @@
 form {
-  
 }
 
 label {
@@ -13,17 +12,16 @@ input {
   min-width: 200px;
 }
 
-input[type=text] {
+input[type="text"] {
   outline: none;
   color: var(--dark-grey);
   width: 98%;
 }
 
-input[type=date] {
-
+input[type="date"] {
 }
 
-input[type=text]:focus {
+input[type="text"]:focus {
   box-shadow: 0 0 5px (81, 203, 238, 1);
 }
 
@@ -38,7 +36,6 @@ input[type=text]:focus {
 select {
   padding: 0px;
 }
-
 
 /*
 * Buttons
