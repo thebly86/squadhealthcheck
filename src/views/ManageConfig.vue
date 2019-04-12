@@ -42,10 +42,8 @@
     methods: {
       updateFirebase() {
         localStorage.removeItem('firebaseConfig');
-        delete this.firebaseConfig.databaseUrl;
         this.$store.commit('resetStore');
         FirebaseService.initialiseDatabase(this.firebaseConfig);
-        debugger;
         localStorage.setItem('firebaseConfig', JSON.stringify(this.firebaseConfig))
       }
     }

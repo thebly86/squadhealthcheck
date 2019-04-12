@@ -127,11 +127,14 @@ export default new Vuex.Store({
     },
 
     resetStore(state) {
-      Vue.set(state, 'projects', {});
-      Vue.set(state, 'criteria', {});
-      Vue.set(state, 'activeSprint', {});
-      Vue.set(state, 'activeProject', {});
-      Vue.set(state, 'activeTeam', {});
+      const defaultState = {
+        projects: {},
+        criteria: {},
+        activeSprint: {},
+        activeProject: {},
+        activeTeam: {}
+      };
+      Object.assign(state, defaultState);
     }
   },
 

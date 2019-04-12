@@ -6,9 +6,7 @@ export default class FirebaseService {
    * Sets up the firebase connection
    */
   static initialiseDatabase(config) {
-    debugger;
     if (!firebase.apps.length) {
-      debugger;
       firebase.initializeApp(config);
     }
   }

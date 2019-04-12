@@ -32,6 +32,7 @@
       if (firebaseConfig && hasAllConfigValues) {
         FirebaseService.initialiseDatabase(firebaseConfig);
       } else {
+        this.$store.commit('resetStore');
         alert('You do not have a Firebase Config set, please navigate to the config page.');
       }
     }

@@ -14,7 +14,7 @@
 
     /* Local state */
     data: () => ({
-      fields: [ 
+      fields: [
         {
           field: 'name',
           visible: true,
@@ -24,9 +24,9 @@
           visible: false
         }
       ],
-      newProject: { 
+      newProject: {
         name: '',
-        color: '#cccccc' 
+        color: '#cccccc'
       },
       modals: {
         add: false,
@@ -64,7 +64,7 @@
       validProject: function() {
         return (project) => !this.projectExists(project) &&
           !Validator.isEmpty(project.name) &&
-          Validator.isAlphaNumeric(project.name) 
+          Validator.isAlphaNumeric(project.name)
       },
     },
 
@@ -74,7 +74,20 @@
      * firebase.
      */
     created() {
-      this.$store.dispatch('loadProjects');
+      let firebaseConfig = localStorage.getItem('firebaseConfig');
+      firebaseConfig = JSON.parse(firebaseConfig);
+
+      let hasAllConfigValues = false
+
+      for (var key in firebaseConfig) {
+        if (firebaseConfig[key] !== null && firebaseConfig[key] != "") {
+          hasAllConfigValues = true;
+        }
+      }
+
+      if (firebaseConfig && hasAllConfigValues) {
+        this.$store.dispatch('loadProjects');
+      }
     },
 
     /* Non-reactive properties */
@@ -174,7 +187,7 @@
       </ul>
     </header>
 
-    <section 
+    <section
       v-if="!hasProjects()"
       class="no-data no-data--projects">
       <p>
@@ -202,20 +215,20 @@
       title="Add Project"
       @close="modals.add = false">
       <div slot="body">
-        <form 
+        <form
           @submit.prevent="addProject"
           id="form-add-project">
           <div>
             <label for="projectName">Project name</label>
             <input
               v-model.trim="newProject.name"
-              type="text" 
+              type="text"
               name="projectName"
               id="input_add-project-name"/>
           </div>
           <div>
             <label for="projectColor">Project colour</label>
-            <input 
+            <input
               v-model="newProject.color"
               type="color"
               name="projectColor"
@@ -250,17 +263,17 @@
         <form @submit.prevent="updateProject">
           <div>
             <label for="projectName">Project name</label>
-            <input 
-              v-model.trim="selectedProject.name" 
-              type="text" 
+            <input
+              v-model.trim="selectedProject.name"
+              type="text"
               name="projectName"
               id="input_edit-project-name">
           </div>
           <div>
             <label for="projectColor">Project colour</label>
-            <input 
-              v-model.trim="selectedProject.color" 
-              type="color" 
+            <input
+              v-model.trim="selectedProject.color"
+              type="color"
               name="projectColor"
               class="project-color"
               id="input_edit-project-color">
