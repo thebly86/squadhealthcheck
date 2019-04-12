@@ -1,42 +1,41 @@
 <script>
-  import * as firebase from "firebase";
-  import AppHeader from '@/views/AppHeader';
-  import FirebaseService from '@/api/firebase-service';
-  import store from './store/'
-  import "./styles/main.css";
+import * as firebase from "firebase";
+import AppHeader from "@/views/AppHeader";
+import FirebaseService from "@/api/firebase-service";
+import store from "./store/";
+import "./styles/main.css";
 
-  export default {
-    name: 'App',
+export default {
+  name: "App",
 
-    // Template dependencies
-    components: {
-      AppHeader
-    },
+  // Template dependencies
+  components: {
+    AppHeader
+  },
 
-    store,
+  store,
 
-    // Events
-    created() {
-      let firebaseConfig = localStorage.getItem('firebaseConfig');
-      firebaseConfig = JSON.parse(firebaseConfig);
+  // Events
+  created() {
+    let firebaseConfig = localStorage.getItem("firebaseConfig");
+    firebaseConfig = JSON.parse(firebaseConfig);
 
-      let hasAllConfigValues = false
+    let hasAllConfigValues = false;
 
-      for (var key in firebaseConfig) {
-        if (firebaseConfig[key] !== null && firebaseConfig[key] != "") {
-          hasAllConfigValues = true;
-        }
-      }
-
-
-      if (firebaseConfig && hasAllConfigValues) {
-        FirebaseService.initialiseDatabase(firebaseConfig);
-      } else {
-        this.$store.commit('resetStore');
-        alert('You do not have a Firebase Config set, please navigate to the config page.');
+    for (var key in firebaseConfig) {
+      if (firebaseConfig[key] !== null && firebaseConfig[key] != "") {
+        hasAllConfigValues = true;
       }
     }
+
+    if (firebaseConfig && hasAllConfigValues) {
+      FirebaseService.initialiseDatabase(firebaseConfig);
+    } else {
+      this.$store.commit('resetStore');
+      alert('You do not have a Firebase Config set, please navigate to the config page.');
+    }
   }
+};
 </script>
 
 <template>
@@ -51,16 +50,16 @@
 </template>
 
 <style>
-  #app {
-    font-family: 'Avenir', Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: left;
-    color: var(--dark-grey);
-    background-color: var(--lighter-grey);
-  }
+#app {
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: left;
+  color: var(--dark-grey);
+  background-color: var(--lighter-grey);
+}
 
-  body {
-    background-color: var(--lighter-grey);
-  }
+body {
+  background-color: var(--lighter-grey);
+}
 </style>

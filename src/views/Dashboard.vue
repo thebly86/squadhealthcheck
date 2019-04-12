@@ -2,16 +2,13 @@
   import DataList from '@/components/DataList';
   import Modal from '@/components/Modal';
   import Validator from '@/utils/validation.js'
-
   export default {
     name: 'Dashboard',
-
     /* Template dependencies */
     components: {
       DataList,
       Modal
     },
-
     /* Local state */
     data: () => ({
       fields: [
@@ -34,7 +31,6 @@
         delete: false
       }
     }),
-
     computed: {
       actions: function() {
         return [
@@ -52,22 +48,18 @@
         }
         ]
       },
-
       projects: function() {
         return this.$store.state.projects;
       },
-
       selectedProject: function() {
         return this.$store.getters.getActiveProject;
       },
-
       validProject: function() {
         return (project) => !this.projectExists(project) &&
           !Validator.isEmpty(project.name) &&
           Validator.isAlphaNumeric(project.name)
       },
     },
-
     /* Events */
     /**
      * @summary when Dashboard first loads, we send a request to load all the available projects from
@@ -89,7 +81,6 @@
         this.$store.dispatch('loadProjects');
       }
     },
-
     /* Non-reactive properties */
     methods: {
       /**
@@ -98,7 +89,6 @@
       openProject(id) {
         this.$router.push({ name: 'ManageProject', params: { id }});
       },
-
       /**
        * @summary method is triggered when user clicks the edit or delete action for
        * a project - determining which modal to open and updating the selected project
@@ -112,7 +102,6 @@
         project.id = projectId;
         this.$store.commit('setActiveProject', _.clone(project));
       },
-
       /**
        * @summary checks if there are any projects in the vuex store
        * @returns {Boolean} true or false
@@ -120,7 +109,6 @@
       hasProjects() {
         return !_.isEmpty(this.projects);
       },
-
       /**
        * @summary checks if the project with a given name already exists
        * @param {Object} project the project to find
@@ -134,14 +122,12 @@
         }
         return _.find(projects, { name: project.name });
       },
-
       /**
        * @summary dispatches action to save the new team to firevase and the vuex store,
        * then closes the add modal.
        */
       addProject() {
         this.$store.dispatch('addProject', this.newProject);
-
         // Reset new project and close modal
         this.newProject = {
           name: '',
@@ -149,7 +135,6 @@
         };
         this.modals.add = false;
       },
-
       /**
        * @summary dispatches action to update the selected in firebase and the vuex store,
        * then closes the edit modal.
@@ -159,7 +144,6 @@
         this.$store.dispatch('updateProject', { ...this.selectedProject, keys });
         this.modals.edit = false;
       },
-
       /**
        * @summary dispatches action to delete the selected project from firebase and the vuex store,
        * then closes the delete modal.
@@ -325,7 +309,6 @@
     cursor: pointer;
     background-color: var(--lightest-grey);
   }
-
   .project-color {
     -webkit-appearance: none;
     border: none;

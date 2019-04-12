@@ -8,4 +8,4 @@ export default {
   isEmpty(str) {
     return str.length === 0;
   }
-}
+};
