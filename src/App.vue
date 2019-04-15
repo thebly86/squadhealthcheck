@@ -17,13 +17,12 @@ export default {
 
   // Events
   created() {
-    let firebaseConfig = localStorage.getItem("firebaseConfig");
-    firebaseConfig = JSON.parse(firebaseConfig);
+    const firebaseConfig = JSON.parse(localStorage.getItem("firebaseConfig"));
 
     let hasAllConfigValues = false;
 
     for (var key in firebaseConfig) {
-      if (firebaseConfig[key] !== null && firebaseConfig[key] != "") {
+      if (!_.isNil(firebaseConfig[key]) && !_.isEmpty(firebaseConfig[key])) {
         hasAllConfigValues = true;
       }
     }

@@ -123,6 +123,7 @@
   span input {
     width: 40%;
   }
+
   .firebase-config {
     padding: 15px;
   }
