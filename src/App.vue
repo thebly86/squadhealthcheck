@@ -31,6 +31,7 @@ export default {
       FirebaseService.initialiseDatabase(firebaseConfig);
     } else {
       this.$store.commit('resetStore');
+      this.$router.push({ name: 'ManageConfig' });
       alert('You do not have a Firebase Config set, please navigate to the config page.');
     }
   }

@@ -10,6 +10,7 @@ import ManageTeamHealth from "@/views/ManageTeamHealth";
 Vue.use(Router);
 
 export default new Router({
+  mode: 'history',
   linkActiveClass: "",
   linkExactActiveClass: "tab__link--active",
   routes: [
