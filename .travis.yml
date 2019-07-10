@@ -6,5 +6,15 @@ services:
 install:
   - docker build -t squad-docker-tests .
 
-script:
+script: 
   - docker run -it squad-docker-tests
+
+deploy:
+  script: npm install; npm run build;
+  provider: pages
+  local_dir: dist/
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN  # Set in the settings page of the repo
+  keep_history: true
+  on:
+    branch: master
