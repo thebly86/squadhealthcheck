@@ -96,7 +96,6 @@ export default {
     },
 
     incrementStatus(teamId, criteria) {
-      console.log("increment");
       const currentStatus = this.currentSprint.teams[teamId][criteria].value;
       let newStatus;
       if (currentStatus === STATUS.GREEN) {
@@ -139,16 +138,30 @@ export default {
       return 0;
     },
 
+    /**
+     * @description Method finds a sprint given a sprint number
+     * @param {Number} sprintNo
+     * @returns {Object} the sprint object related to the given number
+     */
     getSprintByNumber(sprintNo) {
       return _.find(this.project.sprints, {
         sprintNumber: sprintNo.toString()
       });
     },
 
+    /**
+     * @description Methods returns the id of the given sprint
+     * @param {Object} sprint
+     * @returns {String} the id/key of the given sprint
+     */
     getSprintId(sprint) {
       return _.findKey(this.project.sprints, sprint);
     },
 
+    /**
+     * @description Method find and returns the most recent sprint
+     * @returns {Object} the most recent sprint
+     */
     getLatestSprint() {
       const sprintNumbers = _.map(this.project.sprints, sprint =>
         Number(sprint.sprintNumber)
@@ -156,6 +169,10 @@ export default {
       return this.getSprintByNumber(Math.max(...sprintNumbers));
     },
 
+    /**
+     * @description Method gets the id of the currently selected sprint
+     * @returns {String} the key/id of the current sprint
+     */
     getCurrentSprintId() {
       return _.findKey(
         this.project.sprints,
@@ -163,15 +180,30 @@ export default {
       );
     },
 
+    /**
+     * @description Method retrieves the value for a given team and criterion
+     * @param {String} teamId the team to retrieve
+     * @param {String} criteria the criteria to retrieve
+     * @returns {Number} the team criterion value
+     */
     getTeamCriteriaValue(teamId, criteria) {
       const teamValues = this.latestSprint.teams[teamId];
       return teamValues[criteria].value;
     },
 
+    /**
+     * @description Method converts a given criteria name to its camel case equivalent
+     * @param {String} criteria value to convert
+     * @returns {String} camel case string value
+     */
     getCriteriaName(criteria) {
       return _.camelCase(criteria.label);
     },
 
+    /**
+     * @description Method checks if the project has sprint or team data
+     * @returns {Boolean} true or false
+     */
     hasProjectData() {
       return !_.isEmpty(this.project.teams) && !_.isEmpty(this.project.sprints);
     }
@@ -224,8 +256,26 @@ export default {
               class="health-check__row"
             >
               <td class="tooltip-target health-check__criteria">
-                <i class="fa icon icon--criteria" :class="criteria.icon"/>
-                <span>{{ criteria.label }}</span>
+                <v-popover offset="16">
+                  <!-- This will be the popover target (for the events and position) -->
+                  <i class="fa icon icon--criteria" :class="criteria.icon" />
+                  <span>{{ criteria.label }}</span>
+
+                  <!-- Popover content -->
+                  <template slot="popover" class="popover__criteria">
+                    <div class="popover__criteria">
+                      <h4>{{criteria.label}}</h4>
+                      <div class="criteria">
+                        <TeamStatus :status="3"></TeamStatus>
+                        <p>{{criteria.description.green}}</p>
+                      </div>
+                      <div class="criteria">
+                        <TeamStatus :status="1"></TeamStatus>
+                        <p>{{criteria.description.red}}</p>
+                      </div>
+                    </div>
+                  </template>
+                </v-popover>
               </td>
               <td
                 v-for="(team, teamId) in project.teams"
@@ -257,7 +307,8 @@ export default {
 
     <!-- No sprint data section -->
     <section v-if="!hasProjectData()" class="grid__item no-data">
-      <p>Add a
+      <p>
+        Add a
         <router-link :to="{ name: 'ManageTeams' }" class="no-data__link">team</router-link>and a
         <router-link :to="{ name: 'ManageSprints' }" class="no-data__link">sprint</router-link>to get started.
       </p>
@@ -266,6 +317,44 @@ export default {
 </template>
 
 <style>
+.popover__criteria {
+  display: block;
+  align-items: left;
+  background: white;
+  border: solid 1px var(--light-grey);
+  color: var(--dark-grey);
+  max-width: 470px;
+  font-family: "Avenir";
+  font-size: 15px;
+  box-shadow: 3px 3px 3px var(--grey);
+}
+
+.popover__criteria h4 {
+  padding: 10px;
+  margin: 0;
+  color: var(--darker-grey);
+  text-align: left;
+  background: var(--lightest-grey);
+  border-bottom: 1px solid var(--light-grey);
+}
+
+.criteria {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid var(--light-grey);
+}
+
+.criteria p {
+  padding: 0;
+  margin: 0 0 0 10px;
+  max-width: 250px;
+}
+
+.criteria > .status {
+  margin: 0;
+}
+
 .health-check__footer {
   display: flex;
   justify-content: flex-end;
@@ -321,6 +410,10 @@ export default {
 .health-check__criteria {
   padding: 10px 20px;
   width: 200px;
+}
+
+.health-check__criteria:hover {
+  cursor: pointer;
 }
 
 .health-check__row {
