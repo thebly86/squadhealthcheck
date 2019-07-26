@@ -115,21 +115,23 @@
     <div class="guide">
       <h3>Step 1: Create your Firebase project</h3>
       <ol>
-        <li>In the Firebase console located <a href="https://console.firebase.google.com">here</a>, select <strong>Add project</strong>.</li>
-        <li>Follow the remaining setup steps in the Firebase console, then click <strong>Create project</strong> (or <strong>Add Firebase</strong>, if you're using an existing Google project).</li>
+        <li>Sign up to firebase (If already have an account skip to step 1.2).</li>
+        <li>In the Firebase console located <a href="https://console.firebase.google.com">here</a>, select <strong>Add project</strong>, (If you already have a project skip to step 2.1).</li>
+        <li>Follow all the steps on the pop up and choose the appropriate options for your project.</li>
       </ol>
       <h3>Step 2: Register your App</h3>
       <ol>
-        <li>In the Firebase console's project overview page, click the <strong>Web</strong> icon (code) to launch the setup workflow - If you've already added an app to your Firebase project, click <strong>Add app</strong> to display the platform options.</li>
-        <li>Enter your apps nickname.</li>
-        <li>(Optional) Set up Firebase Hosting for your App – for more information please follow steps 2.3 <a href="https://firebase.google.com/docs/web/setup?authuser=0">here</a>.</li>
-        <li>Click <strong>Register app</strong>.</li>
+        <li>Under the project name click the icon that looks like: '<strong></></strong>'</li>
+        <li>Then enter an app name and tick the 'Firebase Hosting' checkbox and then select the project you created earlier in the dropdown (if not already selected).</li>
+        <li>In the second, third and fouth steps, ignore these and continue using the 'Next'/'Continue to console' buttons.</li>
+        <li>You should go back to the previously screen, if not select the 'Project Overview' from the lefthand side.</li>
       </ol>
       <h3>Step 3: Add Firebase SDKs and initialize Firebase</h3>
       <ol>
-        <li>When in the Add Firebase SDK section you will be presented with a firebase config script. At this stage do not follow the steps in the official firebase guides. Instead of pasting the entire script into the body tag as instructed, simply paste the values from the firebaseConfig object located in the script into the correct fields in the Squad Health Check Firebase Config page.</li>
-        <li>On the official firebase console, click <strong>Continue to console</strong>.</li>
-        <li>In the Squad Health Check, click <strong>Update</strong> once you have filled in all the fields.</li>
+        <li>Select the App button from the overlay, select the config cog icon next to the app we created earlier.</li>
+        <li>If you scroll down to the 'Your apps' section within the 'Firebase SDK snippet' select the radio button 'Config'.</li>
+        <li>From here copy and paste the values into the Squad health check firebase config page matching up the values with the names.</li>
+        <li>Lastly activate the 'Update' button and then you can start using the Squad Health Check tool.</li>
       </ol>
       <h3>Step 4: Set read and write permissions on the database</h3>
       <ol>
