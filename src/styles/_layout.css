@@ -46,6 +46,7 @@ main {
 .header {
   padding: 20px;
   display: flex;
+  align-items: center;
   border-bottom: 5px solid var(--lighter-grey);
 }
 
@@ -71,5 +72,4 @@ main {
 table {
   border-spacing: 0;
   border-collapse: collapse;
-  table-layout: fixed;
 }

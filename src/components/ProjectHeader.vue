@@ -5,6 +5,8 @@ import DropdownMenu from "./DropdownMenu";
 import DropdownMenuButton from "./DropdownMenuButton";
 import Modal from "./Modal";
 
+import { HEALTH, TEAMS, SPRINTS } from "@/config/project-header";
+
 export default {
   name: "ProjectHeader",
 
@@ -23,7 +25,7 @@ export default {
   }),
 
   computed: {
-    project() {
+    project: function() {
       return this.$store.getters.getProject(this.$route.params.id);
     },
 
@@ -45,6 +47,14 @@ export default {
           action: this.editProject
         }
       ];
+    },
+
+    teamView: function() {
+      return this.$store.getters.teamView;
+    },
+
+    sprintView: function() {
+      return this.$store.getters.sprintView;
     }
   },
 
@@ -52,6 +62,14 @@ export default {
   methods: {
     projectColor(property) {
       return { [property]: this.project.color };
+    },
+
+    toggleTeamView() {
+      this.$store.commit("toggleTeamView");
+    },
+
+    toggleSprintView() {
+      this.$store.commit("toggleSprintView");
     }
   }
 };
@@ -59,9 +77,7 @@ export default {
 
 <template>
   <header class="header">
-    <h2 :style="projectColor('color')" class="project-title">
-      {{ project.name }}
-    </h2>
+    <h2 :style="projectColor('color')" class="project-title">{{ project.name }}</h2>
 
     <!-- Project navigation -->
     <ul class="project-nav">
@@ -79,15 +95,61 @@ export default {
       </li>
       <li class="project-nav__item">
         <router-link to="sprints">
-          <i class="fa fa-bolt icon--action" />
+          <i class="fa fa-repeat icon--action" />
           <span>SPRINTS</span>
         </router-link>
+      </li>
+    </ul>
+
+    <!-- Health Check Toolbar -->
+    <ul class="health-check-toolbar">
+      <li
+        @click="toggleTeamView"
+        :class="{ 'health-check-toolbar__item--active': teamView }"
+        class="health-check-toolbar__item"
+        v-tooltip.bottom="{ content: 'Team view', classes: 'tooltip', delay: 500 }"
+      >
+        <i class="fa fa-user health-check-toolbar__icon icon--large" />
+      </li>
+      <li
+        @click="toggleSprintView"
+        :class="{ 'health-check-toolbar__item--active': sprintView }"
+        class="health-check-toolbar__item"
+        v-tooltip.bottom="{ content: 'Sprint view', classes: 'tooltip', delay: 500 }"
+      >
+        <i class="fa fa-repeat health-check-toolbar__icon icon--large" />
       </li>
     </ul>
   </header>
 </template>
 
 <style scoped>
+.health-check-toolbar {
+  display: flex;
+  margin-left: auto;
+}
+
+.health-check-toolbar__item {
+  color: var(--grey);
+  border: solid 1px var(--light-grey);
+  width: 30px;
+  text-align: center;
+  padding: 4px;
+  margin-right: 10px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+}
+
+.health-check-toolbar__item:last-of-type {
+  margin-right: 0;
+}
+
+.health-check-toolbar__item--active {
+  color: var(--light);
+  background: var(--grey);
+}
+
 .project-title {
   margin-right: 20px;
 }

@@ -16,7 +16,9 @@ export default new Vuex.Store({
     criteria: {},
     activeSprint: {},
     activeProject: {},
-    activeTeam: {}
+    activeTeam: {},
+    sprintView: true,
+    teamView: false
   },
 
   getters: {
@@ -24,15 +26,19 @@ export default new Vuex.Store({
 
     getCriteria: state => state.criteria,
 
+    getSprint: state => (projectId, sprintId) => {
+      return state.projects[projectId].sprints[sprintId];
+    },
+
     getActiveProject: state => state.activeProject,
 
     getActiveTeam: state => state.activeTeam,
 
     getActiveSprint: state => state.activeSprint,
 
-    getCurrentSprint: state => (projectId, sprintId) => {
-      return state.projects[projectId].sprints[sprintId];
-    }
+    teamView: state => state.teamView,
+
+    sprintView: state => state.sprintView
   },
 
   mutations: {
@@ -66,7 +72,6 @@ export default new Vuex.Store({
 
     /* UPDATING */
     updateProject(state, project) {
-      console.log(project);
       Vue.set(state.projects, project.id, _.omit(project, "id"));
     },
 
@@ -97,16 +102,28 @@ export default new Vuex.Store({
      * Sets the project that is currently active. A project is considered 'active' when the user
      * interacts with it by opening its edit or delete modal.
      * @param {Object} state the store state
-     * @param {Object} project the project to save in the state
+     * @param {Object} project the project to set as the active project
      */
     setActiveProject(state, project) {
       Vue.set(state, "activeProject", project);
     },
 
+    /**
+     * Sets the team that is currently active. A team is considered 'active' when the user
+     * interacts with it by opening its edit or delete modal.
+     * @param {Object} state the store state
+     * @param {Object} team the team to set as the active team
+     */
     setActiveTeam(state, team) {
       Vue.set(state, "activeTeam", team);
     },
 
+    /**
+     * Sets the sprint that is currently active. A sprint is considered 'active' when the user
+     * interacts with it by opening its edit or delete modal.
+     * @param {*} state the store state
+     * @param {*} sprint the sprint to set as the active sprint
+     */
     setActiveSprint(state, sprint) {
       Vue.set(state, "activeSprint", sprint);
     },
@@ -126,6 +143,20 @@ export default new Vuex.Store({
 
     deleteTeamFromSprint(state, { projectId, sprintId, teamId }) {
       Vue.delete(state.projects[projectId].sprints[sprintId].teams, teamId);
+    },
+
+    toggleTeamView(state) {
+      if (!state.teamView) {
+        state.teamView = !state.teamView;
+        state.sprintView = false;
+      }
+    },
+
+    toggleSprintView(state) {
+      if (!state.sprintView) {
+        state.sprintView = !state.sprintView;
+        state.teamView = false;
+      }
     }
   },
 
