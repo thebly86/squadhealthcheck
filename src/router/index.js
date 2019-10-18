@@ -5,7 +5,7 @@ import ManageConfig from "@/views/ManageConfig";
 import ManageProject from "@/views/ManageProject";
 import ManageTeams from "@/views/ManageTeams";
 import ManageSprints from "@/views/ManageSprints";
-import ManageTeamHealth from "@/views/ManageTeamHealth";
+import ManageTeamHealth from "@/views/ManageTeamHealth/ManageTeamHealth";
 
 Vue.use(Router);
 

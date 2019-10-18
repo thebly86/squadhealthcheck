@@ -1,34 +1,90 @@
-[ {
-  "icon" : "fa-shopping-cart",
-  "label" : "Delivering Value"
-}, {
-  "icon" : "fa-repeat",
-  "label" : "Easy to Release"
-}, {
-  "icon" : "fa-smile-o",
-  "label" : "Fun"
-}, {
-  "icon" : "fa-medkit",
-  "label" : "Health of Codebase"
-}, {
-  "icon" : "fa-graduation-cap",
-  "label" : "Learning"
-}, {
-  "icon" : "fa-map",
-  "label" : "Mission"
-}, {
-  "icon" : "fa-play",
-  "label" : "Pawns or Players"
-}, {
-  "icon" : "fa-bolt",
-  "label" : "Speed"
-}, {
-  "icon" : "fa-check",
-  "label" : "Suitable Process"
-}, {
-  "icon" : "fa-life-ring",
-  "label" : "Support"
-}, {
-  "icon" : "fa-users",
-  "label" : "Teamwork"
-} ]
+[
+  {
+    "icon": "fa-shopping-cart",
+    "label": "Delivering Value",
+    "description": {
+      "green": "We deliver great stuff! We're proud of it and our stakeholders are really happy.",
+      "red": "We deliver crap. We feel ashamed to deliver it. Our stakeholders hate us"
+    }
+  },
+  {
+    "icon": "fa-repeat",
+    "label": "Easy to Release",
+    "description": {
+      "green": "Releasing is simple, safe, painless and mostly automated",
+      "red": "Releasing is risky, painful, lots of manual work and takes forever"
+    }
+  },
+  {
+    "icon": "fa-smile-o",
+    "label": "Fun",
+    "description": {
+      "green": "We love going to work and have great fun working together!",
+      "red": "Booooooring..."
+    }
+  },
+  {
+    "icon": "fa-medkit",
+    "label": "Health of Codebase",
+    "description": {
+      "green": "We're proud of the quality of our code! It is clean, easy to read and has great test coverage.",
+      "red": "Our code is a pile of dung and technical debt is raging out of control."
+    }
+  },
+  {
+    "icon": "fa-graduation-cap",
+    "label": "Learning",
+    "description": {
+      "green": "We're learning lots of interesting stuff all the time!",
+      "red": "We never have time to learn anything."
+    }
+  },
+  {
+    "icon": "fa-map",
+    "label": "Mission",
+    "description": {
+      "green": "We know exactly why we're here and we're really excited about it!",
+      "red": "We have no idea why we are here, there's no high level picture or focus. Our so called mission is completely unclear and uninspiring."
+    }
+  },
+  {
+    "icon": "fa-play",
+    "label": "Pawns or Players",
+    "description": {
+      "green": "We are in control of our own destiny! We decide what to build and how to build it.",
+      "red": "We are just pawns in a game of chess with no influence over what we build or how we build it."
+    }
+  },
+  {
+    "icon": "fa-bolt",
+    "label": "Speed",
+    "description": {
+      "green": "We get stuff done really quickly! No waiting and no delays.",
+      "red": "We never seem to get anything done. We keep getting stuck or interrupted. Stories keep getting stuck on dependencies."
+    }
+  },
+  {
+    "icon": "fa-check",
+    "label": "Suitable Process",
+    "description": {
+      "green": "Our way of working fits us perfectly!",
+      "red": "Our way of working sucks!"
+    }
+  },
+  {
+    "icon": "fa-life-ring",
+    "label": "Support",
+    "description": {
+      "green": "We always get great support or help when we ask for it!",
+      "red": "We keep getting stuck because we can't get the support and help that we ask for."
+    }
+  },
+  {
+    "icon": "fa-users",
+    "label": "Teamwork",
+    "description": {
+      "green": "We are a totally gelled super-team with awesome collaboration!",
+      "red": "We are a bunch of individuals that neither know nor care about what the other people in the squad are doing."
+    }
+  }
+]
