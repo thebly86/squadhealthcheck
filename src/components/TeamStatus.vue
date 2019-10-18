@@ -36,17 +36,19 @@ export default {
 </script>
 
 <template>
-  <div
-    :class="{
+  <div class="status__container">
+    <span
+      :class="{
       empty: status === STATUS.EMPTY,
       red: status === STATUS.RED,
       amber: status === STATUS.AMBER,
       green: status === STATUS.GREEN
     }"
-    class="status"
-  >
-    <i v-if="hasIncreased" class="status__arrow fa fa-arrow-up" />
-    <i v-if="hasDecreased" class="status__arrow fa fa-arrow-down" />
+      class="status"
+    >
+      <i v-if="hasIncreased" class="status__arrow fa fa-arrow-up" />
+      <i v-if="hasDecreased" class="status__arrow fa fa-arrow-down" />
+    </span>
   </div>
 </template>
 
@@ -56,8 +58,12 @@ export default {
   height: 24px;
   border-radius: 12px;
   border: solid 1px #ccc;
-  margin: auto;
   display: flex;
+}
+
+.status__container {
+  display: flex;
+  justify-content: center;
 }
 
 .status:hover {

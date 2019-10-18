@@ -4,7 +4,7 @@ import Dashboard from "@/views/Dashboard";
 import ManageProject from "@/views/ManageProject";
 import ManageTeams from "@/views/ManageTeams";
 import ManageSprints from "@/views/ManageSprints";
-import ManageTeamHealth from "@/views/ManageTeamHealth";
+import ManageTeamHealth from "@/views/ManageTeamHealth/ManageTeamHealth";
 
 Vue.use(Router);
 
