@@ -17,7 +17,22 @@ export default {
 
   // Events
   created() {
-    FirebaseService.initialiseDatabase();
+    const firebaseConfig = JSON.parse(localStorage.getItem("firebaseConfig"));
+
+    let hasAllConfigValues = false;
+
+    for (var key in firebaseConfig) {
+      if (!_.isNil(firebaseConfig[key]) && !_.isEmpty(firebaseConfig[key])) {
+        hasAllConfigValues = true;
+      }
+    }
+
+    if (firebaseConfig && hasAllConfigValues) {
+      FirebaseService.initialiseDatabase(firebaseConfig);
+    } else {
+      this.$store.commit('resetStore');
+      this.$router.push({ name: 'ManageConfig' });
+    }
   }
 };
 </script>

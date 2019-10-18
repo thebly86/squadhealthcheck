@@ -8,16 +8,17 @@ export default {
   <header class="app-header">
     <router-link :to="{ name: 'Dashboard' }">
       <div class="app-logo">
-        <i class="fa fa-heartbeat" />
+        <i class="fa fa-heartbeat"/>
       </div>
       <h1>Squad Health Check</h1>
     </router-link>
     <nav class="site-nav">
       <ul>
         <li>
-          <router-link :to="{ name: 'Dashboard' }" class="site-nav__link">
-            My Projects
-          </router-link>
+          <router-link :to="{ name: 'Dashboard' }" class="site-nav__link">My Projects</router-link>
+        </li>
+        <li>
+          <router-link :to="{ name: 'ManageConfig' }" class="site-nav__link">Firebase Config</router-link>
         </li>
       </ul>
     </nav>
@@ -28,6 +29,10 @@ export default {
 .app-header {
   display: flex;
   align-items: center;
+}
+
+.site-nav {
+  margin-left: auto;
 }
 
 .site-nav {

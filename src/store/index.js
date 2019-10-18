@@ -145,6 +145,17 @@ export default new Vuex.Store({
       Vue.delete(state.projects[projectId].sprints[sprintId].teams, teamId);
     },
 
+    resetStore(state) {
+      const defaultState = {
+        projects: {},
+        criteria: {},
+        activeSprint: {},
+        activeProject: {},
+        activeTeam: {}
+      };
+      Object.assign(state, defaultState);
+    },
+
     toggleTeamView(state) {
       if (!state.teamView) {
         state.teamView = !state.teamView;
