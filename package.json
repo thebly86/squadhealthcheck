@@ -10,7 +10,8 @@
     "format:check": "prettier --list-different \"src/**/*.{js,css,vue}\" \"cypress/**/*.{js}\"",
     "start": "npm run dev",
     "build": "node build/build.js",
-    "firebase": "./node_modules/.bin/firebase-server"
+    "firebase": "./node_modules/.bin/firebase-server",
+    "cypress": "./node_modules/.bin/cypress run"
   },
   "dependencies": {
     "@fortawesome/fontawesome": "^1.1.3",
