@@ -10,6 +10,11 @@ describe("End to end User journey", function() {
   });
 
   it("UJ01 - Create a new Project, create a new team, sprint and fill out the health check", function() {
+    // Input Firebase config
+    cy.get(this.element.firebaseConfigElements.databaseUrl).type("http://localhost:5000");
+    cy.get(this.element.firebaseConfigElements.updateButton).click();
+    cy.visit("");
+    
     // Check you're on the homepage
     cy.get(this.element.appHeaderElements.headerText).contains(
       "Squad Health Check"
@@ -52,19 +57,13 @@ describe("End to end User journey", function() {
 
     cy.get(this.element.sprintPage.sprintNumberField).type(1);
 
-    // cy.get(this.element.sprintPage.sprintStartDate)
-    // .type(startDate);
-
-    // cy.get(this.element.sprintPage.sprintEndDate)
-    // .type(endDate);
-
     cy.get(this.element.homePage.projectListElement.buttons).click();
 
     // Fill out health check
     cy.get(this.element.appHeaderElements.projectNavigation)
       .children()
       .contains("span", "TEAM HEALTH")
-      .click();
+      .click();   
 
     cy.get(this.element.healthPage.healthRadioButton).each($el => {
       if (healthCount === 0) {
@@ -89,16 +88,12 @@ describe("End to end User journey", function() {
     var healthColour = 0;
 
     // Check each radio button is assigned the correct value
-    cy.get(this.element.healthPage.healthRadioButton).each($el => {
+    cy.get(this.element.healthPage.healthRadioButtonStatus).each($el => {
       if (healthColour === 0) {
         cy.wrap($el).should("have.css", "background-color", "rgb(255, 51, 0)");
         healthColour++;
       } else if (healthColour === 1) {
-        cy.wrap($el).should(
-          "have.css",
-          "background-color",
-          "rgb(255, 204, 51)"
-        );
+        cy.wrap($el).should("have.css", "background-color", "rgb(255, 204, 51)");
         healthColour++;
       } else {
         cy.wrap($el).should("have.css", "background-color", "rgb(0, 204, 102)");

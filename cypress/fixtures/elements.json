@@ -1,4 +1,8 @@
 {
+    "firebaseConfigElements": {
+        "databaseUrl": "#databaseURL",
+        "updateButton": "[class='btn--primary fb-update-btn']"
+    },
     "appHeaderElements": {
         "elementName": "CSS_GOES_HERE",
         "AppLogo": ".app-logo",
@@ -24,7 +28,8 @@
     },
     "healthPage": {
         "healthElementList": ".health-check__row",
-        "healthRadioButton": "[class^=\"status\"]",
+        "healthRadioButton": "[class='status__container']",
+        "healthRadioButtonStatus": "[class='status__container'] > span",
         "healthSaveButton": ".health-check__footer > button.btn--primary"
     },
     "modalElements": {
