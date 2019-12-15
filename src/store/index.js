@@ -1,7 +1,8 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import VuexPersist from "vuex-persist";
-import FirebaseService from "@/api/firebase-service.js";
+import * as firebase from "firebase";
+import * as FirebaseService from "@/api/firebase-service.js";
 
 Vue.use(Vuex);
 
@@ -18,7 +19,8 @@ export default new Vuex.Store({
     activeProject: {},
     activeTeam: {},
     sprintView: true,
-    teamView: false
+    teamView: false,
+    user: {}
   },
 
   getters: {
@@ -38,15 +40,13 @@ export default new Vuex.Store({
 
     teamView: state => state.teamView,
 
-    sprintView: state => state.sprintView
+    sprintView: state => state.sprintView,
+
+    getUser: state => state.user
   },
 
   mutations: {
     /* INITIALISE */
-    initialiseProjects(state, projects) {
-      state.projects = projects;
-    },
-
     initialiseCriteria(state, criteria) {
       state.criteria = criteria;
     },
@@ -71,6 +71,10 @@ export default new Vuex.Store({
     },
 
     /* UPDATING */
+    updateProjects(state, projects) {
+      state.projects = projects;
+    },
+
     updateProject(state, project) {
       Vue.set(state.projects, project.id, _.omit(project, "id"));
     },
@@ -96,6 +100,10 @@ export default new Vuex.Store({
 
     updateCurrentSprint(state, { projectId, sprintId, sprint }) {
       Vue.set(state.projects[projectId].sprints[sprintId], sprint);
+    },
+
+    updateUser(state, user) {
+      state.user = user;
     },
 
     /**
@@ -172,96 +180,166 @@ export default new Vuex.Store({
   },
 
   actions: {
-    async loadProjects(context) {
-      await FirebaseService.getProjects().then(result => {
-        context.commit("initialiseProjects", result || {});
-      });
+    async getProjects(context, userId) {
+      try {
+        const results = await FirebaseService.query(`projects`, {
+          field: "owner",
+          value: userId
+        });
+
+        context.commit("updateProjects", results || {});
+      } catch (error) {
+        throw new Error(error.message);
+      }
     },
 
-    loadProject(context, { projectId }) {
-      return FirebaseService.getProject(projectId).then(project => {
+    async loadProject({ commit }, { projectId }) {
+      try {
+        const project = await FirebaseService.get(`projects/${projectId}`);
         project.id = projectId;
-        context.commit("updateProject", project);
-      });
+        console.log({ project, projectId });
+        commit("updateProject", project);
+      } catch (error) {
+        throw new Error("Failed to load project.");
+      }
     },
 
-    async addProject(context, project) {
-      await FirebaseService.addProject(project).then(id => {
-        context.commit("addProject", { project, id });
-      });
+    async addProject({ commit }, project) {
+      const response = await FirebaseService.create("projects", project);
+      if (response) {
+        commit("addProject", { project, id: response });
+      } else {
+        throw new Error("Failed to add project.");
+      }
     },
 
-    async updateProject(context, { keys, ...project }) {
-      await FirebaseService.updateProject(project, keys).then(() =>
-        context.commit("updateProject", project)
+    async updateProject({ commit }, { keys, ...project }) {
+      try {
+        await FirebaseService.update(
+          `projects/${project.id}`,
+          _.pick(project, keys)
+        );
+        commit("updateProject", project);
+      } catch (error) {
+        throw new Error("Failed to update project.");
+      }
+    },
+
+    async deleteProject({ commit }, projectId) {
+      try {
+        await FirebaseService.remove(`projects/${projectId}`);
+        commit("deleteProject", projectId);
+      } catch (error) {
+        throw new Error("Failed to delete project.");
+      }
+    },
+
+    async addTeamToProject({ commit }, { projectId, team }) {
+      const teamId = await FirebaseService.create(
+        `projects/${projectId}/teams`,
+        team
       );
+
+      if (teamId) {
+        commit("addTeamToProject", { projectId, teamId, team });
+      } else {
+        throw new Error("Failed to add team.");
+      }
     },
 
-    async deleteProject(context, projectId) {
-      await FirebaseService.deleteProject(projectId).then(() =>
-        context.commit("deleteProject", projectId)
-      );
+    async updateTeam({ commit }, { projectId, ...team }) {
+      try {
+        await FirebaseService.update(
+          `projects/${projectId}/teams/${team.id}`,
+          _.pick(team, ["name"])
+        );
+        commit("updateTeam", { projectId, team });
+      } catch (error) {
+        throw new Error("Failed to update team.");
+      }
     },
 
-    async addTeamToProject(context, { projectId, team }) {
-      return FirebaseService.addTeamToProject(projectId, team).then(teamId => {
-        context.commit("addTeamToProject", { projectId, teamId, team });
-        return teamId;
-      });
+    async updateSprint({ commit }, { projectId, sprintId, sprint }) {
+      try {
+        await FirebaseService.update(
+          `projects/${projectId}/sprints/${sprintId}`,
+          _.omit(sprint, ["id"])
+        );
+        commit("updateSprint", { projectId, sprintId, sprint });
+      } catch (error) {
+        throw new Error("Failed to update sprint");
+      }
     },
 
-    updateSprint(context, { projectId, sprintId, sprint }) {
-      return FirebaseService.updateSprint(projectId, sprintId, sprint).then(
-        () => {
-          context.commit("updateSprint", { projectId, sprintId, sprint });
-        }
-      );
+    async updateSprints({ commit }, { projectId, sprints }) {
+      try {
+        await FirebaseService.update(`projects/${projectId}/sprints`, sprints);
+        commit("updateSprints", { projectId, sprints });
+      } catch (error) {
+        throw new Error("Failed to add team to sprints.");
+      }
     },
 
-    updateSprints(context, { projectId, sprints }) {
-      return FirebaseService.updateSprints(projectId, sprints).then(() => {
-        context.commit("updateSprints", { projectId, sprints });
-      });
+    async addSprintToProject({ commit }, { projectId, sprint }) {
+      try {
+        const sprintId = await FirebaseService.create(
+          `projects/${projectId}/sprints`,
+          sprint
+        );
+        commit("addSprintToProject", { projectId, sprintId, sprint });
+      } catch (error) {
+        throw new Error("Failed to add sprint.");
+      }
     },
 
-    async updateTeam(context, { keys, projectId, ...team }) {
-      await FirebaseService.updateTeam(projectId, team, keys).then(() =>
-        context.commit("updateTeam", { projectId, team })
-      );
+    async deleteTeamFromProject({ commit }, { projectId, teamId, sprints }) {
+      try {
+        await FirebaseService.remove(`projects/${projectId}/teams/${teamId}`);
+        commit("deleteTeamFromProject", { projectId, teamId });
+      } catch (error) {
+        throw new Error("Failed to delete team.");
+      }
     },
 
-    async addSprintToProject(context, { projectId, sprint }) {
-      FirebaseService.addSprintToProject(projectId, sprint).then(sprintId => {
-        context.commit("addSprintToProject", { projectId, sprintId, sprint });
-      });
+    async deleteSprintFromProject({ commit }, { projectId, sprintId }) {
+      try {
+        await FirebaseService.remove(
+          `projects/${projectId}/sprints/${sprintId}`
+        );
+        commit("deleteSprintFromProject", { projectId, sprintId });
+      } catch (error) {
+        throw new Error("Failed to delete sprint.");
+      }
     },
 
-    async deleteTeamFromProject(context, { projectId, teamId, sprints }) {
-      await FirebaseService.deleteTeamFromProject(projectId, teamId).then(
-        () => {
-          context.commit("deleteTeamFromProject", { projectId, teamId });
-        }
-      );
+    async updateTeamsSprintData({ commit }, { projectId, sprintId, sprint }) {
+      try {
+        await FirebaseService.update(
+          `projects/${projectId}/sprints/${sprintId}`,
+          sprint
+        );
+      } catch (error) {
+        throw new Error("Failed to save health check data.");
+      }
     },
 
-    deleteTeamFromSprint(context, { projectId, sprintId, teamId }) {
-      return FirebaseService.deleteTeamFromSprint(
-        projectId,
-        sprintId,
-        teamId
-      ).then(() => {
-        context.commit("deleteTeamFromSprint", { projectId, sprintId, teamId });
-      });
-    },
-
-    deleteSprintFromProject(context, { projectId, sprintId }) {
-      FirebaseService.deleteSprintFromProject(projectId, sprintId).then(() =>
-        context.commit("deleteSprintFromProject", { projectId, sprintId })
-      );
-    },
-
-    updateTeamsSprintData(context, { projectId, sprintId, sprint }) {
-      FirebaseService.updateTeamsSprintData(projectId, sprintId, sprint);
+    async addUser({ commit }, { uid, displayName, email }) {
+      try {
+        // await FirebaseService.create(`users/${uid}`, { displayName, email });
+        const ref = firebase
+          .database()
+          .ref(`users/${uid}/`)
+          .set({ displayName, email });
+        console.log({ uid, displayName, email });
+        // await ref.set({ displayName, email }, error => {
+        //   if (error) {
+        //     throw new Error();
+        //   }
+        // });
+      } catch (error) {
+        console.log(error);
+        //throw new Error("Failed to add new user.");
+      }
     }
   },
 

@@ -1,3 +1,11 @@
+html,
+body,
+main {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 :root {
   --breakpoint-xs: 0;
   --breakpoint-sm: 576px;
@@ -6,12 +14,20 @@
   --breakpoint-xl: 1200px;
 }
 
+/* ********************************************************** */
+
 .container {
   width: 100%;
   padding-right: 15px;
   padding-left: 15px;
   margin-right: auto;
   margin-left: auto;
+  /* background-color: var(--light); */
+  height: 100%;
+}
+
+main {
+  height: calc(100% - 80px);
 }
 
 @media (min-width: 576px) {
@@ -38,16 +54,24 @@
   }
 }
 
-/* */
-main {
-  background-color: var(--light);
-}
-
 .header {
   padding: 20px;
   display: flex;
   align-items: center;
-  border-bottom: 5px solid var(--lighter-grey);
+}
+
+.site-logo {
+  display: flex;
+  align-items: center;
+}
+
+.site-logo i {
+  font-size: 1.4rem;
+  color: var(--health-green);
+}
+
+.site-logo h1 {
+  margin-left: 10px;
 }
 
 .action-bar {

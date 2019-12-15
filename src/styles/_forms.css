@@ -15,7 +15,6 @@ input {
 input[type="text"] {
   outline: none;
   color: var(--dark-grey);
-  width: 98%;
 }
 
 input[type="date"] {

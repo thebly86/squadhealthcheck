@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Router from "vue-router";
+import SignIn from "@/views/SignIn";
 import Dashboard from "@/views/Dashboard";
 import ManageConfig from "@/views/ManageConfig";
 import ManageProject from "@/views/ManageProject";
@@ -10,10 +11,14 @@ import ManageTeamHealth from "@/views/ManageTeamHealth/ManageTeamHealth";
 Vue.use(Router);
 
 export default new Router({
-  mode: 'history',
   linkActiveClass: "",
   linkExactActiveClass: "tab__link--active",
   routes: [
+    {
+      path: "/signin",
+      name: "SignIn",
+      component: SignIn
+    },
     {
       path: "/",
       name: "Dashboard",

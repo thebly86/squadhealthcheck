@@ -1,6 +1,6 @@
 :root {
   /* Base colours */
-  --dark-grey: #333333;
+  --dark-grey: #4d4d4d;
   --darker-grey: #999999;
   --grey: #cccccc;
   --light-grey: #e5e5e5;
@@ -8,12 +8,14 @@
   --lightest-grey: #f9f9f9;
   --light: #ffffff;
   --health-green: #2dc798;
-  --darker-health-green: #29bc90;
+  --darker-health-green: #1c7d60;
   --danger: #e60000;
   --status-green: #00cc6d;
   --status-amber: #feca4d;
   --status-red: #ff2821;
   --blue: #ebf2fa;
+  --green: #ccffdc;
+  --blue: #0099ff;
 
   /* Backround */
 

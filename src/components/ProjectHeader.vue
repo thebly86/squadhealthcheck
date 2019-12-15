@@ -4,6 +4,7 @@ import FirebaseService from "@/api/firebase-service.js";
 import DropdownMenu from "./DropdownMenu";
 import DropdownMenuButton from "./DropdownMenuButton";
 import Modal from "./Modal";
+import Icon from "./Icon";
 
 import { HEALTH, TEAMS, SPRINTS } from "@/config/project-header";
 
@@ -14,7 +15,8 @@ export default {
   components: {
     DropdownMenu,
     DropdownMenuButton,
-    Modal
+    Modal,
+    Icon
   },
 
   // Local state
@@ -55,6 +57,15 @@ export default {
 
     sprintView: function() {
       return this.$store.getters.sprintView;
+    },
+
+    iconStyle: function() {
+      return {
+        background: this.project.color,
+        width: "35px",
+        height: "35px",
+        fontSize: "1.2rem"
+      };
     }
   },
 
@@ -76,33 +87,36 @@ export default {
 </script>
 
 <template>
-  <header class="header">
-    <h2 :style="projectColor('color')" class="project-title">{{ project.name }}</h2>
+  <header class="header project-header">
+    <div class="project-header__title">
+      <Icon :label="project.name" :style="iconStyle" />
+      <h2>{{ project.name }}</h2>
+    </div>
 
     <!-- Project navigation -->
     <ul class="project-nav">
       <li class="project-nav__item">
         <router-link to="health">
           <i class="fa fa-heartbeat icon--action" />
-          <span>TEAM HEALTH</span>
+          <span>Team Health</span>
         </router-link>
       </li>
       <li class="project-nav__item">
         <router-link to="teams">
           <i class="fa fa-user icon--action" />
-          <span>TEAMS</span>
+          <span>Teams</span>
         </router-link>
       </li>
       <li class="project-nav__item">
         <router-link to="sprints">
           <i class="fa fa-repeat icon--action" />
-          <span>SPRINTS</span>
+          <span>Sprints</span>
         </router-link>
       </li>
     </ul>
 
     <!-- Health Check Toolbar -->
-    <ul class="health-check-toolbar">
+    <!-- <ul class="health-check-toolbar">
       <li
         @click="toggleTeamView"
         :class="{ 'health-check-toolbar__item--active': teamView }"
@@ -119,19 +133,31 @@ export default {
       >
         <i class="fa fa-repeat health-check-toolbar__icon icon--large" />
       </li>
-    </ul>
+    </ul>-->
   </header>
 </template>
 
 <style scoped>
+.project-header {
+  background-color: var(--dark-grey);
+  color: var(--light);
+}
+
+.project-header__title {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
+
 .health-check-toolbar {
   display: flex;
   margin-left: auto;
 }
 
 .health-check-toolbar__item {
-  color: var(--grey);
-  border: solid 1px var(--light-grey);
+  background-color: var(--light);
+  color: var(--dark-grey);
+  border: solid 1px var(--darker-grey);
   width: 30px;
   text-align: center;
   padding: 4px;
@@ -139,6 +165,7 @@ export default {
   cursor: pointer;
   display: flex;
   justify-content: center;
+  /* border-radius: 50%; */
 }
 
 .health-check-toolbar__item:last-of-type {
@@ -146,8 +173,8 @@ export default {
 }
 
 .health-check-toolbar__item--active {
-  color: var(--light);
-  background: var(--grey);
+  color: var(--health-green);
+  /* background: var(--light); */
 }
 
 .project-title {
@@ -157,9 +184,11 @@ export default {
 .project-nav {
   display: flex;
   align-items: center;
+  margin-left: auto;
 }
 
 .project-nav__item {
+  color: var(--light);
   margin-right: 15px;
 }
 
@@ -167,16 +196,23 @@ export default {
   text-decoration: underline;
 }
 
-li.actions__item .tab__link--active {
-  color: var(--dark-grey);
+.project-nav__item i,
+.project-nav__item a {
+  color: var(--light);
+  opacity: 0.8;
+}
+
+.tab__link--active {
+  opacity: 1 !important;
 }
 
 .tab__link--active span {
-  color: var(--dark-grey);
+  color: var(--light);
   text-decoration: underline;
 }
 
 .tab__link--active .icon--action {
-  color: var(--dark-grey);
+  color: var(--light);
+  opacity: 1;
 }
 </style>

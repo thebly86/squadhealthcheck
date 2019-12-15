@@ -33,7 +33,7 @@ export default {
   },
 
   mounted() {
-    this.$router.push({ name: "ManageTeamHealth" });
+    this.$router.push({ name: "ManageTeamHealth" }).catch(error => {});
   },
 
   // Non-Reactive properties
@@ -80,10 +80,16 @@ export default {
 </script>
 
 <template>
-  <section>
+  <div class="project">
     <ProjectHeader v-if="project"></ProjectHeader>
     <router-view></router-view>
-    <router-view name="ManageTeams"> </router-view>
+    <router-view name="ManageTeams"></router-view>
     <router-view name="manageSprints"></router-view>
-  </section>
+  </div>
 </template>
+
+<style scoped>
+.project {
+  height: 100%;
+}
+</style>

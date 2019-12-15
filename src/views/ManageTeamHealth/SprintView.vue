@@ -13,6 +13,12 @@ export default {
 
   // Interface
   props: {
+    project: {
+      type: Object,
+      required: true,
+      default: () => ({})
+    },
+
     criteria: {
       type: Array,
       required: true,
@@ -146,12 +152,23 @@ export default {
       this.hasChanged = true;
     },
 
-    save() {
-      this.$store.dispatch("updateTeamsSprintData", {
-        projectId: this.$route.params.id,
-        sprintId: this.currentSprint.id,
-        sprint: this.currentSprint
-      });
+    async save() {
+      try {
+        await this.$store.dispatch("updateTeamsSprintData", {
+          projectId: this.$route.params.id,
+          sprintId: this.currentSprint.id,
+          sprint: this.currentSprint
+        });
+
+        this.$notify({
+          group: "app",
+          text: "Health check data saved.",
+          type: "success"
+        });
+      } catch (error) {
+        this.$notify({ group: "app", text: error.message, type: "error" });
+      }
+
       this.hasChanged = false;
     }
   }
@@ -167,7 +184,7 @@ export default {
           <col span="1" style="width: 20%;" />
         </colgroup>-->
 
-        <thead :style="this.setCssProperty('background')">
+        <thead :style="{ background: project.color }">
           <tr class="health-check__headings">
             <th class="health-check__sprint-selection">
               <select
@@ -180,8 +197,8 @@ export default {
                   v-for="sprint in sprints"
                   :key="sprint.id"
                   :value="sprint"
-                  :id="`health-check_sprint-${sprint.sprintNumber}`"
-                >Sprint {{ sprint.sprintNumber }}</option>
+                  :id="`health-check_sprint-${sprint.sprintName}`"
+                >{{ sprint.sprintName }}</option>
               </select>
             </th>
             <th
@@ -200,7 +217,7 @@ export default {
               <v-popover offset="16">
                 <!-- This will be the popover target (for the events and position) -->
                 <i class="fa icon icon--criteria" :class="criterion.icon" />
-                <span>{{ criterion.label }}</span>
+                <span class="criterion">{{ criterion.label }}</span>
 
                 <!-- Popover content -->
                 <template slot="popover" class="popover__criteria">
@@ -233,8 +250,8 @@ export default {
 
       <!-- Sprint data actions -->
       <div class="health-check__footer">
-        <button :disabled="!hasChanged" @click="save" class="btn--primary">Save</button>
-        <button :disabled="!hasChanged" @click="reset" class="btn--secondary">Reset</button>
+        <button @click="reset" class="btn--secondary">Reset</button>
+        <button @click="save" class="btn--primary">Save</button>
       </div>
     </div>
   </section>
