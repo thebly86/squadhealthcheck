@@ -1,5 +1,5 @@
 <script>
-import FirebaseService from "@/api/firebase-service.js";
+import firebase from "firebase";
 import ProjectHeader from "@/components/ProjectHeader";
 
 import criteria from "@/data/criteria.json";
@@ -54,7 +54,7 @@ export default {
     },
 
     getCriteria() {
-      FirebaseService.getCriteria().then(data => (this.criteria = data));
+      firebase.getCriteria().then(data => (this.criteria = data));
     },
 
     reset() {

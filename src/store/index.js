@@ -325,20 +325,12 @@ export default new Vuex.Store({
 
     async addUser({ commit }, { uid, displayName, email }) {
       try {
-        // await FirebaseService.create(`users/${uid}`, { displayName, email });
-        const ref = firebase
-          .database()
-          .ref(`users/${uid}/`)
-          .set({ displayName, email });
-        console.log({ uid, displayName, email });
-        // await ref.set({ displayName, email }, error => {
-        //   if (error) {
-        //     throw new Error();
-        //   }
-        // });
+        await FirebaseService.create(`users/${uid}`, {
+          displayName,
+          email
+        });
       } catch (error) {
-        console.log(error);
-        //throw new Error("Failed to add new user.");
+        throw new Error("Failed to add new user.");
       }
     }
   },

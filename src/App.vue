@@ -49,7 +49,11 @@ export default {
 
       // Check if user exists in database and add them
       if (!userExists) {
-        await this.$store.dispatch("addUser", { uid });
+        await this.$store.dispatch("addUser", {
+          uid,
+          displayName,
+          email
+        });
       }
 
       // Add the user to the vue store
