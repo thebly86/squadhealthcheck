@@ -13,6 +13,12 @@ export default {
 
   // Interface
   props: {
+    project: {
+      type: Object,
+      required: true,
+      default: () => ({})
+    },
+
     criteria: {
       type: Array,
       required: true,
@@ -90,6 +96,7 @@ export default {
 
   // Events
   created() {
+    console.log({ teams: this.teams, sprints: this.sprints });
     if (this.selectedTeamId) {
       this.currentTeam = this.getTeamById(this.selectedTeamId);
     } else if (this.teams.length) {
@@ -127,16 +134,27 @@ export default {
       this.hasChanged = true;
     },
 
-    save() {
+    async save() {
       const sprints = this.sprints.reduce((acc, sprint) => {
         acc[sprint.id] = _.omit(sprint, "id");
         return acc;
       }, {});
 
-      this.$store.dispatch("updateSprints", {
-        projectId: this.$route.params.id,
-        sprints: sprints
-      });
+      try {
+        await this.$store.dispatch("updateSprints", {
+          projectId: this.$route.params.id,
+          sprints: sprints
+        });
+
+        this.$notify({
+          group: "app",
+          text: "Health check data saved.",
+          type: "success"
+        });
+      } catch (error) {
+        this.$notify({ group: "app", text: error.message, type: error });
+      }
+
       this.hasChanged = false;
     }
   }
@@ -147,7 +165,7 @@ export default {
   <section class="project-health">
     <div class="project-health__content">
       <table class="health-check__table">
-        <thead :style="this.setCssProperty('background')">
+        <thead :style="{ background: project.color }">
           <tr class="health-check__headings">
             <th class="health-check__team-selection">
               <select
@@ -170,7 +188,7 @@ export default {
               class="health-check__header"
               :id="`health-check_sprint-${sprint.id}`"
               @click="selectSprint(sprint.id)"
-            >{{ `Sprint ${sprint.sprintNumber}` }}</th>
+            >{{ `${sprint.sprintName}` }}</th>
             <th class="empty"></th>
           </tr>
         </thead>
@@ -178,11 +196,8 @@ export default {
           <tr v-for="(criterion, key) in criteria" :key="criterion.id" class="health-check__row">
             <td class="tooltip-target health-check__criteria">
               <v-popover offset="16">
-                <!-- This will be the popover target (for the events and position) -->
                 <i class="fa icon icon--criteria" :class="criterion.icon" />
-                <span>{{ criterion.label }}</span>
-
-                <!-- Popover content -->
+                <span class="criterion">{{ criterion.label }}</span>
                 <template slot="popover" class="popover__criteria">
                   <div class="popover__criteria">
                     <h4>{{criterion.label}}</h4>
@@ -203,7 +218,7 @@ export default {
                 @click.native="onSelectStatus(sprint.id, currentTeam.id, key)"
                 :status="sprint.teams[currentTeam.id][key].value"
                 :statusChange="getStatusChange(sprint, currentTeam.id, key)"
-                :id="`team-${currentTeam.name}-sprint-${sprint.sprintNumber}-${criterion.id}`"
+                :id="`team-${currentTeam.name}-sprint-${sprint.sprintName}-${criterion.id}`"
               />
             </td>
             <td class="empty"></td>
@@ -213,8 +228,8 @@ export default {
 
       <!-- Sprint data actions -->
       <div class="health-check__footer">
-        <button :disabled="!hasChanged" @click="save" class="btn--primary">Save</button>
-        <button :disabled="!hasChanged" @click="reset" class="btn--secondary">Reset</button>
+        <button @click="reset" class="btn--secondary">Reset</button>
+        <button @click="save" class="btn--primary">Save</button>
       </div>
     </div>
   </section>

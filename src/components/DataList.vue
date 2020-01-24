@@ -35,38 +35,18 @@ export default {
       type: Boolean,
       required: false,
       default: false
-    },
-
-    color: {
-      type: String,
-      required: false,
-      default: "#CCCCCC"
-    }
-  },
-
-  // Non-Reactive properties
-  methods: {
-    setCssProperty(property, color) {
-      const tinycolor = require("tinycolor2");
-      const fadedColor = tinycolor(this.color);
-      fadedColor.setAlpha(0.5);
-      return { [property]: fadedColor };
     }
   }
+
+  // Local state
 };
 </script>
 
 <template>
   <!-- Headings -->
-  <section>
-    <div
-      v-if="showKeys"
-      class="keys"
-      :style="setCssProperty('background', this.color)"
-    >
-      <span v-for="{ label } in fields" :key="label" class="key">
-        {{ label }}
-      </span>
+  <div>
+    <div v-if="showKeys" class="keys">
+      <span v-for="{ label } in fields" :key="label" class="key">{{ label }}</span>
     </div>
     <ul class="data-list">
       <data-list-item
@@ -77,21 +57,22 @@ export default {
         :itemId="index"
         :actions="actions"
         :showIcon="showIcon"
-        :color="color"
+        :color="item.color"
         @click.native="$emit('onClick', index)"
         :id="`data-list-item-${index}`"
-      >
-      </data-list-item>
+      ></data-list-item>
     </ul>
-  </section>
+  </div>
 </template>
 
 <style scoped>
 .keys {
   padding: 10px 20px;
   display: flex;
-  background-color: var(--grey);
-  color: #fff;
+  background-color: var(--light);
+  color: var(--dark-grey);
+  border-left: 1px solid var(--light-grey);
+  border-right: 1px solid var(--light-grey);
 }
 
 .key {

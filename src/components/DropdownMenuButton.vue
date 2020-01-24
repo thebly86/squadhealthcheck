@@ -7,15 +7,19 @@ export default {
     text: {
       type: String,
       required: true
+    },
+
+    action: {
+      type: Function,
+      required: false,
+      default: () => {}
     }
   }
 };
 </script>
 
 <template>
-  <button>
-    {{ text }}
-  </button>
+  <button @click="action()">{{ text }}</button>
 </template>
 
 <style>

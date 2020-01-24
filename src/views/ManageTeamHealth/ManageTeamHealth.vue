@@ -42,7 +42,7 @@ export default {
         id: sprintId,
         ...sprint
       }));
-      return _.orderBy(sprints, sprint => sprint.sprintNumber, ["asc"]);
+      return _.orderBy(sprints, sprint => sprint.startDate, ["asc"]);
     },
 
     teams: function() {
@@ -70,6 +70,12 @@ export default {
   // Events
   created() {
     sessionStorage.setItem("sprints", JSON.stringify(this.sprints));
+    console.log({
+      project: this.project,
+      criteria: this.criteria,
+      sprints: this.sprints,
+      teams: this.teams
+    });
   },
 
   // Non-Reactive properties
@@ -114,16 +120,22 @@ export default {
      * @returns -1 for decrease, 0 for no change, 1 for increase
      */
     getStatusChange(sprint, teamId, criteria) {
+      console.log("getStatusChange", { sprint, teamId, criteria });
+
       // Return 0 if this is the first sprint
-      if (sprint && sprint.sprintNumber === 0) {
+      if (sprint === this.sprints[0]) {
         return 0;
       }
 
       // Get the previous sprint
-      const sprintNo = sprint.sprintNumber - 1;
-      const previousSprint = this.sprints.find(
-        sprint => sprint.sprintNumber === sprintNo.toString()
-      );
+      // const sprintNo = sprint.sprintNumber - 1;
+      // const previousSprint = this.sprints.find(
+      //   sprint => sprint.sprintNumber === sprintNo.toString()
+      // );
+
+      const previousSprintIndex = this.sprints.indexOf(sprint);
+      const previousSprint = this.sprints[this.sprints.indexOf(sprint) - 1];
+      console.log({ previousSprintIndex, previousSprint });
 
       if (previousSprint) {
         const currentVal = sprint.teams[teamId][criteria].value;
@@ -144,16 +156,18 @@ export default {
      * @returns {Boolean} true or false
      */
     hasProjectData() {
-      return !_.isEmpty(this.project.teams) && !_.isEmpty(this.project.sprints);
+      return this.sprints.length && this.teams.length;
     }
   }
 };
 </script>
 
 <template>
-  <section>
-    <div v-if="sprintView">
+  <div class="manage-team-health">
+    <div class="health-check" v-if="hasProjectData()">
       <SprintView
+        v-if="sprintView"
+        :project="project"
         :criteria="criteria"
         :teams="teams"
         :sprints="sprints"
@@ -163,10 +177,10 @@ export default {
         :selectedSprintId="selectedSprintId"
         :getStatusChange="getStatusChange"
       />
-    </div>
 
-    <div v-else-if="teamView">
       <TeamView
+        v-else-if="teamView"
+        :project="project"
         :criteria="criteria"
         :teams="teams"
         :sprints="sprints"
@@ -179,19 +193,32 @@ export default {
     </div>
 
     <!-- No sprint data section -->
-    <div v-if="!hasProjectData()" class="grid__item no-data">
+    <div v-if="!hasProjectData()" class="no-data">
       <p>
         Add a
-        <router-link :to="{ name: 'ManageTeams' }" class="no-data__link">team&nbsp;</router-link>and a
-        <router-link :to="{ name: 'ManageSprints' }" class="no-data__link">sprint&nbsp;</router-link>to get started.
+        <router-link :to="{ name: 'ManageTeams' }" class="no-data__link">team</router-link>&nbsp;and a
+        <router-link :to="{ name: 'ManageSprints' }" class="no-data__link">sprint</router-link>&nbsp;to get started.
       </p>
     </div>
-  </section>
+  </div>
 </template>
 
 <style>
+.health-check {
+  height: 100%;
+  width: 100%;
+}
+
 .tooltip.popover .popover-inner {
   padding: 0;
+}
+
+.manage-team-health {
+  background-color: var(--light);
+  height: calc(100% - 75px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .popover__criteria {
@@ -232,7 +259,14 @@ export default {
   margin: 0;
 }
 
+.criterion:hover {
+  text-decoration: underline;
+}
+
 .health-check__footer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
   display: flex;
   justify-content: flex-end;
   padding: 20px;
@@ -312,5 +346,14 @@ export default {
 
 .health-check__row--odd {
   background-color: #fafafa;
+}
+
+.project-health {
+  height: 100%;
+}
+
+.project-health__content {
+  height: 100%;
+  position: relative;
 }
 </style>

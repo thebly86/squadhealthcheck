@@ -102,7 +102,7 @@ export default {
         criteria: criterion.label,
         value: 0
       }));
-      return Array.fill(defaultCriteria, 0, 11);
+      return defaultCriteria;
     },
 
     /**
@@ -114,40 +114,60 @@ export default {
         return;
       }
 
-      // Adds team to project and returns the team id
-      const teamId = await this.$store.dispatch("addTeamToProject", {
-        projectId: this.$route.params.id,
-        team: this.newTeam
-      });
-
-      // Adds the new team to any existing sprints
-      if (this.project.sprints) {
-        this._addTeamToSprints(teamId);
-        await this.$store.dispatch("updateSprints", {
+      try {
+        // Adds team to project and returns the team id
+        const teamId = await this.$store.dispatch("addTeamToProject", {
           projectId: this.$route.params.id,
-          sprints: this.project.sprints
+          team: this.newTeam
         });
 
-        // We want to reload the project data when a new sprint/team is added
-        this.$store.dispatch("loadProject", {
-          projectId: this.$route.params.id
+        // Adds the new team to any existing sprints
+        if (this.project.sprints) {
+          this._addTeamToSprints(teamId);
+          await this.$store.dispatch("updateSprints", {
+            projectId: this.$route.params.id,
+            sprints: this.project.sprints
+          });
+
+          // We want to reload the project data when a new sprint/team is added
+          // await this.$store.dispatch("loadProject", {
+          //   projectId: this.$route.params.id
+          // });
+        }
+
+        // Notify user of success
+        this.$notify({
+          group: "app",
+          text: "Team added successfully",
+          type: "success"
         });
+
+        // Resets the new team to its default
+        this.newTeam = { name: "" };
+      } catch (error) {
+        this.$notify({ group: "app", text: error.message, type: "error" });
       }
-
-      // Resets the new team to its default
-      this.newTeam = { name: "" };
     },
 
     /**
      * @summary dispatches action to update the selected team in
      * the current projet, then closes the edit modal.
      */
-    updateTeam() {
-      this.$store.dispatch("updateTeam", {
-        projectId: this.$route.params.id,
-        ...this.selectedTeam,
-        keys: this.keys
-      });
+    async updateTeam() {
+      try {
+        await this.$store.dispatch("updateTeam", {
+          projectId: this.$route.params.id,
+          ...this.selectedTeam
+        });
+        this.$notify({
+          group: "app",
+          text: "Team updated successfully.",
+          type: "success"
+        });
+      } catch (error) {
+        this.$notify({ group: "app", text: error.message, type: "error" });
+      }
+
       this.modals.edit = false;
     },
 
@@ -155,18 +175,32 @@ export default {
      * @summary dispatches action to delete the selected team from the
      * current project, then closes the delete modal.
      */
-    deleteTeam() {
-      this.$store.dispatch("deleteTeamFromProject", {
-        projectId: this.$route.params.id,
-        teamId: this.selectedTeam.id,
-        sprints: this.project.sprints
-      });
+    async deleteTeam() {
+      try {
+        await this.$store.dispatch("deleteTeamFromProject", {
+          projectId: this.$route.params.id,
+          teamId: this.selectedTeam.id,
+          sprints: this.project.sprints
+        });
 
-      this._deleteTeamFromSprints(this.selectedTeam.id);
-      this.$store.dispatch("updateSprints", {
-        projectId: this.$route.params.id,
-        sprints: this.project.sprints
-      });
+        // Delete the team from existing sprints
+        if (this.project.sprints) {
+          this._deleteTeamFromSprints(this.selectedTeam.id);
+          await this.$store.dispatch("updateSprints", {
+            projectId: this.$route.params.id,
+            sprints: this.project.sprints
+          });
+        }
+
+        this.$notify({
+          group: "app",
+          text: "Team deleted successfully.",
+          type: "success"
+        });
+      } catch (error) {
+        this.$notify({ group: "app", text: error.message, type: "error" });
+      }
+
       this.modals.delete = false;
     },
 
@@ -190,18 +224,11 @@ export default {
 </script>
 
 <template>
-  <section>
-    <data-list
-      v-if="hasTeams()"
-      :dataList="project.teams"
-      :fields="fields"
-      :actions="actions"
-      :color="this.project.color"
-    >
-    </data-list>
+  <div class="manage-teams">
+    <data-list v-if="hasTeams()" :dataList="project.teams" :fields="fields" :actions="actions"></data-list>
 
     <!-- Add team inline -->
-    <section class="add-team">
+    <div class="add-team">
       <form @submit.prevent="addTeamToProject">
         <input
           v-model.trim="newTeam.name"
@@ -220,10 +247,8 @@ export default {
         @click="addTeamToProject()"
         :disabled="!validTeam(newTeam)"
         class="btn--primary"
-      >
-        Add Team
-      </button>
-    </section>
+      >Add Team</button>
+    </div>
 
     <!-- Edit project modal -->
     <Modal v-if="modals.edit" title="Edit Team" @close="modals.edit = false">
@@ -238,40 +263,37 @@ export default {
           @click="updateTeam()"
           :disabled="!validTeam(selectedTeam)"
           class="button btn--primary"
-        >
-          Save
-        </button>
+        >Save</button>
       </div>
     </Modal>
 
     <!-- Delete project modal -->
-    <Modal
-      v-if="modals.delete"
-      title="Delete Team"
-      @close="modals.delete = false"
-    >
+    <Modal v-if="modals.delete" title="Delete Team" @close="modals.delete = false">
       <div slot="header" class="text--danger"></div>
       <div slot="body">
         <p class="text-center">
-          Are you sure you want to delete this team? <br /><br />
+          Are you sure you want to delete this team?
+          <br />
+          <br />
           <b>All team data will be lost permanently.</b>
         </p>
       </div>
       <div slot="buttons">
-        <button @click="deleteTeam()" class="button btn--danger">
-          Delete
-        </button>
+        <button @click="deleteTeam()" class="button btn--danger">Delete</button>
       </div>
     </Modal>
-  </section>
+  </div>
 </template>
 
 <style scoped>
+.manage-teams {
+  background: var(--light);
+}
+
 .add-team {
   display: flex;
   align-items: center;
   padding: 20px;
-  border-top: 1px solid var(--light-grey);
 }
 
 .add-team form {

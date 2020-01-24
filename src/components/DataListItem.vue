@@ -1,8 +1,14 @@
 <script>
 import dayjs from "dayjs";
+import Icon from "./Icon";
 
 export default {
   name: "DataListItem",
+
+  // Template dependencies
+  components: {
+    Icon
+  },
 
   // Interface
   props: {
@@ -17,7 +23,7 @@ export default {
     },
 
     itemId: {
-      type: String,
+      type: [String, Number],
       required: true
     },
 
@@ -41,28 +47,15 @@ export default {
   data: () => ({}),
 
   computed: {
-    icon: function() {
-      if (this.item.name.length < 2) {
-        return this.item.name;
-      }
-
-      const parts = this.item.name.split(" ", 2);
-      if (parts.length < 2) {
-        return this.item.name.substring(0, 2).toUpperCase();
-      } else {
-        return (
-          parts[0].charAt(0).toUpperCase() + parts[1].charAt(0).toUpperCase()
-        );
-      }
+    iconStyle: function() {
+      return {
+        background: this.color
+      };
     }
   },
 
   // Non-Reactive properties
   methods: {
-    iconColor(color) {
-      return { background: color };
-    },
-
     isDate(field) {
       const regex = RegExp(/^\d{4}-\d{2}-\d{2}$/);
       return regex.test(field);
@@ -70,16 +63,6 @@ export default {
 
     formatDate(date) {
       return dayjs(date).format("DD MMM YYYY");
-    },
-
-    setCssProperty(property, color) {
-      const tinycolor = require("tinycolor2");
-
-      if (color) {
-        return { [property]: color };
-      } else {
-        return { [property]: tinycolor(this.color).setAlpha(0.5) };
-      }
     }
   }
 };
@@ -88,33 +71,17 @@ export default {
 <template>
   <li class="data-list-item">
     <div class="data-list-view">
-      <div
-        v-if="item.name"
-        class="data-list-view__icon"
-        :style="setCssProperty('background', item.color)"
-      >
-        {{ icon }}
-      </div>
+      <Icon v-if="showIcon" :label="item.name" :iconStyle="iconStyle" />
       <div class="field-list">
-        <div
-          v-for="field in fields"
-          :key="field.field"
-          class="field-list__item"
-        >
-          <span v-if="field.visible && !isDate(item[field.field])">
-            {{ item[field.field] || "-" }}
-          </span>
-          <span v-if="field.visible && isDate(item[field.field])">
-            {{ formatDate(item[field.field]) }}
-          </span>
+        <div v-for="field in fields" :key="field.field" class="field-list__item">
+          <span v-if="field.visible && !isDate(item[field.field])">{{ item[field.field] || "-" }}</span>
+          <span
+            v-if="field.visible && isDate(item[field.field])"
+          >{{ formatDate(item[field.field]) }}</span>
         </div>
       </div>
       <ul v-if="actions" @click.stop class="action-list">
-        <li
-          v-for="(action, index) in actions"
-          :key="index"
-          class="action-list__item"
-        >
+        <li v-for="(action, index) in actions" :key="index" class="action-list__item">
           <button
             @click="action.action(action, item, itemId)"
             :class="action.class"
@@ -135,7 +102,7 @@ export default {
   display: flex;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid var(--light-grey);
+  border: 1px solid var(--light-grey);
   z-index: -1;
 }
 
@@ -147,8 +114,14 @@ export default {
   border-top: 1px solid var(--light-grey);
 }
 
-.data-list-item:last-of-type {
+.data-list-item:nth-of-type(even) {
+  border-top: none;
   border-bottom: none;
+}
+
+.data-list-item:last-of-type {
+  /* border-bottom: none; */
+  border-bottom: 1px solid var(--light-grey);
 }
 
 .data-list-item:hover {
@@ -159,21 +132,6 @@ export default {
   display: flex;
   align-items: center;
   width: 100%;
-}
-
-.data-list-view__icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 45px;
-  height: 45px;
-  margin-right: 20px;
-  text-align: center;
-  color: var(--light);
-  background: var(--grey);
-  font-size: 1.5rem;
-  font-weight: 600;
-  line-height: 45px;
 }
 
 .field-list {

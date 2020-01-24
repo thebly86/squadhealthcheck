@@ -13,7 +13,8 @@ export default {
   props: {
     title: {
       type: String,
-      required: true
+      required: false,
+      default: ""
     }
   },
 
@@ -38,22 +39,16 @@ export default {
       :class="{ 'dropdown--active': showItems }"
       class="dropdown__title"
     >
-      <i class="icon icon--options fa fa-cog" />
-      <span>{{ title }}</span>
-      <i class="icon icon--arrow_down fa fa-angle-down" />
+      <slot name="title" />
     </div>
-    <div
-      v-show="showItems"
-      :class="['dropdown__items', { 'dropdown__items--active': showItems }]"
-    >
-      <slot />
+    <div v-show="showItems" :class="['dropdown__items', { 'dropdown__items--active': showItems }]">
+      <slot name="items" />
     </div>
   </div>
 </template>
 
 <style>
 .dropdown {
-  min-width: 150px;
   text-align: right;
   cursor: pointer;
   color: var(--dark-grey);
@@ -75,6 +70,7 @@ export default {
   position: absolute;
   margin-top: 5px;
   border: solid 1px var(--darker-grey);
+  background-color: var(--light);
 }
 
 .icon--options {
