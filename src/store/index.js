@@ -197,7 +197,6 @@ export default new Vuex.Store({
       try {
         const project = await FirebaseService.get(`projects/${projectId}`);
         project.id = projectId;
-        console.log({ project, projectId });
         commit("updateProject", project);
       } catch (error) {
         throw new Error("Failed to load project.");
@@ -325,10 +324,14 @@ export default new Vuex.Store({
 
     async addUser({ commit }, { uid, displayName, email }) {
       try {
-        await FirebaseService.create(`users/${uid}`, {
-          displayName,
-          email
-        });
+        await FirebaseService.create(
+          `users/${uid}`,
+          {
+            displayName,
+            email
+          },
+          false
+        );
       } catch (error) {
         throw new Error("Failed to add new user.");
       }
