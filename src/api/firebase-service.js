@@ -25,11 +25,17 @@ export async function query(url, { field, value }) {
   return results;
 }
 
-export async function create(url, data) {
-  const ref = firebase
-    .database()
-    .ref(url)
-    .push();
+/**
+ * Function creates new record in firebase database
+ * @param {*} url path to save data at
+ * @param {*} data the data to be saved
+ * @param {*} generateId whether to create new child location with unique id
+ */
+export async function create(url, data, generateId = true) {
+  let ref = firebase.database().ref(url);
+
+  // Generates new child location using a unique key
+  ref = generateId ? ref.push() : ref;
 
   await ref.set(data, error => {
     if (error) {
