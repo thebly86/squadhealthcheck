@@ -11,13 +11,13 @@ export default {
   /* Local state */
   data: () => ({
     firebaseConfig: {
-      apiKey: "AIzaSyCL8A5yflZF3efOjQQdIXwvpLs2hdOjCFc",
-      authDomain: "shc-test1.firebaseapp.com",
-      databaseURL: "https://shc-test1.firebaseio.com",
-      projectId: "shc-test1",
-      storageBucket: "shc-test1.appspot.com",
-      messagingSenderId: "526252407185",
-      appId: "1:526252407185:web:e0c839852b6c29216bc230"
+      apiKey: "AIzaSyBQ9Eo9cpSCRld4vpzjmV1XrgcDiWCE3Hc",
+      authDomain: "team-health-check-9141c.firebaseapp.com",
+      databaseURL: "https://team-health-check-9141c.firebaseio.com",
+      projectId: "team-health-check-9141c",
+      storageBucket: "team-health-check-9141c.appspot.com",
+      messagingSenderId: "60524480289",
+      appId: "1:60524480289:web:5484299aa570e5d2fb6060"
     },
     user: {},
     signedIn: false
