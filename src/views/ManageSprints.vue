@@ -36,7 +36,8 @@ export default {
     newSprint: {
       sprintName: "",
       startDate: "",
-      endDate: ""
+      endDate: "",
+      teams: {}
     },
     modals: {
       edit: false,
@@ -89,7 +90,6 @@ export default {
       // For each team, set the default sprint values
       if (this.project.teams) {
         _.forEach(this.project.teams, (team, teamId) => {
-          console.log(this._defaultSprintData());
           this.newSprint.teams[teamId] = this._defaultSprintData();
         });
       }
@@ -106,7 +106,6 @@ export default {
     async addSprint() {
       // Generate default sprint data
       this._addTeamsToSprint();
-      console.log(this.newSprint);
 
       try {
         await this.$store.dispatch("addSprintToProject", {
@@ -115,7 +114,7 @@ export default {
         });
 
         // We want to reload the project data when a new sprint/team is added
-        // await this.$store.dispatch("loadProject", {
+        // await this.$store.dispatch("getProject", {
         //   projectId: this.$route.params.id
         // });
 

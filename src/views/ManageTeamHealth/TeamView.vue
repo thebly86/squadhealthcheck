@@ -96,7 +96,6 @@ export default {
 
   // Events
   created() {
-    console.log({ teams: this.teams, sprints: this.sprints });
     if (this.selectedTeamId) {
       this.currentTeam = this.getTeamById(this.selectedTeamId);
     } else if (this.teams.length) {

@@ -70,12 +70,6 @@ export default {
   // Events
   created() {
     sessionStorage.setItem("sprints", JSON.stringify(this.sprints));
-    console.log({
-      project: this.project,
-      criteria: this.criteria,
-      sprints: this.sprints,
-      teams: this.teams
-    });
   },
 
   // Non-Reactive properties
@@ -120,8 +114,6 @@ export default {
      * @returns -1 for decrease, 0 for no change, 1 for increase
      */
     getStatusChange(sprint, teamId, criteria) {
-      console.log("getStatusChange", { sprint, teamId, criteria });
-
       // Return 0 if this is the first sprint
       if (sprint === this.sprints[0]) {
         return 0;
@@ -135,7 +127,6 @@ export default {
 
       const previousSprintIndex = this.sprints.indexOf(sprint);
       const previousSprint = this.sprints[this.sprints.indexOf(sprint) - 1];
-      console.log({ previousSprintIndex, previousSprint });
 
       if (previousSprint) {
         const currentVal = sprint.teams[teamId][criteria].value;
