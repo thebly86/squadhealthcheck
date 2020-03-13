@@ -130,7 +130,7 @@ export default {
           });
 
           // We want to reload the project data when a new sprint/team is added
-          // await this.$store.dispatch("loadProject", {
+          // await this.$store.dispatch("getProject", {
           //   projectId: this.$route.params.id
           // });
         }

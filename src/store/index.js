@@ -193,7 +193,7 @@ export default new Vuex.Store({
       }
     },
 
-    async loadProject({ commit }, { projectId }) {
+    async getProject({ commit }, { projectId }) {
       try {
         const project = await FirebaseService.get(`projects/${projectId}`);
         project.id = projectId;
@@ -241,6 +241,7 @@ export default new Vuex.Store({
 
       if (teamId) {
         commit("addTeamToProject", { projectId, teamId, team });
+        return teamId;
       } else {
         throw new Error("Failed to add team.");
       }
