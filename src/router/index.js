@@ -6,6 +6,7 @@ import ManageProject from "@/views/ManageProject";
 import ManageTeams from "@/views/ManageTeams";
 import ManageSprints from "@/views/ManageSprints";
 import ManageTeamHealth from "@/views/ManageTeamHealth/ManageTeamHealth";
+import PrivacyPolicy from "@/views/PrivacyPolicy";
 
 Vue.use(Router);
 
@@ -47,6 +48,11 @@ export default new Router({
           component: ManageSprints
         }
       ]
+    },
+    {
+      path: "/privacypolicy",
+      name: "PrivacyPolicy",
+      component: PrivacyPolicy
     }
   ]
 });

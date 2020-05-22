@@ -51,6 +51,11 @@ export default {
           </router-link>
         </li>
         <li class="site-nav__item">
+          <router-link :to="{ name: 'PrivacyPolicy' }">
+            <span>Privacy Policy</span>
+          </router-link>
+        </li>
+        <li class="site-nav__item">
           <DropdownMenu>
             <template v-slot:title>
               <div class="profile">
