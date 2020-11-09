@@ -1,0 +1,12 @@
+{
+    "colours": {
+        "red": "rgb(255, 51, 0)",
+        "amber": "rgb(255, 204, 51)",
+        "green": "rgb(0, 204, 102)"
+    },
+    "projectNavigation": {
+        "teamHealth": "TEAM HEALTH",
+        "sprints": "SPRINTS",
+        "teams": "TEAMS"
+    }
+}
